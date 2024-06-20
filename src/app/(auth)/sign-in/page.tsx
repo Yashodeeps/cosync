@@ -21,13 +21,13 @@ import { Loader2 } from "lucide-react";
 import { SigninSchema } from "@/Schema/SigninSchema";
 import { signIn } from "next-auth/react";
 
-const page = () => {
+const Page = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const { toast } = useToast();
   const router = useRouter();
 
-  //zod implementation
+  // zod implementation
   const form = useForm<z.infer<typeof SigninSchema>>({
     resolver: zodResolver(SigninSchema),
     defaultValues: {
@@ -59,13 +59,11 @@ const page = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-800">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
-        <div className="text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
-            Join ProJet Labs
-          </h1>
-          <p className="mb-4">Build. Collaborate</p>
+    <div className="flex justify-center items-center min-h-screen flex-col">
+      <div className="shadow-xl p-6 rounded-xl bg-gray-100 space-y-4">
+        <div className="flex flex-col items-center justify-center">
+          <h1 className="text-4xl font-bold text-blue-900">Join coSync Labs</h1>
+          <p className="py-2 font-bold text-lg">Build.Collab. Network</p>
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -78,27 +76,23 @@ const page = () => {
                   <FormControl>
                     <Input placeholder="email/ username" {...field} />
                   </FormControl>
-
                   <FormMessage />
                 </FormItem>
               )}
             />
-
             <FormField
               name="password"
               control={form.control}
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>password</FormLabel>
+                  <FormLabel>Password</FormLabel>
                   <FormControl>
                     <Input type="password" placeholder="password" {...field} />
                   </FormControl>
-
                   <FormMessage />
                 </FormItem>
               )}
             />
-
             <Button type="submit" disabled={isSubmitting}>
               {isSubmitting ? (
                 <>
@@ -121,4 +115,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
