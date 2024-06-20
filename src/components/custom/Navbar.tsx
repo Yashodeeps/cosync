@@ -10,6 +10,7 @@ const Navbar = () => {
   const { data: session } = useSession();
   const [user, setUser] = useState<User | null>(null);
 
+  // const user: User = session?.user;
   useEffect(() => {
     if (session && session.user) {
       setUser(session.user as User);
@@ -17,15 +18,15 @@ const Navbar = () => {
   }, [session]);
 
   return (
-    <nav className="p-4 md:p-6 shadow-md">
-      <div className="container mx-auto flex flex-col md:flex-row justify-between items-center">
-        <div className="text-3xl font-bold text-orange-900">CoSyncLabs</div>
+    <nav className="p-3 md:p-4 shadow-md border-b-2 border-gray-700">
+      <div className=" mx-auto flex flex-col md:flex-row justify-between items-center">
+        <div className="text-2xl font-bold text-gray-500">CoSyncLabs</div>
         {session ? (
-          <>
+          <div>
             <Button className="w-full md:w-auto" onClick={() => signOut()}>
               Logout
             </Button>
-          </>
+          </div>
         ) : (
           <Link href="/sign-in">
             <Button>Sign in</Button>

@@ -6,8 +6,8 @@ import bcrypt from "bcryptjs";
 export const authOptions: NextAuthOptions = {
   providers: [
     CredentialsProvider({
-      id: "Crediantials",
-      name: "Crediantials",
+      id: "Credentials",
+      name: "Credentials",
       credentials: {
         email: {
           label: "Email",

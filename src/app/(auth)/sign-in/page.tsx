@@ -37,25 +37,33 @@ const Page = () => {
   });
 
   const onSubmit = async (data: z.infer<typeof SigninSchema>) => {
-    setIsSubmitting(true);
-    const result = await signIn("credentials", {
-      redirect: false,
-      identifier: data.identifier,
-      password: data.password,
-    });
+    console.log("Form submitted with:", data);
 
-    if (result?.error) {
+    try {
+      const result = await signIn("Credentials", {
+        redirect: false,
+        identifier: data.identifier,
+        password: data.password,
+      });
+      console.log("SignIn result:", result);
+
+      if (result?.error) {
+        toast({
+          title: "Login failed",
+          description: "Incorrect username/email or password",
+          variant: "destructive",
+        });
+      } else if (result?.url) {
+        router.replace("/projects");
+      }
+    } catch (error) {
+      console.error("Sign-in error:", error);
       toast({
-        title: "Login failed",
-        description: "Incorrect username/ email or password",
+        title: "Sign-in error",
+        description: "An unexpected error occurred",
         variant: "destructive",
       });
     }
-
-    if (result?.url) {
-      router.replace("/projects");
-    }
-    setIsSubmitting(false);
   };
 
   return (
@@ -74,7 +82,11 @@ const Page = () => {
                 <FormItem>
                   <FormLabel>Email/Username</FormLabel>
                   <FormControl>
-                    <Input placeholder="email/ username" {...field} />
+                    <Input
+                      placeholder="email/ username"
+                      {...field}
+                      autoComplete="username"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -87,20 +99,19 @@ const Page = () => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input type="password" placeholder="password" {...field} />
+                    <Input
+                      type="password"
+                      placeholder="password"
+                      {...field}
+                      autoComplete="current-password"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" /> please wait
-                </>
-              ) : (
-                "Sign in"
-              )}
+              Sign in
             </Button>
           </form>
           <div className="text-center mt-4">
