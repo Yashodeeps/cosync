@@ -16,8 +16,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="h-screen">
-      <Navbar />
+    <div className="flex">
+      <div className="h-[37rem] sm:hidden md:block md:w-1/4 lg:w-1/5 flex ">
+        <SideMenu />
+      </div>{" "}
       {children}
     </div>
   );

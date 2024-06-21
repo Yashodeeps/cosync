@@ -4,7 +4,7 @@ import React from "react";
 
 const SideMenu = () => {
   return (
-    <div className="p-4 m-4 border border-gray-700 shadow-lg rounded-lg h-full text-gray-200">
+    <div className="p-4 m-4 border border-gray-700 shadow-lg rounded-lg h-full text-gray-200 ">
       <ul>
         <li className="text-xl  p-4">Home</li>
         <li className="text-xl  p-4">About</li>

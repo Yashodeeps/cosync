@@ -20,9 +20,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <AuthProvider>{children}</AuthProvider>
-
-        <Toaster />
+        <div className="bg-zinc-900 h-screen max-h-screen">
+          <AuthProvider>{children}</AuthProvider>
+          <Toaster />
+        </div>
       </body>
     </html>
   );
