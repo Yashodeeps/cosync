@@ -173,7 +173,7 @@ const page = () => {
       <div className="text-gray-200 w-64">
         {" "}
         {storeProjects && (
-          <div className="w-full m-4 p-4 flex ">
+          <div className="w-full m-4 flex ">
             {storeProjects.map((project) => (
               <Card
                 className="bg-transparent text-gray-200 p-2 m-2 flex-wrap"

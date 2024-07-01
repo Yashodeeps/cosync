@@ -8,6 +8,7 @@ import axios from "axios";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { set } from "zod";
 
 const page = () => {
   const params = useParams();
@@ -44,118 +45,125 @@ const page = () => {
         description: "Task added successfully",
         variant: "default",
       });
+      setTask("");
     }
-    setTask("");
-    fetchOpenBoardTasks();
   };
-  async function fetchCollaborators() {
-    try {
-      const response = await axios.get(
-        `/api/collaboration/collaborators?projectid=${params.projectid}`
-      );
 
-      if (!response.data.success) {
-        toast({
-          title: "Collaborators",
-          description: "No collaborators found",
-          variant: "default",
-        });
-      } else {
-        setCollaborators(response.data.collaborators);
-      }
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to fetch collaborators",
-        variant: "destructive",
-      });
-    }
-  }
-  async function fetchOpenBoardTasks() {
-    try {
-      const response = await axios.get(
-        `/api/create-project/openboard?projectid=${params.projectid}`
-      );
-      setOpenBoardTasks(response.data.tasks);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to fetch open board tasks",
-        variant: "destructive",
-      });
-    }
-  }
   useEffect(() => {
+    async function fetchCollaborators() {
+      try {
+        const response = await axios.get(
+          `/api/collaboration/collaborators?projectid=${params.projectid}`
+        );
+
+        if (!response.data.success) {
+          toast({
+            title: "Collaborators",
+            description: "No collaborators found",
+            variant: "default",
+          });
+        } else {
+          setCollaborators(response.data.collaborators);
+        }
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch collaborators",
+          variant: "destructive",
+        });
+      }
+    }
     fetchCollaborators();
+    async function fetchOpenBoardTasks() {
+      try {
+        const response = await axios.get(
+          `/api/create-project/openboard?projectid=${params.projectid}`
+        );
+        setOpenBoardTasks(response.data.tasks);
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch open board tasks",
+          variant: "destructive",
+        });
+      }
+    }
     fetchOpenBoardTasks();
-  }, [params.projectid]);
+  }, [params.projectid, toast, task]);
 
-  const Skeleton = () => (
-    <div className=" text-white flex h-full  ">
-      <div className="border flex h-fit border-teal-500 rounded-lg">
-        <Input
-          onChange={(e) => setTask(e.target.value)}
-          value={task}
-          placeholder="add bounties"
-          type="text"
-          className="bg-transparent text-sm border-none px-2 text-zinc-200 focus:outline-none w-28"
-        />
-        <Button
-          onClick={handleAddTask}
-          className="border text-zinc-200 border-transparent bg-transparent hover:text-teal-500 hover:bg-transparent"
-        >
-          +
-        </Button>
-      </div>
+  const openBoard = (
+    <div className="w-full p-4 bg-black rounded-2xl mt-4 h-1/2">
+      <div className=" text-white flex flex-col gap-4 h-full  ">
+        <div className=" flex h-fit justify-between ">
+          <div className="w-40 border border-teal-500 rounded-lg">
+            <input
+              onChange={(e) => setTask(e.target.value)}
+              value={task}
+              placeholder="add bounties"
+              type="text"
+              className="bg-transparent text-sm border-none px-2 text-zinc-200 focus:outline-none w-28"
+            />
+            <Button
+              onClick={handleAddTask}
+              className="border text-zinc-200 border-transparent bg-transparent hover:text-teal-500 hover:bg-transparent"
+            >
+              +
+            </Button>
+          </div>
 
-      <div>
-        {openBoardTasks
-          ? openBoardTasks.map((task: any) => (
-              <div
-                key={task.id}
-                className="border border-gray-700 p-2 rounded-lg m-2"
-              >
-                <p className="text-sm">{task.task}</p>
-              </div>
-            ))
-          : "No tasks found"}
+          <h1 className="text-lg text-zinc-700 font-bold">Open Board</h1>
+        </div>
+
+        <div className="flex gap-4">
+          {openBoardTasks
+            ? openBoardTasks.toReversed().map((task: any) => (
+                <div
+                  key={task.id}
+                  className="border border-gray-700 p-2 rounded-lg mx-2"
+                >
+                  <p className="text-sm">{task.task}</p>
+                </div>
+              ))
+            : "No tasks found"}
+        </div>
       </div>
     </div>
   );
 
-  const items = [
-    {
-      title: "The Open Board",
-      description: "Scratch all your ideas and thoughts here.",
-      header: <Skeleton />,
-      className: "md:col-span-4",
-      icon: <IconClipboardCopy className="h-4 w-4 text-neutral-500" />,
-    },
-
-    {
-      title: "Captain Deck",
-      // header: <Skeleton />,
-      className: "md:col-span-4",
-      icon: <IconTableColumn className="h-4 w-4 text-neutral-500" />,
-    },
-  ];
+  const workBoard = (
+    <div className="flex gap-3 h-1/2">
+      <div className="w-1/3 p-4 bg-black rounded-2xl my-4 h-full">
+        <div className=" text-white flex flex-col gap-4 h-full  ">
+          <div className="">
+            <h1 className="text-teal-700 text-lg font-semibold ">Stack</h1>
+          </div>
+        </div>
+      </div>
+      <div className="w-1/3 p-4 bg-black rounded-2xl my-4 h-full">
+        <div className=" text-white flex flex-col gap-4 h-full  ">
+          <div className="">
+            <h1 className="text-blue-700 text-lg font-semibold ">Working</h1>
+          </div>
+        </div>
+      </div>
+      <div className="w-1/3 p-4 bg-black rounded-2xl my-4 h-full">
+        <div className=" text-white flex flex-col gap-4 h-full  ">
+          <div className="">
+            <h1 className="text-green-700 text-lg font-semibold ">Finished</h1>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="flex w-full">
-      <BentoGrid className=" w-full pr-4 py-4 ">
-        {items.map((item, i) => (
-          <BentoGridItem
-            key={i}
-            title={item.title}
-            description={item.description}
-            header={item.header}
-            className={item.className}
-            icon={item.icon}
-          />
-        ))}
-      </BentoGrid>{" "}
-      <div className="w-96">
+      <div className="w-full">
         {" "}
+        {openBoard} {workBoard}
+      </div>
+
+      <div className="w-96">
         <CollaboratorMenu collaborators={collaborators} />
       </div>
     </div>
