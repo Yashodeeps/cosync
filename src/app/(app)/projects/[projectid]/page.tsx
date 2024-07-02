@@ -64,6 +64,7 @@ const page = () => {
           });
         } else {
           setCollaborators(response.data.collaborators);
+          console.log("collaborators", response.data.collaborators);
         }
       } catch (error) {
         toast({

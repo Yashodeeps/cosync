@@ -1,5 +1,5 @@
 "use client";
-import { Dot, Loader, Loader2, Ship } from "lucide-react";
+import { Check, Dot, Loader, Loader2, Ship } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import {
@@ -18,6 +18,7 @@ import { useDebounceCallback } from "usehooks-ts";
 import { useToast } from "../ui/use-toast";
 import axios from "axios";
 import { set } from "react-hook-form";
+import { useParams, usePathname } from "next/navigation";
 
 const CollaboratorMenu = ({ collaborators }: { collaborators: any[] }) => {
   const [querySearch, setQuerySearch] = useState("");
@@ -25,6 +26,8 @@ const CollaboratorMenu = ({ collaborators }: { collaborators: any[] }) => {
   const { toast } = useToast();
   const [matchedUsers, setMatchedUsers] = useState([] as any[]);
   const [loading, setLoading] = useState(false);
+  const projectId = useParams().projectid;
+  const [isInviteSent, setIsInviteSent] = useState(false);
 
   const handleDialogOpen = () => {
     setQuerySearch(""); // Reset querySearch when dialog opens
@@ -65,6 +68,32 @@ const CollaboratorMenu = ({ collaborators }: { collaborators: any[] }) => {
       setMatchedUsers([]);
     }
   }, [querySearch]);
+
+  const sendInvite = async (userId: Number) => {
+    try {
+      const response = await axios.post(
+        `/api/collaboration/send-request?projectid=${projectId}`,
+        [userId]
+      );
+
+      if (!response.data.success) {
+        toast({
+          title: "Error sending invite",
+          variant: "destructive",
+        });
+      }
+      toast({
+        title: "Invite sent, wait till user accepts",
+        variant: "default",
+      });
+      setIsInviteSent(true);
+    } catch (error) {
+      toast({
+        title: "Error sending invite",
+        variant: "destructive",
+      });
+    }
+  };
 
   return (
     <div className="p-4 m-4 border border-gray-700 shadow-lg rounded-lg h-full text-gray-200 ">
@@ -117,10 +146,17 @@ const CollaboratorMenu = ({ collaborators }: { collaborators: any[] }) => {
                         </div>
                       </div>
                       <Button
-                        onClick={sendInvite}
+                        onClick={() => sendInvite(user.id)}
                         className="bg-transparent border border-none gap-2 text-sm font-thin hover:bg-black hover:border hover:border-dashed border-zinc-500 "
                       >
-                        Invite <Ship strokeWidth={1} />
+                        {isInviteSent ? (
+                          <span>
+                            <Check /> Invited
+                          </span>
+                        ) : (
+                          "Invite"
+                        )}{" "}
+                        <Ship strokeWidth={1} />
                       </Button>
                     </div>
                   ))}
