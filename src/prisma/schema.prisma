@@ -21,6 +21,7 @@ model User {
   projects  Project[] 
   projectsMemberships Project[] @relation("ProjectTeamMembers")
   collaborations Collaboration[] @relation("UserCollaborations")
+  workspaceMemberships Workspace[] @relation("WorkspaceMembers")
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
@@ -32,8 +33,10 @@ model Workspace {
   userId      Int
   user        User      @relation(fields: [userId], references: [id])
   projects    Project[] @relation("WorkspaceProjects")
+  members     User[]    @relation("WorkspaceMembers")
+
   // college CollegeSpace?
-  isPublic   Boolean @default(false)
+  isPublic   Boolean @default(true)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
