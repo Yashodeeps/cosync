@@ -19,6 +19,7 @@ import { useToast } from "../ui/use-toast";
 import axios from "axios";
 import { set } from "react-hook-form";
 import { useParams, usePathname } from "next/navigation";
+import { boolean } from "zod";
 
 const CollaboratorMenu = ({ collaborators }: { collaborators: any[] }) => {
   const [querySearch, setQuerySearch] = useState("");
@@ -27,7 +28,7 @@ const CollaboratorMenu = ({ collaborators }: { collaborators: any[] }) => {
   const [matchedUsers, setMatchedUsers] = useState([] as any[]);
   const [loading, setLoading] = useState(false);
   const projectId = useParams().projectid;
-  const [isInviteSent, setIsInviteSent] = useState(false);
+  const [isInviteSent, setIsInviteSent] = useState(null);
 
   const handleDialogOpen = () => {
     setQuerySearch(""); // Reset querySearch when dialog opens
@@ -70,6 +71,7 @@ const CollaboratorMenu = ({ collaborators }: { collaborators: any[] }) => {
   }, [querySearch]);
 
   const sendInvite = async (userId: Number) => {
+    setIsInviteSent(false);
     try {
       const response = await axios.post(
         `/api/collaboration/send-request?projectid=${projectId}`,
@@ -86,12 +88,13 @@ const CollaboratorMenu = ({ collaborators }: { collaborators: any[] }) => {
         title: "Invite sent, wait till user accepts",
         variant: "default",
       });
-      setIsInviteSent(true);
     } catch (error) {
       toast({
         title: "Error sending invite",
         variant: "destructive",
       });
+    } finally {
+      setIsInviteSent(true);
     }
   };
 
@@ -107,6 +110,7 @@ const CollaboratorMenu = ({ collaborators }: { collaborators: any[] }) => {
         ))}
       </ul>
 
+      {/* //todo: add shadcn command instead of diagogue */}
       <Dialog onOpenChange={handleDialogOpen}>
         <DialogTrigger asChild>
           <Button className="bg-transparent border gap-2 border-dashed border-zinc-500 hover:bg-black mt-4">
@@ -145,25 +149,34 @@ const CollaboratorMenu = ({ collaborators }: { collaborators: any[] }) => {
                           @{user.username}
                         </div>
                       </div>
+
                       <Button
                         onClick={() => sendInvite(user.id)}
                         className="bg-transparent border border-none gap-2 text-sm font-thin hover:bg-black hover:border hover:border-dashed border-zinc-500 "
                       >
+                        {isInviteSent === false && (
+                          <Loader2 className="animate-spin" />
+                        )}
+
                         {isInviteSent ? (
                           <span>
-                            <Check /> Invited
+                            <Check className="text-green-500" />
                           </span>
                         ) : (
                           "Invite"
-                        )}{" "}
+                        )}
                         <Ship strokeWidth={1} />
                       </Button>
                     </div>
                   ))}
               </div>
-              {querySearch === "" && (
+              {querySearch === "" ? (
                 <div className="text-sm text-gray-500">
                   Search for a user to add
+                </div>
+              ) : (
+                <div className="text-sm text-gray-500">
+                  No user found with that name
                 </div>
               )}
             </div>
