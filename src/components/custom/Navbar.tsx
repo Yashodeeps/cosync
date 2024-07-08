@@ -167,7 +167,7 @@ const Navbar = () => {
                               <div className=" space-y-2 border-b border-zinc-600 m-2 p-2 ">
                                 <div className="space-y-2">
                                   <h1 className="text-lg text-zinc-300">
-                                    You've been requested to colloborate on
+                                    You have been requested to colloborate on
                                     project:{" "}
                                     <span className="font-semibold text-teal-600">
                                       {request.project.title}

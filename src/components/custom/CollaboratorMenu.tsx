@@ -1,6 +1,6 @@
 "use client";
 import { Check, Dot, Loader, Loader2, Ship } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import {
   Dialog,
@@ -28,47 +28,44 @@ const CollaboratorMenu = ({ collaborators }: { collaborators: any[] }) => {
   const [matchedUsers, setMatchedUsers] = useState([] as any[]);
   const [loading, setLoading] = useState(false);
   const projectId = useParams().projectid;
-  const [isInviteSent, setIsInviteSent] = useState(null);
+  const [isInviteSent, setIsInviteSent] = useState<Boolean | null>(null);
 
   const handleDialogOpen = () => {
     setQuerySearch(""); // Reset querySearch when dialog opens
   };
-  useEffect(() => {
-    const sendInvite = async () => {
-      if (querySearch === "") {
-        setMatchedUsers([]); // Clear matched users when query is empty
-        return;
-      }
 
-      try {
-        setLoading(true);
-        const response = await axios.get(
-          `/api/collaboration/searchusers?search=${querySearch}`
-        );
-        if (!response.data.success) {
-          toast({
-            title: "Error fetching users",
-            description: response.data.message,
-            variant: "destructive",
-          });
-        }
-        setMatchedUsers(response.data.users);
-        console.log(matchedUsers);
-      } catch (error) {
+  const fetchUsers = useCallback(async () => {
+    if (querySearch === "") {
+      setMatchedUsers([]); // Clear matched users when query is empty
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        `/api/collaboration/searchusers?search=${querySearch}`
+      );
+      if (!response.data.success) {
         toast({
           title: "Error fetching users",
+          description: response.data.message,
           variant: "destructive",
         });
-      } finally {
-        setLoading(false);
       }
-    };
-    if (querySearch !== "") {
-      sendInvite();
-    } else {
-      setMatchedUsers([]);
+      setMatchedUsers(response.data.users);
+    } catch (error) {
+      toast({
+        title: "Error fetching users",
+        variant: "destructive",
+      });
+    } finally {
+      setLoading(false);
     }
-  }, [querySearch]);
+  }, [querySearch, toast]);
+
+  useEffect(() => {
+    fetchUsers();
+  }, [querySearch, fetchUsers]);
 
   const sendInvite = async (userId: Number) => {
     setIsInviteSent(false);

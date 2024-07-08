@@ -5,7 +5,8 @@ const MessageCard = ({ project, status }: any) => {
   return (
     <div>
       <h1>
-        You've been requested to colloborate on project: <span>{project}</span>{" "}
+        You have been requested to colloborate on project:{" "}
+        <span>{project}</span>
       </h1>
       <div className="flex">
         <Button>Accept</Button>
