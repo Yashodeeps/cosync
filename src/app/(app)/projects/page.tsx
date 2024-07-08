@@ -36,7 +36,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useSession } from "next-auth/react";
 
-const page = () => {
+const Page = () => {
   const { toast } = useToast();
   const [projects, setProjects] = useState<Project[]>([]);
   const [title, setTitle] = useState<string>("");
@@ -227,4 +227,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;

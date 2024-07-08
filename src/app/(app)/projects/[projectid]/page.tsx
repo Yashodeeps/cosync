@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { set } from "zod";
 
-const page = () => {
+const Page = () => {
   const params = useParams();
   const { toast } = useToast();
   const [collaborators, setCollaborators] = useState([]);
@@ -171,4 +171,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default Page;
