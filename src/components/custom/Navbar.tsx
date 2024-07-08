@@ -31,6 +31,7 @@ import {
 import axios from "axios";
 import { IconMoodEmpty } from "@tabler/icons-react";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
+import { toast, useToast } from "../ui/use-toast";
 
 const Navbar = () => {
   const { data: session } = useSession();
@@ -38,6 +39,7 @@ const Navbar = () => {
   const router = useRouter();
   const [requestFetchingError, setRequestFetchingError] = useState("");
   const [collaborationRequests, setCollaborationRequests] = useState([]);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (session && session.user) {
@@ -57,11 +59,11 @@ const Navbar = () => {
     };
     fetchCollabRequests();
 
-    const intervalId = setInterval(fetchCollabRequests, 60000); // Fetch every 5 seconds
+    const intervalId = setInterval(fetchCollabRequests, 30000); // Fetch every 5 seconds
 
     // Clean up interval on component unmount
     return () => clearInterval(intervalId);
-  }, []);
+  }, [toast]);
 
   const handleSignOut = async () => {
     const data = await signOut({
@@ -72,6 +74,60 @@ const Navbar = () => {
       console.log("Sign out falied");
     }
     router.push("/");
+  };
+
+  const acceptCollabRequest = async (collaborationId: Number) => {
+    try {
+      const response = await axios.patch("/api/collaboration/accept-request", {
+        collaborationId,
+        action: "ACCEPTED",
+      });
+      if (response.data.success) {
+        toast({
+          title: "Request accepted",
+          description: "You have accepted the collaboration request",
+          variant: "default",
+        });
+      } else {
+        toast({
+          title: "Error accepting request",
+          description: response.data.message,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error accepting request",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const declineCollabRequest = async (collaborationId: Number) => {
+    try {
+      const response = await axios.patch("/api/collaboration/accept-request", {
+        collaborationId,
+        action: "DECLINED",
+      });
+      if (response.data.success) {
+        toast({
+          title: "Request Declined",
+          description: "You have declined the collaboration request",
+          variant: "default",
+        });
+      } else {
+        toast({
+          title: "Error declining request",
+          description: response.data.message,
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error declining request",
+        variant: "destructive",
+      });
+    }
   };
 
   return (
@@ -89,7 +145,9 @@ const Navbar = () => {
                       className="text-zinc-200 cursor-pointer m-1 "
                       size={30}
                     />
-                    <span className="absolute top-0 right-0 rounded-full h-2 w-2 bg-red-500"></span>
+                    {collaborationRequests.length > 0 && (
+                      <span className="absolute top-0 right-0 rounded-full h-2 w-2 bg-red-500"></span>
+                    )}
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="bg-zinc-800  text-white w-96 mr-6  overflow-y-scroll">
                     {" "}
@@ -121,10 +179,20 @@ const Navbar = () => {
                                   </p>
                                 </div>
                                 <div className="flex gap-8">
-                                  <Button className="bg-transparent border border-teal-500  hover:bg-teal-700">
+                                  <Button
+                                    onClick={() => {
+                                      acceptCollabRequest(Number(request.id));
+                                    }}
+                                    className="bg-transparent border border-teal-500  hover:bg-teal-700"
+                                  >
                                     Accept
                                   </Button>
-                                  <Button className="bg-transparent border border-red-700  hover:bg-red-700">
+                                  <Button
+                                    onClick={() => {
+                                      declineCollabRequest(Number(request.id));
+                                    }}
+                                    className="bg-transparent border border-red-700  hover:bg-red-700"
+                                  >
                                     Decline
                                   </Button>
                                 </div>

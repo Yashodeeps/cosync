@@ -138,7 +138,26 @@ export async function GET(request: NextRequest) {
   try {
     const projects = await prisma.project.findMany({
       where: {
-        userId,
+        OR: [
+          {
+            userId: userId,
+          },
+          {
+            collaborations: {
+              some: {
+                userId: userId,
+                status: "ACCEPTED",
+              },
+            },
+          },
+        ],
+      },
+      include: {
+        owner: true,
+        teamMembers: true,
+        openBoard: true,
+        workspaces: true,
+        collaborations: true,
       },
     });
 

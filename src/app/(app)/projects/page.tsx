@@ -34,6 +34,7 @@ import { useAppDispatch, useAppSelector } from "@/hooks/reduxHooks";
 import { addNewProject, addProjects } from "@/redux/slices/projectsSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
+import { useSession } from "next-auth/react";
 
 const page = () => {
   const { toast } = useToast();
@@ -42,10 +43,13 @@ const page = () => {
   const [description, setDescription] = useState<string>("");
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const { data: session } = useSession();
   const storeProjects: Project[] = useAppSelector(
     (state: RootState) => state.projects
   );
   console.log("storeProjects", storeProjects);
+
+  console.log("session", session);
   interface Project {
     id: number;
     title: string;
@@ -170,15 +174,24 @@ const page = () => {
       </Dialog>
 
       {/* projects */}
-      <div className="text-gray-200 w-64">
+      <div className="text-gray-200 w-full">
         {" "}
         {storeProjects && (
-          <div className="w-full m-4 flex ">
+          <div className=" m-4 flex flex-wrap">
             {storeProjects.map((project) => (
               <Card
-                className="bg-transparent text-gray-200 p-2 m-2 flex-wrap"
+                className="bg-transparent text-gray-200 p-2 m-2 relative "
                 key={project.id}
               >
+                {project.userId === Number(session?.user.id) ? (
+                  <span className="text-xs bg-teal-800 rounded-sm p-1 absolute top-1 right-1">
+                    Owner
+                  </span>
+                ) : (
+                  <span className="text-xs bg-black rounded-sm p-1 absolute top-1 right-1 ">
+                    Collaborator
+                  </span>
+                )}
                 <CardHeader>
                   <CardTitle>{project.title}</CardTitle>
                   {/* <CardDescription>{project.description}</CardDescription> */}
@@ -202,7 +215,7 @@ const page = () => {
                       router.push(`/projects/${project.id}`);
                     }}
                   >
-                    Build{" "}
+                    Enter{" "}
                   </Button>
                 </CardFooter>
               </Card>
