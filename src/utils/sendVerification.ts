@@ -9,9 +9,9 @@ export async function sendVerificationEmail(
 ): Promise<ApiResponse> {
   try {
     await resend.emails.send({
-      from: "Acme <onboarding@resend.dev>",
+      from: "verification@cosynclabs.com",
       to: email,
-      subject: "ProJet Verification Email",
+      subject: "CoSyncLabs Verification Email",
       react: VerificationEmail({ username, otp: verifyCode }),
     });
 
