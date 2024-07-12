@@ -34,8 +34,6 @@ model Workspace {
   user        User      @relation(fields: [userId], references: [id])
   projects    Project[] @relation("WorkspaceProjects")
   members     User[]    @relation("WorkspaceMembers")
-
-  // college CollegeSpace?
   isPublic   Boolean @default(false)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -47,27 +45,24 @@ model Project {
   userId      Int
   owner        User      @relation(fields: [userId], references: [id])
   teamMembers User[]    @relation("ProjectTeamMembers")
-  openBoard      Task[]
+  openBoard     Task[]     @relation("OpenBoardTasks")
+  workBoard     Task[]     @relation("WorkBoardTasks")
   workspaces Workspace[] @relation("WorkspaceProjects")
   collaborations Collaboration[] @relation("ProjectCollaborations")
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
 
-// model OpenBoard{
-//   id Int @id @default(autoincrement()) 
-//   projectId Int 
-//   project   Project @relation(fields: [projectId], references: [id])
-//   tasks Task[]
-// }
+
 
 model Task {
   id          Int      @id @default(autoincrement())
   task String
   userId      Int
-  // openBoard   OpenBoard @relation(fields: [openBoardId], references: [id])
   projectId Int
-  project     Project @relation(fields: [projectId], references: [id])
+  openBoard     Project @relation(fields: [projectId], references: [id], name: "OpenBoardTasks",  map: "OpenBoardTasks_projectId_fkey")
+  workBoard     Project @relation(fields: [projectId], references: [id], name: "WorkBoardTasks",  map: "WorkBoardTasks_projectId_fkey")
+  status    TaskStatus @default(OPEN_BOARD)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 }
@@ -91,3 +86,9 @@ enum CollaborationStatus {
 }
 
 
+enum TaskStatus {
+  OPEN_BOARD
+  STACK
+  WORKING
+  FINISHED
+}
