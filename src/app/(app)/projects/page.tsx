@@ -35,6 +35,10 @@ import { addNewProject, addProjects } from "@/redux/slices/projectsSlice";
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { useSession } from "next-auth/react";
+import { Tabs } from "@radix-ui/react-tabs";
+import { TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import BoardTab from "@/components/custom/boardTab";
+import CanvasTab from "@/components/custom/CanvasTab";
 
 const Page = () => {
   const { toast } = useToast();
@@ -128,101 +132,112 @@ const Page = () => {
 
   return (
     <div className="my-5 w-full">
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button className="bg-teal-800 hover:bg-teal-700">
-            Create new +
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-md border-gray-300 bg-zinc-800 text-gray-300">
-          <DialogHeader>
-            <DialogTitle>Create New Project</DialogTitle>
-            <DialogDescription>
-              project is private by default{" "}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="flex items-center space-x-2">
-            <div className="grid flex-1 gap-2">
-              <Label>
-                Title <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                type="text"
-                placeholder="project title"
-                className="bg-zinc-800 focus:ring-none focus:outline-none"
-                onChange={(e) => setTitle(e.target.value)}
-              />
-              <Label>Description</Label>
-              <Textarea
-                placeholder="Enter description here"
-                className="bg-zinc-800"
-                onChange={(e) => setDescription(e.target.value)}
-              />
-            </div>
-          </div>
-          <DialogFooter className="sm:justify-start">
-            <DialogClose asChild>
-              <Button
-                className="bg-teal-800 hover:bg-teal-700 "
-                onClick={hanldeProjectCreation}
-              >
-                Create
-              </Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <Tabs defaultValue="board" className="w-full px-4">
+        <TabsList className="grid w-full grid-cols-2">
+          <TabsTrigger value="board">board</TabsTrigger>
+          <TabsTrigger value="canvas">canvas</TabsTrigger>
+        </TabsList>
 
-      {/* projects */}
-      <div className="text-gray-200 w-full">
-        {" "}
-        {storeProjects && (
-          <div className=" m-4 flex flex-wrap">
-            {storeProjects.map((project) => (
-              <Card
-                className="bg-transparent text-gray-200 p-2 m-2 relative "
-                key={project.id}
-              >
-                {project.userId === Number(session?.user.id) ? (
-                  <span className="text-xs bg-teal-800 rounded-sm p-1 absolute top-1 right-1">
-                    Owner
-                  </span>
-                ) : (
-                  <span className="text-xs bg-black rounded-sm p-1 absolute top-1 right-1 ">
-                    Collaborator
-                  </span>
-                )}
-                <CardHeader>
-                  <CardTitle>{project.title}</CardTitle>
-                  {/* <CardDescription>{project.description}</CardDescription> */}
-                </CardHeader>
-                <CardContent className="grid gap-4">
-                  <div className=" flex items-center space-x-4 rounded-md border p-4">
-                    <div className="flex-1 space-y-1">
-                      <p className="text-sm font-medium leading-none">
-                        Progress
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        Construction in process...
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-                <CardFooter>
+        <TabsContent value="board">
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button className="bg-teal-800 hover:bg-teal-700">
+                Create new +
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-md border-gray-300 bg-zinc-800 text-gray-300">
+              <DialogHeader>
+                <DialogTitle>Create New Project</DialogTitle>
+                <DialogDescription>
+                  project is private by default{" "}
+                </DialogDescription>
+              </DialogHeader>
+              <div className="flex items-center space-x-2">
+                <div className="grid flex-1 gap-2">
+                  <Label>
+                    Title <span className="text-red-500">*</span>
+                  </Label>
+                  <Input
+                    type="text"
+                    placeholder="project title"
+                    className="bg-zinc-800 focus:ring-none focus:outline-none"
+                    onChange={(e) => setTitle(e.target.value)}
+                  />
+                  <Label>Description</Label>
+                  <Textarea
+                    placeholder="Enter description here"
+                    className="bg-zinc-800"
+                    onChange={(e) => setDescription(e.target.value)}
+                  />
+                </div>
+              </div>
+              <DialogFooter className="sm:justify-start">
+                <DialogClose asChild>
                   <Button
-                    className="w-full bg-amber-800 hover:bg-amber-700"
-                    onClick={() => {
-                      router.push(`/projects/${project.id}`);
-                    }}
+                    className="bg-teal-800 hover:bg-teal-700 "
+                    onClick={hanldeProjectCreation}
                   >
-                    Enter{" "}
+                    Create
                   </Button>
-                </CardFooter>
-              </Card>
-            ))}
+                </DialogClose>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+
+          {/* projects */}
+          <div className="text-gray-200 w-full">
+            {" "}
+            {storeProjects && (
+              <div className=" m-4 flex flex-wrap">
+                {storeProjects.map((project) => (
+                  <Card
+                    className="bg-transparent text-gray-200 p-2 m-2 relative "
+                    key={project.id}
+                  >
+                    {project.userId === Number(session?.user.id) ? (
+                      <span className="text-xs bg-teal-800 rounded-sm p-1 absolute top-1 right-1">
+                        Owner
+                      </span>
+                    ) : (
+                      <span className="text-xs bg-black rounded-sm p-1 absolute top-1 right-1 ">
+                        Collaborator
+                      </span>
+                    )}
+                    <CardHeader>
+                      <CardTitle>{project.title}</CardTitle>
+                      {/* <CardDescription>{project.description}</CardDescription> */}
+                    </CardHeader>
+                    <CardContent className="grid gap-4">
+                      <div className=" flex items-center space-x-4 rounded-md border p-4">
+                        <div className="flex-1 space-y-1">
+                          <p className="text-sm font-medium leading-none">
+                            Progress
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            Construction in process...
+                          </p>
+                        </div>
+                      </div>
+                    </CardContent>
+                    <CardFooter>
+                      <Button
+                        className="w-full bg-amber-800 hover:bg-amber-700"
+                        onClick={() => {
+                          router.push(`/projects/${project.id}`);
+                        }}
+                      >
+                        Enter{" "}
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ))}
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </TabsContent>
+
+        <CanvasTab value="canvas" />
+      </Tabs>
     </div>
   );
 };

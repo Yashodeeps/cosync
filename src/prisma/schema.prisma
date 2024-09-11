@@ -22,8 +22,21 @@ model User {
   projectsMemberships Project[] @relation("ProjectTeamMembers")
   collaborations Collaboration[] @relation("UserCollaborations")
   workspaceMemberships Workspace[] @relation("WorkspaceMembers")
+  roomMemberships Rooms[] @relation("RoomMembers")
+  roomsOwnership Rooms[] 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+}
+
+model Rooms {
+  id       Int       @id @default(autoincrement())
+  name     String
+  members   User[] @relation("RoomMembers")
+  owner   User      @relation(fields: [ownerId], references: [id])
+  ownerId Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt  
+
 }
 
 model Workspace {
