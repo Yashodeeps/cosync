@@ -18,9 +18,7 @@ import { toast } from "../ui/use-toast";
 import RoomCard from "./RoomCard";
 
 /** 
-- define canvas rooms schema - done
-- write api to create new room - done
-- display all the roomd in ui
+
 
 
 */
@@ -132,8 +130,7 @@ const CanvasTab = ({ value }: { value: string }) => {
           {rooms && rooms.length > 0 ? (
             rooms.map((room) => (
               <div key={room.id} className="flex">
-                {" "}
-                <RoomCard title={room.name} />
+                <RoomCard title={room.name} id={room.id} />
               </div>
             ))
           ) : (
