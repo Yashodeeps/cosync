@@ -37,7 +37,6 @@ import { RootState } from "@/redux/store";
 import { useSession } from "next-auth/react";
 import { Tabs } from "@radix-ui/react-tabs";
 import { TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import BoardTab from "@/components/custom/boardTab";
 import CanvasTab from "@/components/custom/CanvasTab";
 
 const Page = () => {
@@ -133,7 +132,7 @@ const Page = () => {
   return (
     <div className="my-5 w-full">
       <Tabs defaultValue="board" className="w-full px-4">
-        <TabsList className="grid w-full grid-cols-2">
+        <TabsList className="grid w-full grid-cols-2 ">
           <TabsTrigger value="board">board</TabsTrigger>
           <TabsTrigger value="canvas">canvas</TabsTrigger>
         </TabsList>

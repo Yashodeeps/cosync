@@ -1,12 +1,21 @@
 import Canvas from "@/components/room/Canvas";
 import React from "react";
+import { Room } from "@/components/room/room";
 
-const Room = () => {
+interface RoomProps {
+  params: {
+    roomId: string;
+  };
+}
+
+const RoomPage = ({ params }: RoomProps) => {
   return (
     <div>
-      <Canvas />
+      <Room roomId={params.roomId}>
+        <Canvas roomId={params.roomId} />
+      </Room>
     </div>
   );
 };
 
-export default Room;
+export default RoomPage;
