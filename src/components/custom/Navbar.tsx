@@ -59,10 +59,10 @@ const Navbar = () => {
     };
     fetchCollabRequests();
 
-    const intervalId = setInterval(fetchCollabRequests, 30000); // Fetch every 5 seconds
+    // const intervalId = setInterval(fetchCollabRequests, 30000); // Fetch every 5 seconds
 
-    // Clean up interval on component unmount
-    return () => clearInterval(intervalId);
+    // // Clean up interval on component unmount
+    // return () => clearInterval(intervalId);
   }, [toast]);
 
   const handleSignOut = async () => {
