@@ -15,10 +15,13 @@ export const Room = ({
   roomId: string;
 }) => {
   return (
-    <LiveblocksProvider
-      publicApiKey={`${process.env.NEXT_PUBLIC_LIVEBLOCKS_PUBLIC_KEY}`}
-    >
-      <RoomProvider id={roomId} initialPresence={{}}>
+    <LiveblocksProvider throttle={16} authEndpoint="/api/liveblocks-auth">
+      <RoomProvider
+        id={roomId}
+        initialPresence={{
+          cursor: null,
+        }}
+      >
         <ClientSideSuspense fallback={<div>Loading...</div>}>
           {() => children}
         </ClientSideSuspense>

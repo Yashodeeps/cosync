@@ -18,6 +18,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@hookform/resolvers": "^3.6.0",
     "@liveblocks/client": "^2.7.0",
+    "@liveblocks/node": "^2.7.1",
     "@liveblocks/react": "^2.7.0",
     "@prisma/client": "^5.15.1",
     "@radix-ui/react-accordion": "^1.2.0",

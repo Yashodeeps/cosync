@@ -22,6 +22,9 @@ export async function POST(req: NextRequest) {
       data: {
         name: title.toString(),
         ownerId: Number(ownerId),
+        members: {
+          connect: { id: Number(ownerId) },
+        },
       },
     });
 

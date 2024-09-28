@@ -3,7 +3,7 @@ import React from "react";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-const TaskCard = ({ id, task }) => {
+const TaskCard = ({ id, task }: any) => {
   const { attributes, listeners, setNodeRef, transform, transition } =
     useSortable({ id });
 
