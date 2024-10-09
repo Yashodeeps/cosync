@@ -132,3 +132,10 @@ export enum CanvasMode {
   Resizing,
   Pressing,
 }
+
+export type Layer =
+  | RectangleLayer
+  | EllipseLayer
+  | PatheLayer
+  | TextLayer
+  | NoteLayer;
