@@ -35,6 +35,7 @@ import { root } from "postcss";
 import { LiveObject } from "@liveblocks/client";
 import LayerPreview from "./LayerPreview";
 import SelectionBox from "./SelectionBox";
+import SelectionTools from "./SelectionTools";
 
 const MAX_LAYERS = 111;
 interface CanvasProps {
@@ -94,6 +95,37 @@ const Canvas = ({ roomId }: CanvasProps) => {
     [lastUsedColor]
   );
 
+  const translateSelectedLayers = useMutation(
+    ({ storage, self }, point: Point) => {
+      if (canvasState.mode !== CanvasMode.Translating) return;
+
+      const offset = {
+        x: point.x - canvasState.current.x,
+        y: point.y - canvasState.current.y,
+      };
+
+      const liveLayers = storage.get("layers");
+      for (const id of self.presence.selection) {
+        const layer = liveLayers.get(id);
+        if (layer) {
+          layer.update({
+            x: layer.get("x") + offset.x,
+            y: layer.get("y") + offset.y,
+          });
+        }
+      }
+
+      setCanvasState({ mode: CanvasMode.Translating, current: point });
+    },
+    [canvasState]
+  );
+
+  const unSelectLayers = useMutation(({ self, setMyPresence }) => {
+    if (self.presence.selection.length > 0) {
+      setMyPresence({ selection: [] }, { addToHistory: true });
+    }
+  }, []);
+
   const resizeSelectedLayer = useMutation(
     ({ storage, self }, point: Point) => {
       if (canvasState.mode !== CanvasMode.Resizing) return;
@@ -137,24 +169,45 @@ const Canvas = ({ roomId }: CanvasProps) => {
       e.preventDefault();
       const current = pointerEventToCanvasPoint(e, camera);
 
-      if (canvasState.mode === CanvasMode.Resizing) {
+      if (canvasState.mode === CanvasMode.Translating) {
+        translateSelectedLayers(current);
+      } else if (canvasState.mode === CanvasMode.Resizing) {
         resizeSelectedLayer(current);
       }
 
       setMyPresence({ cursor: current });
     },
-    [canvasState, resizeSelectedLayer, camera]
+    [canvasState, resizeSelectedLayer, camera, translateSelectedLayers]
   );
 
   const onPointerLeave = useMutation(({ setMyPresence }) => {
     setMyPresence({ cursor: null });
   }, []);
 
+  const onPointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      const point = pointerEventToCanvasPoint(e, camera);
+      if (canvasState.mode === CanvasMode.Inserting) {
+        return;
+      }
+
+      //todo: add case for drawing
+      setCanvasState({ origin: point, mode: CanvasMode.Pressing });
+    },
+    [camera, canvasState.mode, setCanvasState]
+  );
+
   const onPointerUp = useMutation(
     ({}, e) => {
       const point = pointerEventToCanvasPoint(e, camera);
 
-      if (canvasState.mode === CanvasMode.Inserting) {
+      if (
+        canvasState.mode === CanvasMode.None ||
+        canvasState.mode === CanvasMode.Pressing
+      ) {
+        unSelectLayers();
+        setCanvasState({ mode: CanvasMode.None });
+      } else if (canvasState.mode === CanvasMode.Inserting) {
         if (
           canvasState.layerType === LayerType.Text ||
           canvasState.layerType === LayerType.Note ||
@@ -170,7 +223,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
 
       history.resume();
     },
-    [camera, canvasState, history, insertLayer]
+    [camera, canvasState, history, insertLayer, unSelectLayers]
   );
 
   const onLayerPointerDown = useMutation(
@@ -215,7 +268,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
   }, [selections]);
 
   return (
-    <div className="h-screen w-full touch-none flex justify-center items-center ">
+    <div className="h-screen w-full touch-none flex justify-center items-center relative">
       <RoomHeader roomId={roomId} />
       <Invite roomId={roomId} />
       <ToolBar
@@ -227,31 +280,40 @@ const Canvas = ({ roomId }: CanvasProps) => {
         redo={history.redo}
       />
 
-      <svg
-        className="h-[100vh] w-[100vw]"
-        onWheel={onWheel}
-        onPointerMove={onPointerMove}
-        onPointerLeave={onPointerLeave}
-        onPointerUp={onPointerUp}
-      >
-        <g
-          style={{
-            transform: `translate(${camera.x}px, ${camera.y}px)`,
-          }}
+      {/*  added an extra div to balance styles */}
+      <div className="absolute inset-0 overflow-hidden">
+        {" "}
+        <SelectionTools camera={camera} setLastUsedColor={setLastUsedColor} />
+        <svg
+          className="h-[100vh] w-[100vw]"
+          onWheel={onWheel}
+          onPointerMove={onPointerMove}
+          onPointerLeave={onPointerLeave}
+          onPointerUp={onPointerUp}
+          onPointerDown={onPointerDown}
         >
-          {layerIds &&
-            layerIds.map((layerId) => (
-              <LayerPreview
-                key={layerId}
-                id={layerId}
-                onLayerPointerDown={onLayerPointerDown}
-                selectionColor={layerIdsToColorSelection[layerId]}
-              />
-            ))}
-          <SelectionBox onResizeHandlePointerDown={onResizeHandlePointerDown} />
-          <CursorsPresense />
-        </g>
-      </svg>
+          <g
+            style={{
+              transform: `translate(${camera.x}px, ${camera.y}px)`,
+            }}
+          >
+            {layerIds &&
+              layerIds.map((layerId) => (
+                <LayerPreview
+                  key={layerId}
+                  id={layerId}
+                  onLayerPointerDown={onLayerPointerDown}
+                  selectionColor={layerIdsToColorSelection[layerId]}
+                />
+              ))}
+            <SelectionBox
+              onResizeHandlePointerDown={onResizeHandlePointerDown}
+            />
+
+            <CursorsPresense />
+          </g>
+        </svg>
+      </div>
     </div>
   );
 };

@@ -39,7 +39,7 @@ const RoomHeader = ({ roomId }: RoomHeaderProps) => {
   }, []);
 
   return (
-    <div className="absolute top-2 left-2 bg-gray-800  gap-3 rounded-md px-2 py-2 text-zinc-100 flex items-center shadow-md ">
+    <div className="absolute z-50 top-2 left-2 bg-gray-800  gap-3 rounded-md px-2 py-2 text-zinc-100 flex items-center shadow-md ">
       <div className="w-full hover:bg-gray-700 p-1.5 rounded-sm ">
         <div
           className="font-semibold cursor-pointer text-lg"

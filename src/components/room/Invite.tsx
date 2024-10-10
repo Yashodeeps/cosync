@@ -37,7 +37,7 @@ const Invite = ({ roomId }: { roomId: string }) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button className="absolute top-4 right-4  gap-3 rounded-md px-2 py-2 bg-gray-800 hover:bg-gray-700 text-zinc-100  flex items-center shadow-md ">
+        <Button className="absolute top-4 right-4 z-50 gap-3 rounded-md px-2 py-2 bg-gray-800 hover:bg-gray-700 text-zinc-100  flex items-center shadow-md ">
           <div className="p-1"> Invite Members +</div>
         </Button>
       </DialogTrigger>
