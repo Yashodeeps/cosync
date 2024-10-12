@@ -1,6 +1,7 @@
 import { Layer, XYWH } from "@/types/canvas";
 import { shallow } from "@liveblocks/client";
-import { useSelf, useStorage } from "@liveblocks/react";
+import { useStorage } from "@liveblocks/react";
+import { useSelf } from "@liveblocks/react/suspense";
 
 const boundingBox = (layers: Layer[]): XYWH | null => {
   const first = layers[0];
@@ -29,9 +30,12 @@ const boundingBox = (layers: Layer[]): XYWH | null => {
 
 const useSelectionBounds = () => {
   //getting all selections of me
-  const selection = useSelf((self) => self.presence.selection);
+
+  const selection = useSelf((me) => me.presence?.selection);
 
   return useStorage((root) => {
+    if (selection && selection.length === 0) return null;
+
     const selectionLayers = selection
       ?.map((layerId) => root.layers.get(layerId)!)
       .filter(Boolean);
