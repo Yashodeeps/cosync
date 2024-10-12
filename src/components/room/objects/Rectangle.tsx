@@ -28,10 +28,10 @@ const Rectangle = ({
       width={width}
       height={height}
       strokeWidth={1}
-      // fill={color ? colorToCss(color) : "transparent"}
-            fill={ "transparent"}
-
+      fill={color ? colorToCss(color) : "transparent"}
+      // fill={"transparent"}
       stroke={selectionColor || "#CCC"}
+      // stroke={colorToCss(color) || "#FFF"}
     />
   );
 };
