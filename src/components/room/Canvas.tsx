@@ -36,6 +36,7 @@ import { LiveObject } from "@liveblocks/client";
 import LayerPreview from "./LayerPreview";
 import SelectionBox from "./SelectionBox";
 import SelectionTools from "./SelectionTools";
+import VideoComBar from "./VideoComBar";
 
 const MAX_LAYERS = 111;
 interface CanvasProps {
@@ -169,7 +170,9 @@ const Canvas = ({ roomId }: CanvasProps) => {
       e.preventDefault();
       const current = pointerEventToCanvasPoint(e, camera);
 
-      if (canvasState.mode === CanvasMode.Translating) {
+      if (canvasState.mode === CanvasMode.Pressing) {
+        // startMuliSelection(current, canvasState.origin);
+      } else if (canvasState.mode === CanvasMode.Translating) {
         translateSelectedLayers(current);
       } else if (canvasState.mode === CanvasMode.Resizing) {
         resizeSelectedLayer(current);
@@ -279,6 +282,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
         undo={history.undo}
         redo={history.redo}
       />
+      <VideoComBar />
 
       {/*  added an extra div to balance styles */}
       <div className="absolute inset-0 overflow-hidden">
