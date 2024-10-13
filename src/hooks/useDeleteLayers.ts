@@ -2,11 +2,11 @@ import { useSelf, useMutation } from "@liveblocks/react";
 
 const useDeleteLayers = () => {
   const selection = useSelf((self) => self.presence.selection);
-  4;
-  if (!selection) return null;
 
   return useMutation(
     ({ storage, setMyPresence }) => {
+      if (!selection || selection.length === 0) return;
+
       const liveLayers = storage.get("layers");
       const liveLayersIds = storage.get("layerIds");
       for (const layerId of selection) {
