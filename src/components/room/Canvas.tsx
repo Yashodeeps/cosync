@@ -1,7 +1,7 @@
 "use client";
 
 import { nanoid } from "nanoid";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import RoomHeader from "./RoomHeader";
 import ToolBar from "./ToolBar";
 import {
@@ -37,13 +37,47 @@ import LayerPreview from "./LayerPreview";
 import SelectionBox from "./SelectionBox";
 import SelectionTools from "./SelectionTools";
 import VideoComBar from "./VideoComBar";
+import { useSession } from "next-auth/react";
+import { useSocket } from "@/lib/SocketProvider";
+import { useParams } from "next/navigation";
 
 const MAX_LAYERS = 111;
 interface CanvasProps {
   roomId: string;
 }
 
+export interface SocketProps {
+  room: string;
+  username: string;
+}
+
 const Canvas = ({ roomId }: CanvasProps) => {
+  const socket = useSocket();
+  const session = useSession();
+  const params = useParams();
+
+  useEffect(() => {
+    if (socket) {
+      socket.emit("join-room", {
+        room: params.roomId,
+        username: session.data?.user.username,
+      });
+    }
+  }, [session, socket]);
+
+  const handleRoomJoin = useCallback((data: SocketProps) => {
+    const { room, username } = data;
+  }, []);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on("join-room", handleRoomJoin);
+      return () => {
+        socket.off("join-room", handleRoomJoin);
+      };
+    }
+  }, [socket, handleRoomJoin]);
+
   const [canvasState, setCanvasState] = useState<CanvasState>({
     mode: CanvasMode.None,
   });
@@ -282,7 +316,10 @@ const Canvas = ({ roomId }: CanvasProps) => {
         undo={history.undo}
         redo={history.redo}
       />
-      <VideoComBar />
+      <VideoComBar
+        name={session.data?.user.name ?? "Member"}
+        username={session.data?.user.username ?? "cosynclabs"}
+      />
 
       {/*  added an extra div to balance styles */}
       <div className="absolute inset-0 overflow-hidden">

@@ -3,7 +3,6 @@ import { Separator } from "../ui/separator";
 import { useRouter } from "next/navigation";
 
 const RoomCard = ({ title, id }: { title: string; id: number }) => {
-  console.log("id", id);
   const router = useRouter();
   const handleRoomClick = () => {
     router.push(`/room/${id}`);
