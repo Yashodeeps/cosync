@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
 import { SigninSchema } from "@/Schema/SigninSchema";
 import { signIn } from "next-auth/react";
+import { Separator } from "@/components/ui/separator";
 
 const Page = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -68,10 +69,10 @@ const Page = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen flex-col">
-      <div className="shadow-xl p-6 rounded-xl bg-gray-100 space-y-4">
+      <div className="shadow-xl p-6 rounded-xl  space-y-4 border border-gray-500 w-full md:w-1/3">
         <div className="flex flex-col items-center justify-center">
-          <h1 className="text-4xl font-bold text-blue-900">Join coSync Labs</h1>
-          <p className="py-2 font-bold text-lg">Build.Collab. Network</p>
+          <h1 className="text-4xl font-bold text-blue-900">Welcome back!!</h1>
+          <Separator className="my-6 bg-gray-800" />
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -114,8 +115,10 @@ const Page = () => {
               Sign in
             </Button>
           </form>
+          <Separator className="my-6 bg-gray-800" />
+
           <div className="text-center mt-4">
-            New to ProJet?
+            New to CoSync?
             <Link href="/sign-up" className="text-blue-600 hover:text-blue-800">
               OnBoard here
             </Link>

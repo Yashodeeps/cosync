@@ -23,6 +23,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 const Page = () => {
   const [username, setUsername] = useState("");
@@ -93,11 +94,11 @@ const Page = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen  flex-col ">
-      <div className="shadow-xl p-6  rounded-xl bg-gray-100">
-        <div className="flex flex-col items-center justify-center">
-          <h1 className="text-4xl font-bold text-blue-900">Join coSync Labs</h1>
-          <p className="py-2 font-bold text-lg "> Build.Collab. Network </p>
+    <div className="flex justify-center items-center min-h-screen  flex-col  ">
+      <div className="shadow-xl p-6  rounded-xl border border-gray-500 w-full md:w-1/3">
+        <div className="flex flex-col items-center  justify-center">
+          <h1 className="text-4xl font-bold text-blue-900">Onboarding</h1>
+          <Separator className="my-6" />
         </div>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
@@ -110,9 +111,7 @@ const Page = () => {
                   <FormControl>
                     <Input placeholder="name" {...field} />
                   </FormControl>
-                  <FormDescription>
-                    This is your public display name.
-                  </FormDescription>
+
                   <FormMessage />
                 </FormItem>
               )}
@@ -141,7 +140,7 @@ const Page = () => {
                         : "text-red-500"
                     }`}
                   >
-                    test {usernameMessage}
+                    {usernameMessage}
                   </p>
 
                   <FormMessage />
@@ -189,9 +188,10 @@ const Page = () => {
               )}
             </Button>
           </form>
+          <Separator className="my-6" />
           <div className="text-center mt-4">
             <p>
-              Already on the boat?
+              Already a member?
               <Link
                 href="/sign-in"
                 className="text-blue-600 hover:text-blue-800"

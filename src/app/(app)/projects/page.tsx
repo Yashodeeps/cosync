@@ -131,11 +131,12 @@ const Page = () => {
 
   return (
     <div className="my-5 w-full">
-      <Tabs defaultValue="board" className="w-full px-4">
+      <Tabs defaultValue="canvas" className="w-full px-4">
         <TabsList className="grid w-full grid-cols-2 ">
-          <TabsTrigger value="board">board</TabsTrigger>
           <TabsTrigger value="canvas">canvas</TabsTrigger>
+          <TabsTrigger value="board">board</TabsTrigger>
         </TabsList>
+        <CanvasTab value="canvas" />
 
         <TabsContent value="board">
           <Dialog>
@@ -234,8 +235,6 @@ const Page = () => {
             )}
           </div>
         </TabsContent>
-
-        <CanvasTab value="canvas" />
       </Tabs>
     </div>
   );
