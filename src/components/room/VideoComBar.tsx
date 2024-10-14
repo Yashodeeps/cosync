@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import UserAvatar from "../custom/UserAvatar";
 import { Button } from "../ui/button";
 import { DoorOpenIcon, SendHorizonal } from "lucide-react";
@@ -28,6 +28,8 @@ const VideoComBar = ({ name, username }: VideoComBarProps) => {
   const [myStream, setMyStream] = useState<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
   const members = useOthers();
+  const remoteVideoRef = useRef<HTMLVideoElement>(null);
+  const streamRef = useRef<MediaStream | null>(null);
 
   const handleUserJoined = useCallback(
     ({ username, socketId }: UserJoinedProps) => {
@@ -111,14 +113,58 @@ const VideoComBar = ({ name, username }: VideoComBarProps) => {
     };
   }, [handleNegotiationNeeded]);
 
+  //remote stream
+  const attachStreamToVideo = useCallback((stream: MediaStream) => {
+    console.log("Attempting to attach stream to video");
+    if (remoteVideoRef.current && stream) {
+      console.log("Video ref and stream are available");
+      remoteVideoRef.current.srcObject = stream;
+      remoteVideoRef.current.onloadedmetadata = () => {
+        console.log("Video metadata loaded");
+        remoteVideoRef.current
+          ?.play()
+          .catch((e) => console.error("Error playing video:", e));
+      };
+    } else {
+      console.error("Failed to attach remote stream:", {
+        videoRef: remoteVideoRef.current,
+        stream: stream,
+      });
+    }
+  }, []);
+
   useEffect(() => {
     peer.peer.addEventListener("track", async (event) => {
-      const remoteStream = event.streams;
-      console.log("GOT TRACKS!!");
-      setRemoteStream(remoteStream[0]);
-      console.log("GOT tracks of remote stream : = ", remoteStream);
+      const remoteStreamTrack = event.streams;
+      console.log("GOT TRACKS!!", remoteStreamTrack);
+      console.log("Track kind:", event.track.kind);
+      console.log("Track readyState:", event.track.readyState);
+      setRemoteStream(remoteStreamTrack[0]);
+      streamRef.current = remoteStreamTrack[0];
+
+      return () => {
+        peer.peer.removeEventListener("track", () => {
+          console.log("Track event listener removed");
+        });
+      };
     });
-  }, [sendStreams]);
+  }, []);
+
+  useEffect(() => {
+    if (remoteStream) {
+      console.log("Remote stream updated:", remoteStream);
+      console.log("Remote stream tracks:", remoteStream.getTracks());
+      attachStreamToVideo(remoteStream);
+    }
+  }, [remoteStream, attachStreamToVideo]);
+
+  //handling fast refresh
+  useEffect(() => {
+    if (streamRef.current) {
+      console.log("Reattaching stream after potential Fast Refresh");
+      attachStreamToVideo(streamRef.current);
+    }
+  }, [attachStreamToVideo]);
 
   useEffect(() => {
     socket?.on("user-joined", handleUserJoined);
@@ -177,11 +223,19 @@ const VideoComBar = ({ name, username }: VideoComBarProps) => {
 
           {remoteStream && (
             <div className="my-2 p-2 relative ">
-              <ReactPlayer
+              {/* <ReactPlayer
                 playing
                 height={"150px"}
                 width={"200px"}
                 url={remoteStream}
+              /> */}
+              <video
+                ref={remoteVideoRef}
+                autoPlay
+                onPlay={() => console.log("Remote video started playing")}
+                onError={(e) => console.error("Video error:", e)}
+                playsInline
+                style={{ height: "150px", width: "200px" }}
               />
             </div>
           )}
