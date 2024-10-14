@@ -37,6 +37,14 @@ const VideoComBar = ({ name, username }: VideoComBarProps) => {
     [socket]
   );
 
+  const sendStreams = useCallback(() => {
+    if (myStream) {
+      for (const track of myStream.getTracks()) {
+        peer.peer.addTrack(track, myStream);
+      }
+    }
+  }, [myStream]);
+
   const handleJoinCall = useCallback(async () => {
     const stream = await navigator.mediaDevices.getUserMedia({
       video: true,
@@ -45,7 +53,8 @@ const VideoComBar = ({ name, username }: VideoComBarProps) => {
     const offer = await peer.getOffer();
     socket?.emit("join-call", { to: remoteSocketId, offer });
     setMyStream(stream);
-  }, [remoteSocketId, socket]);
+    sendStreams();
+  }, [remoteSocketId, socket, sendStreams]);
 
   const handleIncomingCall = useCallback(
     async ({ from, offer }: any) => {
@@ -60,14 +69,6 @@ const VideoComBar = ({ name, username }: VideoComBarProps) => {
     },
     [socket]
   );
-
-  const sendStreams = useCallback(() => {
-    if (myStream) {
-      for (const track of myStream.getTracks()) {
-        peer.peer.addTrack(track, myStream);
-      }
-    }
-  }, [myStream]);
 
   //acceptiong the call
   const handleAnswerCall = useCallback(
@@ -115,8 +116,10 @@ const VideoComBar = ({ name, username }: VideoComBarProps) => {
       const remoteStream = event.streams;
       console.log("GOT TRACKS!!");
       setRemoteStream(remoteStream[0]);
+      console.log("GOT tracks of remote stream : = ", remoteStream);
     });
-  }, []);
+  }, [sendStreams]);
+
 
   useEffect(() => {
     socket?.on("user-joined", handleUserJoined);
@@ -154,8 +157,8 @@ const VideoComBar = ({ name, username }: VideoComBarProps) => {
         </div>
         <Separator className=" bg-gray-500 mt-3" />
         <div>
-          {remoteSocketId ? (
-            myStream ? (
+          {remoteSocketId &&
+            (myStream ? (
               <div className="my-2 p-2 relative ">
                 <ReactPlayer
                   playing
@@ -169,15 +172,10 @@ const VideoComBar = ({ name, username }: VideoComBarProps) => {
                 </div>
               </div>
             ) : (
-              <div className="m-4 w-48 flex justify-center bg-gray-600 p-4 rounded-lg">
-                <UserAvatar fallback={name[0].toUpperCase()} />
+              <div className="px-4 py-2 rounded-lg my-2 bg-gray-500 ">
+                Empty here
               </div>
-            )
-          ) : (
-            <div className="px-4 py-2 rounded-lg my-2 bg-gray-500 ">
-              Empty here
-            </div>
-          )}
+            ))}
 
           {remoteStream && (
             <div className="my-2 p-2 relative ">
@@ -187,11 +185,8 @@ const VideoComBar = ({ name, username }: VideoComBarProps) => {
                 width={"200px"}
                 url={remoteStream}
               />
-              <div className="absolute top-3 left-3 flex items-center gap-2  text-xs text-black font-semibold">
-                <UserAvatar fallback={name[0].toUpperCase()} /> {name}
-              </div>
             </div>
-          )}
+          ) }
         </div>
       </div>{" "}
     </div>

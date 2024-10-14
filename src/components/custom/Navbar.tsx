@@ -145,9 +145,10 @@ const Navbar = () => {
                       className="text-zinc-200 cursor-pointer m-1 "
                       size={30}
                     />
-                    {collaborationRequests.length > 0 && (
-                      <span className="absolute top-0 right-0 rounded-full h-2 w-2 bg-red-500"></span>
-                    )}
+                    {collaborationRequests &&
+                      collaborationRequests.length > 0 && (
+                        <span className="absolute top-0 right-0 rounded-full h-2 w-2 bg-red-500"></span>
+                      )}
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="bg-zinc-800  text-white w-96 mr-6  overflow-y-scroll">
                     {" "}
@@ -157,7 +158,8 @@ const Navbar = () => {
                           {requestFetchingError}
                         </div>
                       )}
-                      {collaborationRequests.length > 0 ? (
+                      {collaborationRequests &&
+                      collaborationRequests.length > 0 ? (
                         collaborationRequests.map((request: any) => {
                           return (
                             <DropdownMenuItem
