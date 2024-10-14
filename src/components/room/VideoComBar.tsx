@@ -120,7 +120,6 @@ const VideoComBar = ({ name, username }: VideoComBarProps) => {
     });
   }, [sendStreams]);
 
-
   useEffect(() => {
     socket?.on("user-joined", handleUserJoined);
     socket?.on("incoming-call", handleIncomingCall);
@@ -162,7 +161,6 @@ const VideoComBar = ({ name, username }: VideoComBarProps) => {
               <div className="my-2 p-2 relative ">
                 <ReactPlayer
                   playing
-                  muted
                   height={"150px"}
                   width={"200px"}
                   url={myStream}
@@ -186,7 +184,7 @@ const VideoComBar = ({ name, username }: VideoComBarProps) => {
                 url={remoteStream}
               />
             </div>
-          ) }
+          )}
         </div>
       </div>{" "}
     </div>
