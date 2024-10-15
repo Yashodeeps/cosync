@@ -2,6 +2,8 @@ import { Layer, LayerType, RectangleLayer } from "@/types/canvas";
 import { useStorage } from "@liveblocks/react";
 import React, { memo } from "react";
 import Rectangle from "./objects/Rectangle";
+import { Ellipsis } from "lucide-react";
+import Ellipse from "./objects/Ellipse";
 
 interface LayerPreviewProps {
   id: string;
@@ -16,38 +18,48 @@ const LayerPreview = memo(
       return null;
     }
 
-    // const isRectangleLayer = (layer: Layer): layer is RectangleLayer =>
-    //   layer.type === LayerType.Rectangle;
-
-    // switch (layer.type) {
-    //   case LayerType.Rectangle:
-    //     return (
-    //       <Rectangle
-    //         id={id}
-    //         layer={layer}
-    //         onPointerDown={onLayerPointerDown}
-    //         selectionColor={selectionColor}
-    //       />
-    //     );
-    //   default:
-    //     console.error("Unknown layer type", layer);
-    //     return null;
-    // }
     const isRectangleLayer = (layer: Layer): layer is RectangleLayer =>
       layer.type === LayerType.Rectangle;
 
-    if (isRectangleLayer(layer)) {
-      return (
-        <Rectangle
-          id={id}
-          layer={layer}
-          onPointerDown={onLayerPointerDown}
-          selectionColor={selectionColor}
-        />
-      );
-    }
+    switch (layer.type) {
+      case LayerType.Ellipse:
+        return (
+          <Ellipse
+            id={id}
+            layer={layer}
+            onPointerDown={onLayerPointerDown}
+            selectionColor={selectionColor}
+          />
+        );
 
-    console.error("Unknown layer type", layer);
+      case LayerType.Rectangle:
+        return (
+          <Rectangle
+            id={id}
+            layer={layer}
+            onPointerDown={onLayerPointerDown}
+            selectionColor={selectionColor}
+          />
+        );
+      default:
+        console.error("Unknown layer type", layer);
+        return null;
+    }
+    // const isRectangleLayer = (layer: Layer): layer is RectangleLayer =>
+    //   layer.type === LayerType.Rectangle;
+
+    // if (isRectangleLayer(layer)) {
+    //   return (
+    //     <Rectangle
+    //       id={id}
+    //       layer={layer}
+    //       onPointerDown={onLayerPointerDown}
+    //       selectionColor={selectionColor}
+    //     />
+    //   );
+    // }
+
+    console.log("Unknown layer type", layer);
     return null;
   }
 );
