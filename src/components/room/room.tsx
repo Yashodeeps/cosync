@@ -8,6 +8,7 @@ import {
 } from "@liveblocks/react/suspense";
 import { LiveMap, LiveObject, LiveList } from "@liveblocks/client";
 import { Layer } from "@/types/canvas";
+import LoadingSkeleton from "../custom/LoadingSkeleton";
 
 export const Room = ({
   children,
@@ -29,7 +30,9 @@ export const Room = ({
           layerIds: new LiveList<string>([]),
         }}
       >
-        <ClientSideSuspense fallback={<div>Loading...</div>}>
+        <ClientSideSuspense fallback={
+          <LoadingSkeleton/>
+        }>
           {() => children}
         </ClientSideSuspense>
       </RoomProvider>
