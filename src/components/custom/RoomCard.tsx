@@ -1,7 +1,5 @@
 import React from "react";
-import { Separator } from "../ui/separator";
 import { useRouter } from "next/navigation";
-import { Home, HomeIcon } from "lucide-react";
 import {
   Card,
   CardContent,
