@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { TabsContent } from "../ui/tabs";
 import {
   Dialog,
   DialogClose,
@@ -16,15 +15,13 @@ import { Input } from "../ui/input";
 import axios from "axios";
 import { toast } from "../ui/use-toast";
 import RoomCard from "./RoomCard";
+import { set } from "zod";
+import { Skeleton } from "../ui/skeleton";
 
-/** 
-
-
-
-*/
-const CanvasTab = ({ value }: { value: string }) => {
+const CanvasTab = () => {
   const [roomTitle, setRoomTitle] = useState("");
   const [rooms, setRooms] = useState<Room[]>([]);
+  const [isFetching, setIsFetching] = useState(false);
 
   interface Room {
     id: number;
@@ -64,6 +61,7 @@ const CanvasTab = ({ value }: { value: string }) => {
     fetchAllRooms();
   }, []);
   const fetchAllRooms = async () => {
+    setIsFetching(true);
     try {
       const response = await axios.get("/api/room");
       if (!response) {
@@ -81,6 +79,8 @@ const CanvasTab = ({ value }: { value: string }) => {
         description: "An error occurred while fetching rooms",
         variant: "destructive",
       });
+    } finally {
+      setIsFetching(false);
     }
   };
 
@@ -124,7 +124,24 @@ const CanvasTab = ({ value }: { value: string }) => {
       </Dialog>
 
       <div className="flex gap-4">
-        {rooms && rooms.length > 0 ? (
+        {isFetching === true ? (
+          <div className="flex">
+            <div className="flex flex-col space-y-3 m-4 p-4 border border-gray-600 rounded-md shadow-lg">
+              <Skeleton className="h-[20px] w-[150px] rounded-xl bg-transparent border border-gray-600" />
+              <div className="space-y-2">
+                <Skeleton className="h-32 w-[250px] bg-transparent border border-gray-600" />
+                <Skeleton className="h-6 w-[200px] bg-transparent border border-gray-600" />
+              </div>
+            </div>
+            <div className="flex flex-col space-y-3 m-4 p-4 border border-gray-600 rounded-md shadow-lg">
+              <Skeleton className="h-[20px] w-[150px] rounded-xl bg-transparent border border-gray-600" />
+              <div className="space-y-2">
+                <Skeleton className="h-32 w-[250px] bg-transparent border border-gray-600" />
+                <Skeleton className="h-6 w-[200px] bg-transparent border border-gray-600" />
+              </div>
+            </div>
+          </div>
+        ) : rooms && rooms.length > 0 ? (
           rooms.map((room) => (
             <div key={room.id} className="flex">
               <RoomCard title={room.name} id={room.id} />
