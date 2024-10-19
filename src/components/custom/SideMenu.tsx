@@ -30,6 +30,18 @@ const SideMenu = () => {
         >
           Projects
         </li>
+        <li
+          onClick={() => {
+            router.push("/board");
+          }}
+          className={
+            pathname.endsWith("/board")
+              ? " hover:bg-black bg-zinc-800 rounded-lg cursor-pointer px-3 py-2"
+              : "hover:bg-black rounded-lg cursor-pointer  px-3 py-2"
+          }
+        >
+          board
+        </li>
 
         <li className="hover:bg-black rounded-lg cursor-pointer   px-3 py-2">
           <Accordion type="single" collapsible className="w-full ">
@@ -43,9 +55,7 @@ const SideMenu = () => {
             </AccordionItem>
           </Accordion>
         </li>
-        <li className="hover:bg-black rounded-lg cursor-pointer   px-3 py-2">
-          Feed
-        </li>
+
         <li className="hover:bg-black rounded-lg cursor-pointer  px-3 py-2">
           Collab
         </li>
