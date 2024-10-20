@@ -30,9 +30,7 @@ export const Room = ({
           layerIds: new LiveList<string>([]),
         }}
       >
-        <ClientSideSuspense fallback={
-          <LoadingSkeleton/>
-        }>
+        <ClientSideSuspense fallback={<LoadingSkeleton />}>
           {() => children}
         </ClientSideSuspense>
       </RoomProvider>

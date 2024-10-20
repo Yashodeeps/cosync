@@ -59,4 +59,10 @@ const RoomHeader = ({ roomId }: RoomHeaderProps) => {
   );
 };
 
+export const RoomHeaderSkeleton = () => {
+  return (
+    <div className="fixed z-50 top-2 left-2 bg-gray-800  gap-3 rounded-md px-2 py-2 h-12 text-zinc-100 flex items-center shadow-md animate-pulse w-48"></div>
+  );
+};
+
 export default RoomHeader;

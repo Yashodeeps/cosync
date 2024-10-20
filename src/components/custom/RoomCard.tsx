@@ -18,7 +18,6 @@ const RoomCard = ({ title, id }: { title: string; id: number }) => {
     >
       <CardHeader>
         <CardTitle>{title}</CardTitle>
-        {/* <CardDescription>{project.description}</CardDescription> */}
       </CardHeader>
       <CardContent className="grid gap-4">
         <div className=" flex items-center space-x-4 rounded-md border p-4">
