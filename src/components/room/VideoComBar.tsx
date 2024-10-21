@@ -4,6 +4,7 @@ import Peer from "peerjs";
 import { useParams } from "next/navigation";
 import { DoorClosed, DoorOpen } from "lucide-react";
 import { Button } from "../ui/button";
+import { nanoid } from "nanoid";
 
 const VideoComBar = ({ name }: any) => {
   const [peerId, setPeerId] = useState<string | null>(null);
@@ -17,16 +18,13 @@ const VideoComBar = ({ name }: any) => {
   const [livePeers, setLivePeers] = useState<string[]>([]);
 
   useEffect(() => {
-    const uniquePeerId = `${roomId}-${Math.random().toString(36).substring(7)}`;
-
-    const peer = new Peer(uniquePeerId);
+    const peer = new Peer();
     peerRef.current = peer;
-
-    setLivePeers((prev) => [...prev, uniquePeerId]);
 
     // Get own peer ID
     peer.on("open", (id) => {
       setPeerId(id);
+      setLivePeers((prev) => [...prev, id]);
     });
 
     // Listen for incoming calls
