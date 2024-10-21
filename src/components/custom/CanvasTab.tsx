@@ -148,7 +148,9 @@ const CanvasTab = () => {
             </div>
           ))
         ) : (
-          <h1>No rooms found create new Room</h1>
+          <h1 className="p-4 font-semibold text-lg text-gray-500">
+            No rooms found create new Room
+          </h1>
         )}
       </div>
     </div>

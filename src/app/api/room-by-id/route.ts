@@ -20,6 +20,9 @@ export async function GET(req: NextRequest) {
       where: {
         id: roomId,
       },
+      include: {
+        members: true,
+      },
     });
 
     if (!room) {

@@ -18,13 +18,10 @@ const VideoComBar = ({ name, username }: any) => {
   const streamRef = useRef<MediaStream | null>(null);
   const [connectionState, setConnectionState] = useState<string>("new");
 
-  const handleUserJoined = useCallback(
-    ({ username, socketId }: any) => {
-      console.log("New user joined", username, socketId);
-      setRemoteSocketId(socketId);
-    },
-    []
-  );
+  const handleUserJoined = useCallback(({ username, socketId }: any) => {
+    console.log("New user joined", username, socketId);
+    setRemoteSocketId(socketId);
+  }, []);
 
   useEffect(() => {
     if (myStream) {
@@ -58,11 +55,14 @@ const VideoComBar = ({ name, username }: any) => {
     [socket]
   );
 
-  const handleAnswerCall = useCallback(({ from, answer }: any) => {
-    console.log("Call answered by", from);
-    peer.setLocalDescription(answer);
-    socket?.emit("call accepted", { to: from, answer });
-  }, [socket]);
+  const handleAnswerCall = useCallback(
+    ({ from, answer }: any) => {
+      console.log("Call answered by", from);
+      peer.setLocalDescription(answer);
+      socket?.emit("call accepted", { to: from, answer });
+    },
+    [socket]
+  );
 
   const handleNegotiationNeeded = useCallback(async () => {
     console.log("Negotiation needed");
@@ -91,10 +91,12 @@ const VideoComBar = ({ name, username }: any) => {
     console.log("Final negotiation", answer);
     console.log("Current signaling state:", peer.peer.signalingState);
     console.log("Current connection state:", peer.peer.connectionState);
-    
+
     try {
       if (peer.peer.signalingState !== "have-local-offer") {
-        console.log("Peer is not in 'have-local-offer' state, cannot set remote description");
+        console.log(
+          "Peer is not in 'have-local-offer' state, cannot set remote description"
+        );
         return;
       }
       await peer.peer.setRemoteDescription(new RTCSessionDescription(answer));
@@ -112,7 +114,10 @@ const VideoComBar = ({ name, username }: any) => {
     });
 
     return () => {
-      peer.peer.removeEventListener("negotiationneeded", handleNegotiationNeeded);
+      peer.peer.removeEventListener(
+        "negotiationneeded",
+        handleNegotiationNeeded
+      );
       peer.peer.removeEventListener("connectionstatechange", () => {});
     };
   }, [handleNegotiationNeeded]);
@@ -155,18 +160,15 @@ const VideoComBar = ({ name, username }: any) => {
   ]);
 
   return (
-    <div className="absolute top-[50%] -translate-y-[50%] right-2 flex flex-col gap-y-4 z-50">
+    <div className=" flex flex-col gap-y-4 ">
       <div className="bg-gray-800 rounded-md p-2 flex gap-1 flex-col  shadow-md ">
         <div className="flex gap-4 items-center">
           <Button onClick={handleJoinCall} size={"icon"}>
             <DoorOpenIcon />
           </Button>
-          <Button size={"icon"}>
-            <SendHorizonal />
-          </Button>
         </div>
         <Separator className=" bg-gray-500 mt-3" />
-        <div>Connection State: {connectionState}</div>
+        {/* <div>Connection State: {connectionState}</div> */}
         <div>
           {remoteSocketId &&
             (myStream ? (

@@ -9,7 +9,12 @@ import {
 } from "../ui/card";
 import { Button } from "../ui/button";
 
-const RoomCard = ({ title, id }: { title: string; id: number }) => {
+interface RoomCardProps {
+  title: string;
+  id: number;
+}
+
+const RoomCard = ({ title, id }: RoomCardProps) => {
   const router = useRouter();
   return (
     <Card
@@ -36,7 +41,7 @@ const RoomCard = ({ title, id }: { title: string; id: number }) => {
             router.push(`/room/${id}`);
           }}
         >
-          Enter{" "}
+          Enter
         </Button>
       </CardFooter>
     </Card>

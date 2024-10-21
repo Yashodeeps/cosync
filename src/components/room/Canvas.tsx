@@ -41,6 +41,9 @@ import VideoComBar from "./VideoComBar";
 import { useSession } from "next-auth/react";
 import { useSocket } from "@/lib/SocketProvider";
 import { useParams } from "next/navigation";
+import MembersMenu from "./MembersMenu";
+import axios from "axios";
+import { useToast } from "../ui/use-toast";
 
 const MAX_LAYERS = 111;
 interface CanvasProps {
@@ -56,7 +59,44 @@ const Canvas = ({ roomId }: CanvasProps) => {
   const socket = useSocket();
   const session = useSession();
   const params = useParams();
+  const others = useOthers();
+  const { toast } = useToast();
+  const [roomInfo, setRoomInfo] = useState<any | null>(null);
+  const [canvasState, setCanvasState] = useState<CanvasState>({
+    mode: CanvasMode.None,
+  });
 
+  const layerIds = useStorage((root) => root.layerIds);
+
+  const [camera, setCamera] = useState<Camera>({ x: 0, y: 0 });
+  const [lastUsedColor, setLastUsedColor] = useState<Color>({
+    r: 255,
+    g: 255,
+    b: 255,
+  });
+
+  const history = useHistory();
+  const canUndo = useCanUndo();
+  const canRedo = useCanRedo();
+
+  useEffect(() => {
+    const fetchRoomInfo = async () => {
+      const response = await axios.get(`/api/room-by-id?roomId=${roomId}`);
+
+      if (!response) {
+        toast({
+          title: "Error",
+          description: "Failed to fetch room info",
+          variant: "destructive",
+        });
+      }
+
+      setRoomInfo(response.data.room);
+    };
+    fetchRoomInfo();
+  }, []);
+
+  // webrtc logic
   useEffect(() => {
     if (socket) {
       socket.emit("join-room", {
@@ -79,22 +119,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
     }
   }, [socket, handleRoomJoin]);
 
-  const [canvasState, setCanvasState] = useState<CanvasState>({
-    mode: CanvasMode.None,
-  });
-
-  const layerIds = useStorage((root) => root.layerIds);
-
-  const [camera, setCamera] = useState<Camera>({ x: 0, y: 0 });
-  const [lastUsedColor, setLastUsedColor] = useState<Color>({
-    r: 255,
-    g: 255,
-    b: 255,
-  });
-
-  const history = useHistory();
-  const canUndo = useCanUndo();
-  const canRedo = useCanRedo();
+  // webrtc logic
 
   const insertLayer = useMutation(
     (
@@ -120,7 +145,6 @@ const Canvas = ({ roomId }: CanvasProps) => {
         height: 100,
         width: 100,
         color: lastUsedColor,
-        // fill: lastUsedColor,
       });
       liveLayerIds.push(layerId);
       liveLayers.set(layerId, layer);
@@ -332,7 +356,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
 
   return (
     <div className="h-screen w-full touch-none flex justify-center items-center relative">
-      <RoomHeader roomId={roomId} />
+      <RoomHeader roomId={roomId} roomInfo={roomInfo} />
       <Invite roomId={roomId} />
       <ToolBar
         canvasState={canvasState}
@@ -342,9 +366,12 @@ const Canvas = ({ roomId }: CanvasProps) => {
         undo={history.undo}
         redo={history.redo}
       />
-      <VideoComBar
+
+      <MembersMenu
         name={session.data?.user.name ?? "Member"}
         username={session.data?.user.username ?? "cosynclabs"}
+        members={roomInfo?.members}
+        others={others}
       />
 
       {/*  added an extra div to balance styles */}
