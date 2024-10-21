@@ -38,7 +38,6 @@ const MembersMenu = ({
   const liveMembers = members.filter((member: any) =>
     others.some((other: any) => other.info.name === member.username)
   );
-  console.log("liveMembers", liveMembers);
   const offlineMembers = members.filter(
     (member: any) =>
       !liveMembers.some((liveMember: any) => liveMember.id === member.id)

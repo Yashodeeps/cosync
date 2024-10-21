@@ -56,7 +56,7 @@ export interface SocketProps {
 }
 
 const Canvas = ({ roomId }: CanvasProps) => {
-  const socket = useSocket();
+  // const socket = useSocket();
   const session = useSession();
   const params = useParams();
   const others = useOthers();
@@ -97,27 +97,27 @@ const Canvas = ({ roomId }: CanvasProps) => {
   }, []);
 
   // webrtc logic
-  useEffect(() => {
-    if (socket) {
-      socket.emit("join-room", {
-        room: params.roomId,
-        username: session.data?.user.username,
-      });
-    }
-  }, [session, socket]);
+  // useEffect(() => {
+  //   if (socket) {
+  //     socket.emit("join-room", {
+  //       room: params.roomId,
+  //       username: session.data?.user.username,
+  //     });
+  //   }
+  // }, [session, socket]);
 
-  const handleRoomJoin = useCallback((data: SocketProps) => {
-    const { room, username } = data;
-  }, []);
+  // const handleRoomJoin = useCallback((data: SocketProps) => {
+  //   const { room, username } = data;
+  // }, []);
 
-  useEffect(() => {
-    if (socket) {
-      socket.on("join-room", handleRoomJoin);
-      return () => {
-        socket.off("join-room", handleRoomJoin);
-      };
-    }
-  }, [socket, handleRoomJoin]);
+  // useEffect(() => {
+  //   if (socket) {
+  //     socket.on("join-room", handleRoomJoin);
+  //     return () => {
+  //       socket.off("join-room", handleRoomJoin);
+  //     };
+  //   }
+  // }, [socket, handleRoomJoin]);
 
   // webrtc logic
 

@@ -1,204 +1,144 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import UserAvatar from "../custom/UserAvatar";
+"use client";
+import React, { useEffect, useState, useRef } from "react";
+import Peer from "peerjs";
+import { useParams } from "next/navigation";
+import { DoorClosed, DoorOpen } from "lucide-react";
 import { Button } from "../ui/button";
-import { DoorOpenIcon, SendHorizonal } from "lucide-react";
-import { useSocket } from "@/lib/SocketProvider";
-import { Separator } from "../ui/separator";
-import ReactPlayer from "react-player";
-import peer from "@/lib/peer";
-import { useOthers } from "@liveblocks/react";
 
-const VideoComBar = ({ name, username }: any) => {
-  const socket = useSocket();
-  const [remoteSocketId, setRemoteSocketId] = useState<string | null>(null);
+const VideoComBar = ({ name }: any) => {
+  const [peerId, setPeerId] = useState<string | null>(null);
+  const [remotePeerId, setRemotePeerId] = useState<string | null>(null);
   const [myStream, setMyStream] = useState<MediaStream | null>(null);
   const [remoteStream, setRemoteStream] = useState<MediaStream | null>(null);
-  const members = useOthers();
+  const peerRef = useRef<Peer | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-  const [connectionState, setConnectionState] = useState<string>("new");
-
-  const handleUserJoined = useCallback(({ username, socketId }: any) => {
-    console.log("New user joined", username, socketId);
-    setRemoteSocketId(socketId);
-  }, []);
+  const { roomId } = useParams();
+  const [livePeers, setLivePeers] = useState<string[]>([]);
 
   useEffect(() => {
-    if (myStream) {
-      console.log("Adding local stream tracks to peer connection");
-      for (const track of myStream.getTracks()) {
-        peer.peer.addTrack(track, myStream);
-      }
-    }
-  }, [myStream]);
+    const uniquePeerId = `${roomId}-${Math.random().toString(36).substring(7)}`;
 
-  const handleJoinCall = useCallback(async () => {
-    console.log("Joining call");
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: true,
-      audio: true,
+    const peer = new Peer(uniquePeerId);
+    peerRef.current = peer;
+
+    setLivePeers((prev) => [...prev, uniquePeerId]);
+
+    // Get own peer ID
+    peer.on("open", (id) => {
+      setPeerId(id);
     });
-    setMyStream(stream);
-    const offer = await peer.getOffer();
-    console.log("Created offer", offer);
-    socket?.emit("join-call", { to: remoteSocketId, offer });
-  }, [remoteSocketId, socket]);
 
-  const handleIncomingCall = useCallback(
-    async ({ from, offer }: any) => {
-      console.log("Incoming call from", from);
-      setRemoteSocketId(from);
-      const answer = await peer.getAnswer(offer);
-      console.log("Created answer", answer);
-      socket?.emit("answer-call", { to: from, answer });
-    },
-    [socket]
-  );
+    // Listen for incoming calls
+    peer.on("call", (call) => {
+      navigator.mediaDevices
+        .getUserMedia({ video: true, audio: true })
+        .then((stream) => {
+          setMyStream(stream);
+          call.answer(stream); // Answer with local stream
+          console.log("Answered call with local stream", myStream);
 
-  const handleAnswerCall = useCallback(
-    ({ from, answer }: any) => {
-      console.log("Call answered by", from);
-      peer.setLocalDescription(answer);
-      socket?.emit("call accepted", { to: from, answer });
-    },
-    [socket]
-  );
-
-  const handleNegotiationNeeded = useCallback(async () => {
-    console.log("Negotiation needed");
-    if (peer.peer.signalingState !== "stable") {
-      console.log("Skipping negotiation - signaling state not stable");
-      return;
-    }
-    const offer = await peer.getOffer();
-    console.log("Created negotiation offer", offer);
-    if (!socket) return;
-    socket.emit("peer-negotiation", { to: remoteSocketId, offer });
-  }, [socket, remoteSocketId]);
-
-  const handleNegotiationIncoming = useCallback(
-    async ({ from, offer }: any) => {
-      console.log("Incoming negotiation from", from);
-      const answer = await peer.getAnswer(offer);
-      console.log("Created negotiation answer", answer);
-      if (!socket) return;
-      socket.emit("peer-negotiation-done", { to: from, answer });
-    },
-    [socket]
-  );
-
-  const handleNegotiationFinal = useCallback(async ({ answer }: any) => {
-    console.log("Final negotiation", answer);
-    console.log("Current signaling state:", peer.peer.signalingState);
-    console.log("Current connection state:", peer.peer.connectionState);
-
-    try {
-      if (peer.peer.signalingState !== "have-local-offer") {
-        console.log(
-          "Peer is not in 'have-local-offer' state, cannot set remote description"
-        );
-        return;
-      }
-      await peer.peer.setRemoteDescription(new RTCSessionDescription(answer));
-      console.log("Remote description set successfully");
-    } catch (error) {
-      console.error("Error setting remote description:", error);
-    }
-  }, []);
-
-  useEffect(() => {
-    peer.peer.addEventListener("negotiationneeded", handleNegotiationNeeded);
-    peer.peer.addEventListener("connectionstatechange", () => {
-      console.log("Connection state changed:", peer.peer.connectionState);
-      setConnectionState(peer.peer.connectionState);
+          // Update when the remote stream is received
+          call.on("stream", (remoteStream) => {
+            setRemoteStream(remoteStream);
+            console.log("Received remote stream", remoteStream);
+            if (remoteVideoRef.current) {
+              remoteVideoRef.current.srcObject = remoteStream;
+              remoteVideoRef.current.play(); // Ensure the video starts playing
+            }
+          });
+        });
     });
 
     return () => {
-      peer.peer.removeEventListener(
-        "negotiationneeded",
-        handleNegotiationNeeded
-      );
-      peer.peer.removeEventListener("connectionstatechange", () => {});
-    };
-  }, [handleNegotiationNeeded]);
-
-  useEffect(() => {
-    peer.peer.addEventListener("track", async (event) => {
-      const remoteStreamTrack = event.streams;
-      console.log("Got tracks!", remoteStreamTrack);
-      setRemoteStream(remoteStreamTrack[0]);
-    });
-
-    return () => {
-      peer.peer.removeEventListener("track", () => {
-        console.log("Track event listener removed");
-      });
+      peer.disconnect();
     };
   }, []);
 
-  useEffect(() => {
-    socket?.on("user-joined", handleUserJoined);
-    socket?.on("incoming-call", handleIncomingCall);
-    socket?.on("answer-call", handleAnswerCall);
-    socket?.on("peer-negotiation", handleNegotiationIncoming);
-    socket?.on("peer-negotiation-final", handleNegotiationFinal);
+  const initiateCall = () => {
+    navigator.mediaDevices
+      .getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        setMyStream(stream);
+        if (videoRef.current) {
+          videoRef.current.srcObject = stream;
+        }
+
+        // Automatically call the first peer in the room
+        const otherPeerId = livePeers.find((id) => id !== peerId);
+        if (otherPeerId) {
+          const call = peerRef.current?.call(otherPeerId, stream);
+          call?.on("stream", (remoteStream) => {
+            setRemoteStream(remoteStream);
+            console.log("Received remote stream", remoteStream);
+            if (remoteVideoRef.current) {
+              remoteVideoRef.current.srcObject = remoteStream;
+              remoteVideoRef.current.play(); // Ensure the video starts playing
+            }
+          });
+        }
+      })
+      .catch((err) => console.error("Failed to get local stream", err));
+  };
+
+  const endCall = () => {
+    myStream?.getTracks().forEach((track) => {
+      track.stop();
+    });
+    remoteStream?.getTracks().forEach((track) => {
+      track.stop();
+    });
+    if (videoRef.current) {
+      videoRef.current.srcObject = null;
+    }
+    if (remoteVideoRef.current) {
+      remoteVideoRef.current.srcObject = null;
+    }
 
     return () => {
-      socket?.off("user-joined", handleUserJoined);
-      socket?.off("incoming-call", handleIncomingCall);
-      socket?.off("answer-call", handleAnswerCall);
-      socket?.off("peer-negotiation", handleNegotiationIncoming);
-      socket?.off("peer-negotiation-final", handleNegotiationFinal);
+      peerRef.current?.disconnect();
     };
-  }, [
-    socket,
-    handleUserJoined,
-    handleIncomingCall,
-    handleAnswerCall,
-    handleNegotiationIncoming,
-    handleNegotiationFinal,
-  ]);
+  };
 
   return (
-    <div className=" flex flex-col gap-y-4 ">
-      <div className="bg-gray-800 rounded-md p-2 flex gap-1 flex-col  shadow-md ">
+    <div className="flex flex-col gap-y-4">
+      <div className="bg-gray-800 rounded-md p-2 flex gap-1 flex-col shadow-md">
         <div className="flex gap-4 items-center">
-          <Button onClick={handleJoinCall} size={"icon"}>
-            <DoorOpenIcon />
+          <Button
+            className="flex gap-2 bg-transparent hover:bg-gray-700 text-gray-200"
+            onClick={initiateCall}
+          >
+            <DoorOpen /> Join
+          </Button>
+          <Button
+            className="flex gap-2 bg-transparent hover:bg-gray-700 text-gray-200"
+            onClick={endCall}
+          >
+            <DoorClosed />
           </Button>
         </div>
-        <Separator className=" bg-gray-500 mt-3" />
-        {/* <div>Connection State: {connectionState}</div> */}
-        <div>
-          {remoteSocketId &&
-            (myStream ? (
-              <div className="my-2 p-2 relative ">
-                <ReactPlayer
-                  playing
-                  height={"150px"}
-                  width={"200px"}
-                  url={myStream}
-                />
-                <div className="absolute top-3 left-3 flex items-center gap-2  text-xs text-black font-semibold">
-                  <UserAvatar fallback={name[0].toUpperCase()} /> {name}
-                </div>
-              </div>
-            ) : (
-              <div className="px-4 py-2 rounded-lg my-2 bg-gray-500 ">
-                Empty here
-              </div>
-            ))}
-
-          {remoteStream && (
-            <div className="my-2 p-2 relative ">
-              <ReactPlayer
-                playing
-                height={"150px"}
-                width={"200px"}
-                url={remoteStream}
-              />
-            </div>
-          )}
+        <div
+          className={` flex ${
+            !videoRef.current?.srcObject ? "hidden" : "block"
+          }`}
+        >
+          <video
+            ref={videoRef}
+            muted
+            autoPlay
+            style={{ width: "200px", height: "150px" }}
+          />
+        </div>
+        <div
+          className={` flex ${
+            !remoteVideoRef.current?.srcObject ? "hidden" : "block"
+          }`}
+        >
+          <video
+            ref={remoteVideoRef}
+            autoPlay
+            style={{ width: "200px", height: "150px" }}
+          />
         </div>
       </div>
     </div>

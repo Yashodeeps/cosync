@@ -1,5 +1,6 @@
 import { SocketProvider } from "@/lib/SocketProvider";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-  return <SocketProvider>{children}</SocketProvider>;
+  // return <SocketProvider>{children}</SocketProvider>;
+  return <div>{children}</div>;
 }
