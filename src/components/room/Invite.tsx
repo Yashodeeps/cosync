@@ -17,9 +17,11 @@ import {
   CheckCheck,
   CopyIcon,
   Loader2,
+  LogOut,
   Menu,
   PlusIcon,
   Ship,
+  Trash,
   UserPlus,
 } from "lucide-react";
 import { useToast } from "../ui/use-toast";
@@ -28,6 +30,20 @@ import UserAvatar from "../custom/UserAvatar";
 import { useSession } from "next-auth/react";
 import axios from "axios";
 import { useDebounceCallback } from "usehooks-ts";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuPortal,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const MAX_SHOWN_USERS = 2; //max users other than yourself
 
@@ -254,12 +270,37 @@ const Invite = ({ roomId, ownerId }: InviteProps) => {
         </Dialog>
       )}
       <div className="bg-gray-800 rounded-md  flex gap-1 flex-col items-center shadow-md">
-        <Button
-          size={"icon"}
-          className=" gap-3 rounded-md px-2 py-2 bg-gray-800 hover:bg-gray-700 text-zinc-100  flex items-center shadow-md "
-        >
-          <Menu />
-        </Button>
+        <DropdownMenu>
+          <DropdownMenuTrigger>
+            <Button
+              size={"icon"}
+              className=" gap-3 rounded-md px-2 py-2 bg-gray-800 hover:bg-gray-700 text-zinc-100  flex items-center shadow-md "
+            >
+              <Menu />
+            </Button>{" "}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56 m-4">
+            <DropdownMenuLabel>Danger</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuGroup>
+              {isOwner ? (
+                <DropdownMenuItem>
+                  Delete Room
+                  <DropdownMenuShortcut>
+                    <Trash className="text-red-500" />
+                  </DropdownMenuShortcut>
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem>
+                  Leave Room
+                  <DropdownMenuShortcut>
+                    <LogOut className="text-red-500" />
+                  </DropdownMenuShortcut>
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuGroup>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>{" "}
     </div>
   );
