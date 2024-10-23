@@ -24,6 +24,7 @@ import {
 import { ThemeToggle } from "./ThemeToggle";
 import {
   Info,
+  Loader2,
   MessageSquare,
   MessageSquareCode,
   MessageSquareDashed,
@@ -32,14 +33,31 @@ import axios from "axios";
 import { IconMoodEmpty } from "@tabler/icons-react";
 import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { toast, useToast } from "../ui/use-toast";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { set } from "zod";
+
+interface RoomInvitation {
+  id: number;
+  roomId: string;
+  status: "PENDING" | "ACCEPTED" | "DECLINED";
+  room: {
+    name: string;
+    description?: string;
+  };
+  sender: {
+    name: string;
+    username: string;
+  };
+}
 
 const Navbar = () => {
   const { data: session } = useSession();
   const [user, setUser] = useState<User | null>(null);
   const router = useRouter();
   const [requestFetchingError, setRequestFetchingError] = useState("");
-  const [collaborationRequests, setCollaborationRequests] = useState([]);
+  const [invitations, setInvitations] = useState([]);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (session && session.user) {
@@ -47,23 +65,60 @@ const Navbar = () => {
     }
   }, [session]);
 
-  useEffect(() => {
-    const fetchCollabRequests = async () => {
-      try {
-        const response = await axios.get("/api/collaboration/get-request");
-        setCollaborationRequests(response.data.collaborationRequests);
-        console.log(response.data);
-      } catch (error) {
-        setRequestFetchingError(`Error fetching requests: ${error}`);
-      }
-    };
-    fetchCollabRequests();
+  const {
+    data: fetchedInvitations,
+    isLoading,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["roomInvitations"],
+    queryFn: async () => {
+      const { data } = await axios.get("/api/room/invite");
+      setInvitations(data.invitations);
+      return data.invitations;
+    },
+    enabled: !!session?.user, // Only fetch if user is logged in
+    refetchInterval: 30000, // Refetch every 30 seconds
+  });
 
-    // const intervalId = setInterval(fetchCollabRequests, 30000); // Fetch every 5 seconds
+  const mutation = useMutation({
+    mutationFn: async ({
+      invitationId,
+      status,
+    }: {
+      invitationId: number;
+      status: "ACCEPTED" | "DECLINED";
+    }) => {
+      const response = await axios.patch("/api/room/invite", {
+        invitationId,
+        status,
+      });
+      return response.data;
+    },
+    onSuccess: () => {
+      // Invalidate and refetch invitations after mutation
+      queryClient.invalidateQueries({ queryKey: ["roomInvitations"] });
+      toast({
+        title: "Success",
+        description: "Invitation response updated successfully",
+      });
+    },
+    onError: (error) => {
+      toast({
+        title: "Error",
+        description:
+          error instanceof Error ? error.message : "Something went wrong",
+        variant: "destructive",
+      });
+    },
+  });
 
-    // // Clean up interval on component unmount
-    // return () => clearInterval(intervalId);
-  }, [toast]);
+  const handleInvitationResponse = (
+    invitationId: number,
+    status: "ACCEPTED" | "DECLINED"
+  ) => {
+    mutation.mutate({ invitationId, status });
+  };
 
   const handleSignOut = async () => {
     const data = await signOut({
@@ -76,60 +131,7 @@ const Navbar = () => {
     router.push("/");
   };
 
-  const acceptCollabRequest = async (collaborationId: Number) => {
-    try {
-      const response = await axios.patch("/api/collaboration/accept-request", {
-        collaborationId,
-        action: "ACCEPTED",
-      });
-      if (response.data.success) {
-        toast({
-          title: "Request accepted",
-          description: "You have accepted the collaboration request",
-          variant: "default",
-        });
-      } else {
-        toast({
-          title: "Error accepting request",
-          description: response.data.message,
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      toast({
-        title: "Error accepting request",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const declineCollabRequest = async (collaborationId: Number) => {
-    try {
-      const response = await axios.patch("/api/collaboration/accept-request", {
-        collaborationId,
-        action: "DECLINED",
-      });
-      if (response.data.success) {
-        toast({
-          title: "Request Declined",
-          description: "You have declined the collaboration request",
-          variant: "default",
-        });
-      } else {
-        toast({
-          title: "Error declining request",
-          description: response.data.message,
-          variant: "destructive",
-        });
-      }
-    } catch (error) {
-      toast({
-        title: "Error declining request",
-        variant: "destructive",
-      });
-    }
-  };
-
+  console.log("Invitations: ", invitations);
   return (
     <nav className="p-3 md:p-4 shadow-md border-b-2 border-gray-700">
       <div className=" mx-auto flex flex-col md:flex-row justify-between items-center">
@@ -145,10 +147,9 @@ const Navbar = () => {
                       className="text-zinc-200 cursor-pointer m-1 "
                       size={30}
                     />
-                    {collaborationRequests &&
-                      collaborationRequests.length > 0 && (
-                        <span className="absolute top-0 right-0 rounded-full h-2 w-2 bg-red-500"></span>
-                      )}
+                    {invitations && invitations.length > 0 && (
+                      <span className="absolute top-0 right-0 rounded-full h-2 w-2 bg-red-500"></span>
+                    )}
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="bg-zinc-800  text-white w-96 mr-6  overflow-y-scroll">
                     {" "}
@@ -158,53 +159,79 @@ const Navbar = () => {
                           {requestFetchingError}
                         </div>
                       )}
-                      {collaborationRequests &&
-                      collaborationRequests.length > 0 ? (
-                        collaborationRequests.map((request: any) => {
+                      {invitations && invitations.length > 0 ? (
+                        invitations.map((invitation: any) => {
                           return (
                             <DropdownMenuItem
-                              key={request.id}
-                              className="focus:bg-zinc-700"
+                              key={invitation.id}
+                              className=" bg-gray-950 m-2 rounded-xl hover:bg-black "
                             >
-                              <div className=" space-y-2 border-b border-zinc-600 m-2 p-2 ">
-                                <div className="space-y-2">
-                                  <h1 className="text-lg text-zinc-300">
-                                    You have been requested to colloborate on
-                                    project:{" "}
-                                    <span className="font-semibold text-teal-600">
-                                      {request.project.title}
-                                    </span>{" "}
-                                  </h1>
-                                  <p className="text-xs flex gap-1 items-center">
-                                    <Info size={12} />
-                                    {request.status}
-                                  </p>
-                                </div>
-                                <div className="flex gap-8">
-                                  <Button
-                                    onClick={() => {
-                                      acceptCollabRequest(Number(request.id));
-                                    }}
-                                    className="bg-transparent border border-teal-500  hover:bg-teal-700"
-                                  >
-                                    Accept
-                                  </Button>
-                                  <Button
-                                    onClick={() => {
-                                      declineCollabRequest(Number(request.id));
-                                    }}
-                                    className="bg-transparent border border-red-700  hover:bg-red-700"
-                                  >
-                                    Decline
-                                  </Button>
+                              <div
+                                key={invitation.id}
+                                className="w-full border-zinc-200 rounded-lg p-4"
+                              >
+                                <div className="flex justify-between items-center">
+                                  <div>
+                                    <h3 className="font-medium">
+                                      Invitation: {invitation.room.name}
+                                    </h3>
+                                    <p className="text-sm text-zinc-500">
+                                      From: {invitation.sender.name} (@
+                                      {invitation.sender.username})
+                                    </p>
+                                  </div>
+                                  <div className="flex gap-2">
+                                    <Button
+                                      variant="outline"
+                                      size="sm"
+                                      onClick={() =>
+                                        handleInvitationResponse(
+                                          invitation.id,
+                                          "DECLINED"
+                                        )
+                                      }
+                                      disabled={mutation.isPending}
+                                    >
+                                      Decline
+                                    </Button>
+                                    <Button
+                                      size="sm"
+                                      onClick={() =>
+                                        handleInvitationResponse(
+                                          invitation.id,
+                                          "ACCEPTED"
+                                        )
+                                      }
+                                      disabled={mutation.isPending}
+                                    >
+                                      {mutation.isPending ? (
+                                        <Loader2 className="h-4 w-4 animate-spin" />
+                                      ) : (
+                                        "Accept"
+                                      )}
+                                    </Button>
+                                  </div>
                                 </div>
                               </div>
                             </DropdownMenuItem>
                           );
                         })
                       ) : (
-                        <div className="p-4 text-lg flex gap-2">
-                          <IconMoodEmpty /> No New Notifactions
+                        <div>
+                          {isError && (
+                            <div className="text-red-500 p-4">
+                              {"Error loading invitations"}
+                            </div>
+                          )}
+                          {isLoading ? (
+                            <div className="flex justify-center items-center p-4">
+                              <Loader2 className="h-6 w-6 animate-spin" />
+                            </div>
+                          ) : (
+                            <div className="p-4 text-lg flex gap-2">
+                              <IconMoodEmpty /> No New Notifactions
+                            </div>
+                          )}
                         </div>
                       )}{" "}
                     </ScrollArea>

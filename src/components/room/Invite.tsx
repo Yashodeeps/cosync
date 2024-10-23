@@ -106,7 +106,6 @@ const Invite = ({ roomId, ownerId }: InviteProps) => {
     setQuerySearch("");
   };
 
-  //todo: implement sendInvite
   const sendInvite = async (userId: Number) => {
     setIsInviteSent(false);
     try {

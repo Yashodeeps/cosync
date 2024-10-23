@@ -17,6 +17,7 @@ import { toast } from "../ui/use-toast";
 import RoomCard from "./RoomCard";
 import { set } from "zod";
 import { Skeleton } from "../ui/skeleton";
+import { RefreshCcw } from "lucide-react";
 
 const CanvasTab = () => {
   const [roomTitle, setRoomTitle] = useState("");
@@ -86,42 +87,50 @@ const CanvasTab = () => {
 
   return (
     <div>
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button className="bg-teal-800 hover:bg-teal-700 text-white">
-            New Room +
-          </Button>
-        </DialogTrigger>
-        <DialogContent className="sm:max-w-md border-gray-300 bg-zinc-800 text-gray-300">
-          <DialogHeader>
-            <DialogTitle>Create New Room</DialogTitle>
-            <DialogDescription>Rooms are private by default </DialogDescription>
-          </DialogHeader>
-          <div className="flex items-center space-x-2">
-            <div className="grid flex-1 gap-2">
-              <Label>
-                Room Title <span className="text-red-500">*</span>
-              </Label>
-              <Input
-                type="text"
-                placeholder="project title"
-                className="bg-zinc-800 focus:ring-none focus:outline-none"
-                onChange={(e) => setRoomTitle(e.target.value)}
-              />
+      <div className="flex gap-4">
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button className="bg-teal-800 hover:bg-teal-700 text-white">
+              New Room +
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md border-gray-300 bg-zinc-800 text-gray-300">
+            <DialogHeader>
+              <DialogTitle>Create New Room</DialogTitle>
+              <DialogDescription>
+                Rooms are private by default{" "}
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex items-center space-x-2">
+              <div className="grid flex-1 gap-2">
+                <Label>
+                  Room Title <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  type="text"
+                  placeholder="project title"
+                  className="bg-zinc-800 focus:ring-none focus:outline-none"
+                  onChange={(e) => setRoomTitle(e.target.value)}
+                />
+              </div>
             </div>
-          </div>
-          <DialogFooter className="sm:justify-start">
-            <DialogClose asChild>
-              <Button
-                onClick={createRoom}
-                className="bg-teal-800 hover:bg-teal-700 "
-              >
-                Create
-              </Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+            <DialogFooter className="sm:justify-start">
+              <DialogClose asChild>
+                <Button
+                  onClick={createRoom}
+                  className="bg-teal-800 hover:bg-teal-700 "
+                >
+                  Create
+                </Button>
+              </DialogClose>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+        <Button onClick={fetchAllRooms} variant={"secondary"} size={"icon"}>
+          {" "}
+          <RefreshCcw className={`${isFetching && "animate-spin"}`} />
+        </Button>
+      </div>
 
       <div className="flex gap-4">
         {isFetching === true ? (
