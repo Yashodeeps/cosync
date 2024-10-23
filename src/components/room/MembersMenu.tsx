@@ -7,22 +7,17 @@ import {
   ChevronDown,
   ChevronRight,
   ChevronUp,
+  Crown,
   User,
   Users,
 } from "lucide-react";
-import { useOthers } from "@liveblocks/react";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "@/components/ui/hover-card";
-import { Button } from "../ui/button";
 
 interface MembersMenuProps {
   name: string;
   username: string;
   members: any;
   others: any;
+  ownerId?: number;
 }
 
 const MembersMenu = ({
@@ -30,18 +25,22 @@ const MembersMenu = ({
   username,
   members = [],
   others = [],
+  ownerId,
 }: MembersMenuProps) => {
   const [showAllMembers, setShowAllMembers] = useState(false);
 
   const session = useSession();
+  const isOwner = session.data?.user?.id === ownerId;
 
   const liveMembers = members.filter((member: any) =>
     others.some((other: any) => other.info.name === member.username)
   );
-  const offlineMembers = members.filter(
-    (member: any) =>
-      !liveMembers.some((liveMember: any) => liveMember.id === member.id)
-  );
+  const offlineMembers = members
+    .filter(
+      (member: any) =>
+        !liveMembers.some((liveMember: any) => liveMember.id === member.id)
+    )
+    .filter((member: any) => member.username !== session.data?.user.username);
 
   return (
     <div
@@ -55,9 +54,19 @@ const MembersMenu = ({
           {" "}
           <Users size={24} /> Members
         </div>
+
+        <div className="text-gray-300 flex items-center gap-3 px-4 font-bold">
+          <div className="h-2 w-2 bg-green-500 rounded-full flex justify-center items-center" />
+          <div>
+            {" "}
+            {session.data?.user.name}{" "}
+            <span className="font-normal text-xs">(you)</span>
+          </div>
+          {Number(session.data?.user.id) === ownerId && <Crown size={16} />}
+        </div>
         {/* </HoverCardTrigger>
           <HoverCardContent className=" m-4 bg-gray-800" side={"left"}> */}
-        <div className={`p-4  `}>
+        <div className={`px-4  `}>
           <div className="mt-2">
             {liveMembers.map((member: any) => (
               <div
@@ -65,7 +74,7 @@ const MembersMenu = ({
                 className="flex items-center gap-3 text-gray-200"
               >
                 <div className="h-2 w-2 bg-green-500 rounded-full flex justify-center items-center" />
-                {member.name}
+                {member.name} {member.id === ownerId && <Crown size={16} />}
               </div>
             ))}
           </div>
@@ -78,7 +87,7 @@ const MembersMenu = ({
               className="text-gray-400 flex items-center gap-3"
             >
               <div className="h-2 w-2  bg-red-800 rounded-full flex justify-center items-center" />
-              {member.name}
+              {member.name} {member.id === ownerId && <Crown size={16} />}
             </div>
           ))}
         </div>

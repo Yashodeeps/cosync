@@ -22,8 +22,12 @@ model User {
   projectsMemberships Project[] @relation("ProjectTeamMembers")
   collaborations Collaboration[] @relation("UserCollaborations")
   workspaceMemberships Workspace[] @relation("WorkspaceMembers")
+
   roomMemberships Rooms[] @relation("RoomMembers")
   roomsOwnership Rooms[] 
+  roomInvitations     RoomInvitation[] @relation("InvitedUser")
+  sentRoomInvitations RoomInvitation[] @relation("InvitingSender")
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
@@ -33,9 +37,30 @@ model Rooms {
   name     String
   members   User[] @relation("RoomMembers")
   owner   User      @relation(fields: [ownerId], references: [id])
+  invitations RoomInvitation[]
   ownerId Int
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt  
+    @@index([ownerId]) 
+  
+}
+
+model RoomInvitation {
+  id          String             @id @default(uuid())
+  room        Rooms              @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  roomId      String
+  sender      User               @relation("InvitingSender", fields: [senderId], references: [id])
+  senderId    Int
+  invitedUser User               @relation("InvitedUser", fields: [invitedUserId], references: [id])
+  invitedUserId Int
+  status      InvitationStatus   @default(PENDING)
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+  
+  @@unique([roomId, invitedUserId])
+  @@index([roomId])
+  @@index([senderId])
+  @@index([invitedUserId])
 }
 
 
@@ -105,4 +130,11 @@ enum TaskStatus {
   STACK
   WORKING
   FINISHED
+}
+
+enum InvitationStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+  EXPIRED
 }

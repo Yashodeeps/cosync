@@ -357,7 +357,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
   return (
     <div className="h-screen w-full touch-none flex justify-center items-center relative">
       <RoomHeader roomId={roomId} roomInfo={roomInfo} />
-      <Invite roomId={roomId} />
+      <Invite roomId={roomId} ownerId={roomInfo?.ownerId} />
       <ToolBar
         canvasState={canvasState}
         setCanvasState={setCanvasState}
@@ -371,6 +371,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
         name={session.data?.user.name ?? "Member"}
         username={session.data?.user.username ?? "cosynclabs"}
         members={roomInfo?.members}
+        ownerId={roomInfo?.ownerId}
         others={others}
       />
 
