@@ -20,6 +20,7 @@ import {
   LogOut,
   Menu,
   PlusIcon,
+  Router,
   Ship,
   Trash,
   UserPlus,
@@ -44,6 +45,8 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useRouter } from "next/navigation";
+import { set } from "zod";
 
 const MAX_SHOWN_USERS = 2; //max users other than yourself
 
@@ -62,8 +65,11 @@ const Invite = ({ roomId, ownerId }: InviteProps) => {
   const [loading, setLoading] = useState(false);
   const [matchedUsers, setMatchedUsers] = useState([] as any[]);
   const [isInviteSent, setIsInviteSent] = useState<Boolean | null>(null);
-
+  const router = useRouter();
   const isOwner = Number(session.data?.user?.id) === ownerId;
+  const [loadingRoomActions, setLoadingRoomActions] = useState<Boolean | null>(
+    null
+  );
 
   const handleCopy = async () => {
     try {
@@ -148,6 +154,70 @@ const Invite = ({ roomId, ownerId }: InviteProps) => {
       setIsInviteSent(true);
     }
   };
+
+  const handleExitRoom = async () => {
+    setLoadingRoomActions(true);
+    try {
+      const response = await axios.post(`/api/room/exit?roomId=${roomId}`);
+      if (!response.data.success) {
+        toast({
+          title: "Error leaving room",
+          variant: "destructive",
+        });
+      }
+      router.push("/");
+
+      toast({
+        title: "Left room",
+        variant: "default",
+      });
+    } catch (error) {
+      toast({
+        title: "Error leaving room",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingRoomActions(false);
+    }
+  };
+
+  const handleDeleteRoom = async () => {
+    setLoadingRoomActions(true);
+    try {
+      const response = await axios.post(`/api/room/delete?roomId=${roomId}`);
+      if (!response.data.success) {
+        toast({
+          title: "Error deleting room",
+          variant: "destructive",
+        });
+      }
+      router.push("/");
+
+      toast({
+        title: "Room deleted successfully",
+        variant: "default",
+      });
+    } catch (error) {
+      toast({
+        title: "failed to delete room",
+        variant: "destructive",
+      });
+    } finally {
+      setLoadingRoomActions(false);
+    }
+  };
+
+  if (loadingRoomActions === true)
+    return (
+      <div className="fixed inset-0 z-50">
+        <div className="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+
+        <div className="relative flex flex-col text-lg font-semibold text-gray-300 gap-5 justify-center items-center w-full h-full">
+          <Loader2 className="animate-spin w-8 h-8" />
+          Performing Room Action...
+        </div>
+      </div>
+    );
 
   return (
     <div className="absolute top-4 right-4 items-center z-50 flex  gap-4">
@@ -283,14 +353,20 @@ const Invite = ({ roomId, ownerId }: InviteProps) => {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               {isOwner ? (
-                <DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={handleDeleteRoom}
+                >
                   Delete Room
                   <DropdownMenuShortcut>
                     <Trash className="text-red-500" />
                   </DropdownMenuShortcut>
                 </DropdownMenuItem>
               ) : (
-                <DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={handleExitRoom}
+                >
                   Leave Room
                   <DropdownMenuShortcut>
                     <LogOut className="text-red-500" />

@@ -41,23 +41,6 @@ const SideMenu = () => {
         >
           board
         </li>
-
-        <li className="hover:bg-black rounded-lg cursor-pointer   px-3 py-2">
-          <Accordion type="single" collapsible className="w-full ">
-            <AccordionItem value="item-1">
-              <AccordionTrigger className="hover:no-underline ">
-                WorkSpaces
-              </AccordionTrigger>
-              <AccordionContent>
-                Yes. It adheres to the WAI-ARIA design pattern.
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-        </li>
-
-        <li className="hover:bg-black rounded-lg cursor-pointer  px-3 py-2">
-          Collab
-        </li>
       </ul>
     </div>
   );

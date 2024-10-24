@@ -17,7 +17,7 @@ import { toast } from "../ui/use-toast";
 import RoomCard from "./RoomCard";
 import { set } from "zod";
 import { Skeleton } from "../ui/skeleton";
-import { RefreshCcw } from "lucide-react";
+import { CircleOff, RefreshCcw } from "lucide-react";
 
 const CanvasTab = () => {
   const [roomTitle, setRoomTitle] = useState("");
@@ -157,9 +157,10 @@ const CanvasTab = () => {
             </div>
           ))
         ) : (
-          <h1 className="p-4 font-semibold text-lg text-gray-500">
-            No rooms found create new Room
-          </h1>
+          <div className="p-4 font-semibold text-lg text-gray-500 mx-[35%] mt-[10%] flex flex-col items-center justify-center ">
+            <CircleOff size={64} />
+            No rooms found create new Room/ Join
+          </div>
         )}
       </div>
     </div>
