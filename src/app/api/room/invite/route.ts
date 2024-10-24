@@ -264,6 +264,14 @@ export async function PATCH(request: NextRequest) {
           },
         });
       }
+
+      if (status === "DECLINED") {
+        await tx.roomInvitation.delete({
+          where: {
+            id: invitationId,
+          },
+        });
+      }
     });
 
     return NextResponse.json(

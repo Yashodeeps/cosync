@@ -56,6 +56,8 @@ const Navbar = () => {
   const router = useRouter();
   const [requestFetchingError, setRequestFetchingError] = useState("");
   const [invitations, setInvitations] = useState([]);
+  const [isOpen, setIsOpen] = useState(false);
+
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -118,6 +120,8 @@ const Navbar = () => {
     status: "ACCEPTED" | "DECLINED"
   ) => {
     mutation.mutate({ invitationId, status });
+
+    setIsOpen(false);
   };
 
   const handleSignOut = async () => {
@@ -140,7 +144,7 @@ const Navbar = () => {
           {session ? (
             <div className="flex gap-8 justify-center items-center ">
               <div className="relative">
-                <DropdownMenu>
+                <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
                   <DropdownMenuTrigger className="border-none focus:outline-none focus:border-none">
                     <MessageSquareCode
                       className="text-zinc-200 cursor-pointer m-1 "
@@ -150,7 +154,14 @@ const Navbar = () => {
                       <span className="absolute top-0 right-0 rounded-full h-2 w-2 bg-red-500"></span>
                     )}
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="bg-zinc-800  text-white w-96 mr-6  overflow-y-scroll">
+                  <DropdownMenuContent
+                    onInteractOutside={(e) => {
+                      if (mutation.isPending) {
+                        e.preventDefault();
+                      }
+                    }}
+                    className="bg-zinc-800  text-white w-96 mr-6  overflow-y-scroll"
+                  >
                     {" "}
                     <ScrollArea className="h-96 ">
                       {requestFetchingError && (
@@ -162,8 +173,9 @@ const Navbar = () => {
                         invitations.map((invitation: any) => {
                           return (
                             <DropdownMenuItem
+                              onSelect={(e) => e.preventDefault()}
                               key={invitation.id}
-                              className=" bg-gray-950 m-2 rounded-xl hover:bg-black "
+                              className="  m-2 rounded-xl bg-gray-950 hover:bg-black hover:shadow-lg "
                             >
                               <div
                                 key={invitation.id}

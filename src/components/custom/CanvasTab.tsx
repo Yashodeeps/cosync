@@ -17,13 +17,13 @@ import { toast } from "../ui/use-toast";
 import RoomCard from "./RoomCard";
 import { set } from "zod";
 import { Skeleton } from "../ui/skeleton";
-import { CircleOff, RefreshCcw } from "lucide-react";
+import { CircleOff, Loader2, RefreshCcw, RotateCw } from "lucide-react";
 
 const CanvasTab = () => {
   const [roomTitle, setRoomTitle] = useState("");
   const [rooms, setRooms] = useState<Room[]>([]);
   const [isFetching, setIsFetching] = useState(false);
-
+  const [creatingRoom, setCreatingRoom] = useState<Boolean | null>(null);
   interface Room {
     id: number;
     name: string;
@@ -32,6 +32,7 @@ const CanvasTab = () => {
   }
 
   const createRoom = async () => {
+    setCreatingRoom(true);
     try {
       const response = await axios.post("/api/room", {
         title: roomTitle,
@@ -55,6 +56,8 @@ const CanvasTab = () => {
         description: "An error occurred while creating room",
         variant: "destructive",
       });
+    } finally {
+      setCreatingRoom(false);
     }
   };
 
@@ -84,6 +87,18 @@ const CanvasTab = () => {
       setIsFetching(false);
     }
   };
+
+  if (creatingRoom === true)
+    return (
+      <div className="fixed inset-0 z-50">
+        <div className="absolute inset-0 bg-black/10 backdrop-blur-sm"></div>
+
+        <div className="relative flex flex-col text-lg font-semibold text-gray-300 gap-5 justify-center items-center w-full h-full">
+          <Loader2 className="animate-spin w-8 h-8" />
+          Constructing Canvas...
+        </div>
+      </div>
+    );
 
   return (
     <div>
@@ -126,9 +141,11 @@ const CanvasTab = () => {
             </DialogFooter>
           </DialogContent>
         </Dialog>
-        <Button onClick={fetchAllRooms} variant={"secondary"} size={"icon"}>
+        <Button onClick={fetchAllRooms} variant={"ghost"} size={"icon"}>
           {" "}
-          <RefreshCcw className={`${isFetching && "animate-spin"}`} />
+          <RotateCw
+            className={`${isFetching && "animate-spin text-green-500"}`}
+          />
         </Button>
       </div>
 
@@ -151,9 +168,9 @@ const CanvasTab = () => {
             </div>
           </div>
         ) : rooms && rooms.length > 0 ? (
-          rooms.map((room) => (
+          rooms.toReversed().map((room: any) => (
             <div key={room.id} className="flex">
-              <RoomCard title={room.name} id={room.id} />
+              <RoomCard title={room.name} id={room.id} ownerId={room.ownerId} />
             </div>
           ))
         ) : (

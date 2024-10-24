@@ -17,10 +17,7 @@ import {
   CheckCheck,
   CopyIcon,
   Loader2,
-  LogOut,
   Menu,
-  PlusIcon,
-  Router,
   Ship,
   Trash,
   UserPlus,
@@ -47,6 +44,17 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useRouter } from "next/navigation";
 import { set } from "zod";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const MAX_SHOWN_USERS = 2; //max users other than yourself
 
@@ -64,7 +72,16 @@ const Invite = ({ roomId, ownerId }: InviteProps) => {
   const debounced = useDebounceCallback(setQuerySearch, 300);
   const [loading, setLoading] = useState(false);
   const [matchedUsers, setMatchedUsers] = useState([] as any[]);
-  const [isInviteSent, setIsInviteSent] = useState<Boolean | null>(null);
+  const [inviteStates, setInviteStates] = useState<
+    Record<
+      number,
+      {
+        loading: boolean;
+        sent: boolean;
+      }
+    >
+  >({});
+
   const router = useRouter();
   const isOwner = Number(session.data?.user?.id) === ownerId;
   const [loadingRoomActions, setLoadingRoomActions] = useState<Boolean | null>(
@@ -129,7 +146,10 @@ const Invite = ({ roomId, ownerId }: InviteProps) => {
   };
 
   const sendInvite = async (userId: Number) => {
-    setIsInviteSent(false);
+    setInviteStates((prev) => ({
+      ...prev,
+      [userId.toString()]: { loading: true, sent: false },
+    }));
     try {
       const response = await axios.post(`/api/room/invite?roomId=${roomId}`, [
         userId,
@@ -151,7 +171,10 @@ const Invite = ({ roomId, ownerId }: InviteProps) => {
         variant: "destructive",
       });
     } finally {
-      setIsInviteSent(true);
+      setInviteStates((prev) => ({
+        ...prev,
+        [userId.toString()]: { loading: false, sent: true },
+      }));
     }
   };
 
@@ -280,12 +303,16 @@ const Invite = ({ roomId, ownerId }: InviteProps) => {
                               onClick={() => sendInvite(user.id)}
                               variant={"ghost"}
                               className="flex gap-3"
+                              disabled={
+                                inviteStates[user.id]?.loading ||
+                                inviteStates[user.id]?.sent
+                              }
                             >
-                              {isInviteSent === false && (
+                              {inviteStates[user.id]?.loading && (
                                 <Loader2 className="animate-spin" />
                               )}
 
-                              {isInviteSent ? (
+                              {inviteStates[user.id]?.sent ? (
                                 <span>
                                   <Check className="text-green-500" />
                                 </span>
@@ -351,27 +378,23 @@ const Invite = ({ roomId, ownerId }: InviteProps) => {
           <DropdownMenuContent className="w-56 m-4">
             <DropdownMenuLabel>Danger</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
+            <DropdownMenuGroup className="w-full">
               {isOwner ? (
-                <DropdownMenuItem
-                  className="cursor-pointer"
-                  onClick={handleDeleteRoom}
-                >
-                  Delete Room
-                  <DropdownMenuShortcut>
-                    <Trash className="text-red-500" />
-                  </DropdownMenuShortcut>
-                </DropdownMenuItem>
+                <DangerDialog
+                  buttonAction={"Delete Room"}
+                  handleFunction={handleDeleteRoom}
+                  actionText={
+                    "This room along with its contents will be deleted permanently."
+                  }
+                />
               ) : (
-                <DropdownMenuItem
-                  className="cursor-pointer"
-                  onClick={handleExitRoom}
-                >
-                  Leave Room
-                  <DropdownMenuShortcut>
-                    <LogOut className="text-red-500" />
-                  </DropdownMenuShortcut>
-                </DropdownMenuItem>
+                <DangerDialog
+                  buttonAction={"Exit Room"}
+                  handleFunction={handleExitRoom}
+                  actionText={
+                    "You will be removed from the room and its contents."
+                  }
+                />
               )}
             </DropdownMenuGroup>
           </DropdownMenuContent>
@@ -412,6 +435,33 @@ const UserListSkeleton = ({ count = 3 }) => {
         </div>
       ))}
     </div>
+  );
+};
+
+const DangerDialog = ({ actionText, buttonAction, handleFunction }: any) => {
+  return (
+    <AlertDialog>
+      <AlertDialogTrigger>
+        <Button variant="ghost" className="w-56 justify-between px-2 ">
+          {buttonAction}
+          <Trash className="text-red-500  mx-2" />
+        </Button>
+      </AlertDialogTrigger>
+      <AlertDialogContent>
+        <AlertDialogHeader>
+          <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+          <AlertDialogDescription>
+            This action cannot be undone. {actionText}
+          </AlertDialogDescription>
+        </AlertDialogHeader>
+        <AlertDialogFooter>
+          <AlertDialogCancel>Cancel</AlertDialogCancel>
+          <AlertDialogAction onClick={handleFunction}>
+            Continue
+          </AlertDialogAction>
+        </AlertDialogFooter>
+      </AlertDialogContent>
+    </AlertDialog>
   );
 };
 
