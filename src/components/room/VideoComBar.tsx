@@ -34,12 +34,10 @@ const VideoComBar = ({ name }: any) => {
         .then((stream) => {
           setMyStream(stream);
           call.answer(stream); // Answer with local stream
-          console.log("Answered call with local stream", myStream);
 
           // Update when the remote stream is received
           call.on("stream", (remoteStream) => {
             setRemoteStream(remoteStream);
-            console.log("Received remote stream", remoteStream);
             if (remoteVideoRef.current) {
               remoteVideoRef.current.srcObject = remoteStream;
               remoteVideoRef.current.play(); // Ensure the video starts playing
@@ -68,7 +66,6 @@ const VideoComBar = ({ name }: any) => {
           const call = peerRef.current?.call(otherPeerId, stream);
           call?.on("stream", (remoteStream) => {
             setRemoteStream(remoteStream);
-            console.log("Received remote stream", remoteStream);
             if (remoteVideoRef.current) {
               remoteVideoRef.current.srcObject = remoteStream;
               remoteVideoRef.current.play(); // Ensure the video starts playing

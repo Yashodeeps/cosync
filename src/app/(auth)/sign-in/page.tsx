@@ -38,15 +38,12 @@ const Page = () => {
   });
 
   const onSubmit = async (data: z.infer<typeof SigninSchema>) => {
-    console.log("Form submitted with:", data);
-
     try {
       const result = await signIn("Credentials", {
         redirect: false,
         identifier: data.identifier,
         password: data.password,
       });
-      console.log("SignIn result:", result);
 
       if (result?.error) {
         toast({

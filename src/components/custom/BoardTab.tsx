@@ -40,9 +40,7 @@ const BoardTab = () => {
   const storeProjects: Project[] = useAppSelector(
     (state: RootState) => state.projects
   );
-  console.log("storeProjects", storeProjects);
 
-  console.log("session", session);
   interface Project {
     id: number;
     title: string;
@@ -75,8 +73,6 @@ const BoardTab = () => {
 
     fetchProjects();
   }, [toast, dispatch]);
-
-  console.log("projects", projects);
 
   const hanldeProjectCreation = async () => {
     if (!title) {

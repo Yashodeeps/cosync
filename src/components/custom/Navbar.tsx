@@ -126,12 +126,11 @@ const Navbar = () => {
       callbackUrl: "/",
     });
     if (!data) {
-      console.log("Sign out falied");
+      console.error("Sign out falied");
     }
     router.push("/");
   };
 
-  console.log("Invitations: ", invitations);
   return (
     <nav className="p-3 md:p-4 shadow-md border-b-2 border-gray-700">
       <div className=" mx-auto flex flex-col md:flex-row justify-between items-center">

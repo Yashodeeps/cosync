@@ -71,19 +71,14 @@ export async function POST(req: NextRequest) {
           isVerified: false,
         },
       });
-
-      console.log("newUser", newUser);
     }
 
     //send verification email
-    console.log("verifyCode", verifyCode);
     const emailResponse = await sendVerificationEmail(
       email,
       username,
       verifyCode
     );
-
-    console.log("emailResponse", emailResponse);
 
     if (!emailResponse.success) {
       return NextResponse.json(

@@ -303,7 +303,6 @@ const Canvas = ({ roomId }: CanvasProps) => {
         ) {
           insertLayer(canvasState.layerType, point);
         }
-        console.log("insertLayer", { canvasState });
       } else {
         setCanvasState({ mode: CanvasMode.None });
       }

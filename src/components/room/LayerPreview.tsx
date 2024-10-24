@@ -79,7 +79,6 @@ const LayerPreview = memo(
     //   );
     // }
 
-    console.log("Unknown layer type", layer);
     return null;
   }
 );

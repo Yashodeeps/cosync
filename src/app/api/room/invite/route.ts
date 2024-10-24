@@ -38,7 +38,6 @@ export async function POST(request: NextRequest) {
   const userId = Number(user.id);
 
   try {
-    console.log("roomId: ", roomId);
     const room = await prisma.rooms.findFirst({
       where: {
         id: roomId.toString(),

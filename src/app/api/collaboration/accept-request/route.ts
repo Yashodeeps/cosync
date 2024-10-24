@@ -23,7 +23,6 @@ export async function PATCH(request: NextRequest) {
   }
 
   const { collaborationId, action } = await request.json();
-  console.log(collaborationId, action);
 
   if (!collaborationId || !["ACCEPTED", "DECLINED"].includes(action)) {
     return NextResponse.json(

@@ -125,7 +125,6 @@ const Invite = ({ roomId, ownerId }: InviteProps) => {
   const sendInvite = async (userId: Number) => {
     setIsInviteSent(false);
     try {
-      console.log("sending invite to ", userId, roomId);
       const response = await axios.post(`/api/room/invite?roomId=${roomId}`, [
         userId,
       ]);

@@ -38,8 +38,6 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    console.log("reached");
-
     const data: any = {
       title,
       userId,
@@ -61,8 +59,6 @@ export async function POST(request: NextRequest) {
       };
     }
 
-    console.log("data", data);
-
     const newProject = await prisma.project.create({
       data: {
         title,
@@ -79,7 +75,6 @@ export async function POST(request: NextRequest) {
         collaborations: true,
       },
     });
-    console.log("new project", newProject);
 
     if (!newProject) {
       return NextResponse.json(

@@ -26,7 +26,6 @@ export async function POST(request: NextRequest) {
   const userId = Number(user.id);
 
   try {
-    console.log("collaboratorUserIds", collaboratorUserIds);
     const project = await prisma.project.findFirst({
       where: {
         id: projectId,

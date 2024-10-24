@@ -25,7 +25,6 @@ export async function POST(request: Request) {
   }
 
   const { room } = await request.json();
-  console.log("room", room);
 
   const roomcanvas = await prisma.rooms.findFirst({
     where: {
@@ -36,10 +35,7 @@ export async function POST(request: Request) {
         },
       },
     },
-
   });
-
-  console.log("roomcanvas", roomcanvas);
 
   if (!roomcanvas) {
     return new Response(
