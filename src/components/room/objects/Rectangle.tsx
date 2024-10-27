@@ -16,9 +16,12 @@ const Rectangle = ({
   selectionColor,
 }: RectangleProps) => {
   const { x, y, width, height, color } = layer;
+
+  const ROUNDED = 8;
+
   return (
     <rect
-      className="drop-shadow-md"
+      className="drop-shadow-md "
       onPointerDown={(e) => onPointerDown(e, id)}
       style={{
         transform: `translate(${x}px, ${y}px)`,
@@ -28,10 +31,12 @@ const Rectangle = ({
       width={width}
       height={height}
       strokeWidth={1}
-      fill={color ? colorToCss(color) : "transparent"}
-      // fill={"transparent"}
-      stroke={selectionColor || "#CCC"}
+      // fill={color ? colorToCss(color) : "transparent"}
+      fill={"transparent"}
+      stroke={color ? colorToCss(color) : "#CCC"}
       // stroke={colorToCss(color) || "#FFF"}
+      rx={ROUNDED}
+      ry={ROUNDED}
     />
   );
 };
