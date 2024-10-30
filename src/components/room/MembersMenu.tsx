@@ -94,12 +94,7 @@ const MembersMenu = ({
         {/* </HoverCardContent>
         </HoverCard> */}
       </div>
-      <div className="bg-gray-800 rounded-md p-2 flex gap-1 flex-col items-center shadow-md">
-        <VideoComBar
-          name={session.data?.user.name ?? "Member"}
-          username={session.data?.user.username ?? "cosynclabs"}
-        />
-      </div>{" "}
+       
     </div>
   );
 };

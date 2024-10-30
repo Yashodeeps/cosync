@@ -373,6 +373,10 @@ const Canvas = ({ roomId }: CanvasProps) => {
         ownerId={roomInfo?.ownerId}
         others={others}
       />
+      <VideoComBar
+        name={session.data?.user.name ?? "Member"}
+        username={session.data?.user.username ?? "cosynclabs"}
+      />
 
       {/*  added an extra div to balance styles */}
       <div className="absolute inset-0 overflow-hidden">
