@@ -138,7 +138,9 @@ const Navbar = () => {
   return (
     <nav className="p-3 md:p-4 shadow-md border-b-2 border-gray-700">
       <div className=" mx-auto flex flex-row justify-between items-center">
-        <div className="text-2xl font-bold text-gray-500">CoSyncLabs</div>
+        <div>
+          <img src="/logo.png" alt="logo" className="h-9" />
+        </div>
         <div className="px-4">
           {/* <ThemeToggle /> */}
           {session ? (
