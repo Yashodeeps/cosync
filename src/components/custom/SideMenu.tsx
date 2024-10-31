@@ -31,7 +31,8 @@ const SideMenu = () => {
         </li>
         <li
           onClick={() => {
-            router.push("/board");
+            // router.push("/board");
+            alert("Board feature is taken down for now");
           }}
           className={
             pathname.endsWith("/board")
