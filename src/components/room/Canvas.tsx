@@ -96,31 +96,6 @@ const Canvas = ({ roomId }: CanvasProps) => {
     fetchRoomInfo();
   }, []);
 
-  // webrtc logic
-  // useEffect(() => {
-  //   if (socket) {
-  //     socket.emit("join-room", {
-  //       room: params.roomId,
-  //       username: session.data?.user.username,
-  //     });
-  //   }
-  // }, [session, socket]);
-
-  // const handleRoomJoin = useCallback((data: SocketProps) => {
-  //   const { room, username } = data;
-  // }, []);
-
-  // useEffect(() => {
-  //   if (socket) {
-  //     socket.on("join-room", handleRoomJoin);
-  //     return () => {
-  //       socket.off("join-room", handleRoomJoin);
-  //     };
-  //   }
-  // }, [socket, handleRoomJoin]);
-
-  // webrtc logic
-
   const insertLayer = useMutation(
     (
       { storage, setMyPresence },
@@ -402,6 +377,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
                   id={layerId}
                   onLayerPointerDown={onLayerPointerDown}
                   selectionColor={layerIdsToColorSelection[layerId]}
+                  camera={camera}
                 />
               ))}
             <SelectionBox

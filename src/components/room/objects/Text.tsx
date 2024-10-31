@@ -1,108 +1,54 @@
-import React, { useState, useRef, useEffect } from "react";
-import { Kalam } from "next/font/google";
+import React, { useState } from "react";
 import { TextLayer } from "@/types/canvas";
 import ContentEditable, { ContentEditableEvent } from "react-contenteditable";
 import { cn, colorToCss } from "@/lib/utils";
 import { useMutation } from "@liveblocks/react";
 
-const font = Kalam({
-  subsets: ["latin"],
-  weight: ["400"],
-});
-
-const MIN_WIDTH = 200;
-const MIN_HEIGHT = 40;
-const PADDING = 16;
-
-interface TextProps {
+const Text = ({
+  id,
+  layer,
+  onPointerDown,
+  selectionColor,
+}: {
   id: string;
   layer: TextLayer;
   onPointerDown: (e: React.PointerEvent, id: string) => void;
   selectionColor?: string;
-}
-
-const Text = ({ id, layer, onPointerDown, selectionColor }: TextProps) => {
+}) => {
   const { x, y, width, height, color, value } = layer;
-  const [isEditing, setIsEditing] = useState(false);
-  const [localValue, setLocalValue] = useState(value || "");
-  const textRef = useRef<HTMLDivElement>(null);
+  const [isFocused, setIsFocused] = useState(false);
+
+  const handleFocusWrapper = (e: any) => {
+    setIsFocused(true);
+  };
+
+  const handleBlurWrapper = (e: any) => {
+    setIsFocused(false);
+  };
+
+  const calculateFontSize = (width: number, height: number) => {
+    const maxFontSize = 72; // Reduced from 96
+    const scaleFactor = 0.25; // Reduced from 0.5 to 0.25 (25% instead of 50%)
+    const minFontSize = 12; // Added minimum font size
+
+    const fontSizeBasedOnHeight = height * scaleFactor;
+    const fontSizeBasedOnWidth = width * scaleFactor;
+
+    // Get the calculated size but ensure it's not smaller than minFontSize
+    return Math.max(
+      minFontSize,
+      Math.min(fontSizeBasedOnWidth, fontSizeBasedOnHeight, maxFontSize)
+    );
+  };
 
   const updateValue = useMutation(({ storage }, newValue: string) => {
     const liveLayers = storage.get("layers");
     liveLayers.get(id)?.set("value", newValue);
   }, []);
 
-  const updateSize = useMutation(
-    ({ storage }, newWidth: number, newHeight: number) => {
-      const liveLayers = storage.get("layers");
-      const layer = liveLayers.get(id);
-      if (layer) {
-        layer.set("width", Math.max(newWidth, MIN_WIDTH));
-        layer.set("height", Math.max(newHeight, MIN_HEIGHT));
-      }
-    },
-    []
-  );
-
-  useEffect(() => {
-    // Update size based on content
-    if (textRef.current && isEditing) {
-      const { width: contentWidth, height: contentHeight } =
-        textRef.current.getBoundingClientRect();
-      if (
-        Math.abs(contentWidth - width) > 5 ||
-        Math.abs(contentHeight - height) > 5
-      ) {
-        updateSize(contentWidth + PADDING * 2, contentHeight + PADDING * 2);
-      }
-    }
-  }, [localValue, isEditing]);
-
   const handleContentChange = (e: ContentEditableEvent) => {
     const newValue = e.target.value;
-    setLocalValue(newValue);
     updateValue(newValue);
-  };
-
-  const handleDoubleClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    setIsEditing(true);
-  };
-
-  const handleBlur = () => {
-    setIsEditing(false);
-    if (!localValue.trim()) {
-      setLocalValue(""); // Clear empty text
-      updateValue("");
-    }
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Escape" || (e.key === "Enter" && !e.shiftKey)) {
-      e.preventDefault();
-      e.stopPropagation();
-      textRef.current?.blur();
-    }
-  };
-
-  const handlePointerDown = (e: React.PointerEvent) => {
-    if (!isEditing) {
-      onPointerDown(e, id);
-    } else {
-      e.stopPropagation();
-    }
-  };
-
-  const calculateFontSize = (width: number) => {
-    // Dynamic font size based on width
-    const baseFontSize = 16;
-    const maxFontSize = 32;
-    const scaleFactor = 0.25;
-    const calculatedSize = Math.min(
-      maxFontSize,
-      baseFontSize + width * scaleFactor
-    );
-    return Math.max(baseFontSize, calculatedSize);
   };
 
   return (
@@ -111,51 +57,29 @@ const Text = ({ id, layer, onPointerDown, selectionColor }: TextProps) => {
       y={y}
       width={width}
       height={height}
-      onPointerDown={handlePointerDown}
-      onDoubleClick={handleDoubleClick}
+      onPointerDown={(e) => onPointerDown(e, id)}
       style={{
-        outline:
-          selectionColor && !isEditing ? `1px solid ${selectionColor}` : "none",
+        outline: selectionColor ? `1px solid ${selectionColor}` : "none",
       }}
     >
-      <div
-        className={cn(
-          "h-full w-full relative",
-          isEditing ? "ring-2 ring-blue-500" : ""
-        )}
-      >
+      <div className="w-full h-full">
         <ContentEditable
-          innerRef={textRef}
-          html={localValue}
+          html={isFocused || value ? value ?? "" : "text"}
           onChange={handleContentChange}
-          onBlur={handleBlur}
-          onKeyDown={handleKeyDown}
+          onFocus={handleFocusWrapper}
+          onBlur={handleBlurWrapper}
           className={cn(
-            "min-w-[100px] min-h-[40px] w-full h-full outline-none px-4 py-2",
-            "break-words whitespace-pre-wrap",
-            font.className,
-            isEditing ? "cursor-text" : "cursor-default"
+            "h-full w-full flex items-center px-4 py-2 drop-shadow-md outline-none",
+            !isFocused && !value && "text-gray-400"
           )}
           style={{
-            fontSize: `${calculateFontSize(width)}px`,
+            fontSize: calculateFontSize(width, height),
             color: color ? colorToCss(color) : "#000",
-            WebkitUserSelect: isEditing ? "text" : "none",
-            userSelect: isEditing ? "text" : "none",
+            lineHeight: "1.2",
+            wordBreak: "break-word",
+            overflowWrap: "break-word",
           }}
         />
-        {!localValue && !isEditing && (
-          <div
-            className={cn(
-              "absolute inset-0 flex items-center justify-center pointer-events-none text-gray-400",
-              font.className
-            )}
-            style={{
-              fontSize: `${calculateFontSize(width)}px`,
-            }}
-          >
-            Click to edit
-          </div>
-        )}
       </div>
     </foreignObject>
   );

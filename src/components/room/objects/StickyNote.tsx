@@ -24,6 +24,7 @@ interface StickyNotesProps {
   layer: NoteLayer;
   onPointerDown: (e: React.PointerEvent, id: string) => void;
   selectionColor?: string;
+  position: { x: number; y: number }; //for making it fixed {future reference}
 }
 
 const StickyNote = ({
@@ -31,9 +32,22 @@ const StickyNote = ({
   layer,
   onPointerDown,
   selectionColor,
+  position,
 }: StickyNotesProps) => {
   const { x, y, width, height, color, value } = layer;
   const [isEditing, setIsEditing] = useState(false);
+
+  const [isFocused, setIsFocused] = useState(false);
+
+  const handleFocusWrapper = (e: any) => {
+    setIsFocused(true);
+    handleFocus();
+  };
+
+  const handleBlurWrapper = (e: any) => {
+    setIsFocused(false);
+    handleBlur();
+  };
 
   const updateValue = useMutation(({ storage }, newValue: string) => {
     const liveLayers = storage.get("layers");
@@ -61,7 +75,7 @@ const StickyNote = ({
 
   return (
     <foreignObject
-      x={x}
+      x={x} //for making it fixed [position.x]
       y={y}
       width={width}
       height={height}
@@ -73,7 +87,7 @@ const StickyNote = ({
         transform: `translate(0, ${isEditing ? "2px" : "0"})`,
       }}
       className={cn(
-        "overflow-hidden rounded-lg",
+        "overflow-hidden rounded-lg ",
         isEditing ? "shadow-sm" : "shadow-md"
       )}
     >
@@ -81,10 +95,7 @@ const StickyNote = ({
         className="w-full h-full relative group"
         style={{
           backgroundColor: color ? colorToCss(color) : "#fff",
-          backgroundImage: `
-          linear-gradient(${color ? colorToCss(color) : "#fff"} 0.1em, 
-          rgba(0,0,0,0.05) 0.1em)
-        `,
+
           backgroundSize: "100% 1.2em",
           boxShadow: isEditing
             ? "inset 0 1px 3px rgba(0,0,0,0.1)"
@@ -93,19 +104,23 @@ const StickyNote = ({
         }}
       >
         <ContentEditable
-          html={value || "cosync"}
+          html={isFocused || value ? value ?? "" : "Your note here..."}
           onChange={handleContentChange}
-          onFocus={handleFocus}
-          onBlur={handleBlur}
+          onFocus={handleFocusWrapper}
+          onBlur={handleBlurWrapper}
           className={cn(
             "h-full w-full flex items-center justify-center text-center outline-none px-4 py-2",
             font.className,
             "transition-all duration-200",
-            isEditing ? "opacity-90" : "opacity-100"
+            isEditing ? "opacity-90" : "opacity-100",
+            !isFocused && !value && "text-gray-500"
           )}
           style={{
             fontSize: calculateFontSize(width, height),
-            color: color ? getContrastingTextColor(color) : "#000",
+            color:
+              color && (isFocused || value)
+                ? getContrastingTextColor(color)
+                : "#000",
             textShadow: isEditing ? "none" : "0 1px 1px rgba(0,0,0,0.05)",
           }}
         />

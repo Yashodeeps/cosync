@@ -10,14 +10,12 @@ interface LayerPreviewProps {
   id: string;
   onLayerPointerDown: (e: React.PointerEvent, layerId: string) => void;
   selectionColor?: string;
+  camera: { x: number; y: number };
 }
 
 const LayerPreview = memo(
-  ({ id, onLayerPointerDown, selectionColor }: LayerPreviewProps) => {
+  ({ id, onLayerPointerDown, selectionColor, camera }: LayerPreviewProps) => {
     const layer = useStorage((root) => root.layers.get(id));
-
-    const isRectangleLayer = (layer: Layer): layer is RectangleLayer =>
-      layer.type === LayerType.Rectangle;
 
     if (!layer) {
       return null;
@@ -31,6 +29,10 @@ const LayerPreview = memo(
             layer={layer}
             onPointerDown={onLayerPointerDown}
             selectionColor={selectionColor}
+            position={{
+              x: layer.x - camera.x,
+              y: layer.y - camera.y,
+            }}
           />
         );
       case LayerType.Text:
@@ -65,19 +67,6 @@ const LayerPreview = memo(
         console.error("Unknown layer type", layer);
         return null;
     }
-    // const isRectangleLayer = (layer: Layer): layer is RectangleLayer =>
-    //   layer.type === LayerType.Rectangle;
-
-    // if (isRectangleLayer(layer)) {
-    //   return (
-    //     <Rectangle
-    //       id={id}
-    //       layer={layer}
-    //       onPointerDown={onLayerPointerDown}
-    //       selectionColor={selectionColor}
-    //     />
-    //   );
-    // }
 
     return null;
   }
