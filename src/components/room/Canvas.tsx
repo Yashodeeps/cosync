@@ -56,7 +56,6 @@ export interface SocketProps {
 }
 
 const Canvas = ({ roomId }: CanvasProps) => {
-  // const socket = useSocket();
   const session = useSession();
   const params = useParams();
   const others = useOthers();
