@@ -198,7 +198,7 @@ const HomeCanvas = () => {
   };
 
   return (
-    <div className="flex bg-gray-950 border rounded-2xl p-3 h-96  z-40 relative mx-16">
+    <div className="flex bg-gray-950 border rounded-2xl p-3 h-96  z-20 relative mx-16">
       <div className="absolute top-3 left-3 text-xs text-gray-500">
         You can drag elements :D
       </div>

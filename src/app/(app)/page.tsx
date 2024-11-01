@@ -18,7 +18,7 @@ const Home = () => {
     <div
       className={`flex flex-col md:flex-row h-full gap-12 items-center justify-center `}
     >
-      <div className="mx-8 w-full md:w-1/2 flex flex-col justify-center items-center  max-md:mt-52">
+      <div className="mx-8 w-full md:w-1/2 flex flex-col justify-center items-center  max-md:mt-52 z-30">
         <div className="">
           <h1 className="text-5xl md:text-6xl font-semibold text-white ">
             Not Just another <br />
@@ -40,7 +40,7 @@ const Home = () => {
             onClick={() => {
               router.push("/sign-up");
             }}
-            className={`my-6 w-fit px-4 z-50 ${orbitron.className}`}
+            className={`my-6 w-fit px-4  ${orbitron.className}`}
           >
             Onboard Now
           </Button>

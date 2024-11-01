@@ -136,7 +136,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="p-3 md:p-4 shadow-md border-b-2 border-gray-700 absolute top-0 left-0 right-0 ">
+    <nav className="p-3 md:p-4 shadow-md border-b-2 border-gray-700 absolute top-0 left-0 right-0 z-30">
       <div className=" mx-auto flex flex-row justify-between items-center">
         <div>
           <img src="/logo.png" alt="logo" className="h-9" />

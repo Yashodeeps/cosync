@@ -11,6 +11,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { ShootingStars } from "@/components/ui/shooting-stars";
+import { StarsBackground } from "@/components/ui/stars-background";
 import { useToast } from "@/components/ui/use-toast";
 import { ApiResponse } from "@/types/ApiResponse";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -54,8 +56,8 @@ const VerifyAccount = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-zinc-900 ">
-      <div className="w-full max-w-md p-8 space-y-8 rounded-lg shadow-md border border-gray-500">
+    <div className="flex justify-center items-center min-h-screen  relative">
+      <div className="w-full max-w-md p-8 space-y-8 rounded-lg shadow-md border border-gray-500 z-30 bg-gray-950">
         <div className="text-center">
           <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
             Verify your account
@@ -84,6 +86,8 @@ const VerifyAccount = () => {
           </form>
         </Form>
       </div>
+      <ShootingStars />
+      <StarsBackground />
     </div>
   );
 };

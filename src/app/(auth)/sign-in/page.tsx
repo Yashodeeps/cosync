@@ -17,13 +17,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Loader2 } from "lucide-react";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 import { SigninSchema } from "@/Schema/SigninSchema";
 import { signIn } from "next-auth/react";
 import { Separator } from "@/components/ui/separator";
+import { ShootingStars } from "@/components/ui/shooting-stars";
+import { StarsBackground } from "@/components/ui/stars-background";
 
 const Page = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const { toast } = useToast();
   const router = useRouter();
@@ -65,10 +68,12 @@ const Page = () => {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen flex-col">
-      <div className="shadow-xl p-6 rounded-xl  space-y-4 border border-gray-500 w-full md:w-1/3">
+    <div className="flex justify-center items-center min-h-screen flex-col relative">
+      <div className="shadow-xl p-6 rounded-xl  space-y-4 border border-gray-500 w-full md:w-1/3 z-30">
         <div className="flex flex-col items-center justify-center">
-          <h1 className="text-4xl font-bold text-blue-900">Welcome back!!</h1>
+          <h1 className="text-4xl font-bold text-gray-300 shadow-lg">
+            Welcome back!!
+          </h1>
           <Separator className="my-6 bg-gray-800" />
         </div>
         <Form {...form}>
@@ -96,14 +101,30 @@ const Page = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Password</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="password"
-                      placeholder="password"
-                      {...field}
-                      autoComplete="current-password"
-                    />
-                  </FormControl>
+
+                  <div className="relative">
+                    <FormControl>
+                      <Input
+                        type={showPassword ? "text" : "password"}
+                        autoComplete="current-password"
+                        placeholder="password"
+                        {...field}
+                      />
+                    </FormControl>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-0 top-0 h-full px-3 hover:bg-transparent"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4 text-gray-400" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-gray-400" />
+                      )}
+                    </Button>
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -115,13 +136,15 @@ const Page = () => {
           <Separator className="my-6 bg-gray-800" />
 
           <div className="text-center mt-4">
-            New to CoSync?
-            <Link href="/sign-up" className="text-blue-600 hover:text-blue-800">
+            New to CoSync?{" "}
+            <Link href="/sign-up" className="text-blue-500 hover:text-blue-600">
               OnBoard here
             </Link>
           </div>
         </Form>
       </div>
+      <ShootingStars />
+      <StarsBackground />
     </div>
   );
 };
