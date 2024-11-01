@@ -9,7 +9,7 @@ export default function RootLayout({
   return (
     <div className="h-screen">
       <Navbar />
-      {children}
+      <div className="mt-20">{children}</div>
     </div>
   );
 }
