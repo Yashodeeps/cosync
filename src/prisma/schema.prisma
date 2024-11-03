@@ -22,7 +22,7 @@ model User {
   projectsMemberships Project[] @relation("ProjectTeamMembers")
   collaborations Collaboration[] @relation("UserCollaborations")
   workspaceMemberships Workspace[] @relation("WorkspaceMembers")
-
+  profile    String?
   roomMemberships Rooms[] @relation("RoomMembers")
   roomsOwnership Rooms[] 
   roomInvitations     RoomInvitation[] @relation("InvitedUser")

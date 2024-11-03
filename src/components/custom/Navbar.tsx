@@ -262,9 +262,7 @@ const Navbar = () => {
                   <DropdownMenuGroup>
                     <DropdownMenuItem
                       onClick={() => {
-                        alert(
-                          "The development of this feature is not yet finished"
-                        );
+                        router.push("/projects/profile");
                       }}
                     >
                       Profile
