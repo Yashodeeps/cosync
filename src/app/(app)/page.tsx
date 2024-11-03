@@ -16,7 +16,7 @@ const Home = () => {
   const router = useRouter();
   return (
     <div
-      className={`flex flex-col md:flex-row h-full gap-12 items-center justify-center `}
+      className={`flex flex-col md:flex-row h-full  gap-12 items-center justify-center mt-40`}
     >
       <div className="mx-8 w-full md:w-1/2 flex flex-col justify-center items-center  max-md:mt-52 z-30">
         <div className="">

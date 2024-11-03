@@ -137,19 +137,18 @@ const Navbar = () => {
 
   return (
     <nav className="p-3 md:p-4 shadow-md border-b-2 border-gray-700 absolute top-0 left-0 right-0 z-30">
-      <div className=" mx-auto flex flex-row justify-between items-center">
+      <div className="mx-auto flex flex-row justify-between items-center">
         <div>
           <img src="/logo.png" alt="logo" className="h-9" />
         </div>
         <div className="px-4">
-          {/* <ThemeToggle /> */}
           {session ? (
-            <div className="flex gap-8 justify-center items-center ">
+            <div className="flex gap-8 justify-center items-center">
               <div className="relative">
                 <DropdownMenu open={isOpen} onOpenChange={setIsOpen}>
                   <DropdownMenuTrigger className="border-none focus:outline-none focus:border-none">
                     <MessageSquareCode
-                      className="text-zinc-200 cursor-pointer m-1 "
+                      className="text-zinc-200 cursor-pointer m-1"
                       size={30}
                     />
                     {invitations && invitations.length > 0 && (
@@ -162,28 +161,21 @@ const Navbar = () => {
                         e.preventDefault();
                       }
                     }}
-                    className="bg-zinc-800  text-white w-96 mr-6  overflow-y-scroll"
+                    className="bg-zinc-800 text-white w-96 mr-6"
+                    align="end"
                   >
-                    {" "}
-                    <ScrollArea className="h-96 ">
+                    <div className="max-h-96 overflow-y-auto">
                       {requestFetchingError && (
-                        <div className="p-4 text-red-500 font-semibold ">
+                        <div className="p-4 text-red-500 font-semibold">
                           {requestFetchingError}
                         </div>
                       )}
                       {invitations && invitations.length > 0 ? (
-                        invitations.map((invitation: any) => {
-                          return (
-                            <DropdownMenuItem
-                              onSelect={(e) => e.preventDefault()}
-                              key={invitation.id}
-                              className="  m-2 rounded-xl bg-gray-950 hover:bg-black hover:shadow-lg "
-                            >
-                              <div
-                                key={invitation.id}
-                                className="w-full border-zinc-200 rounded-lg p-4"
-                              >
-                                <div className="flex justify-between items-center">
+                        invitations.map((invitation: any) => (
+                          <div key={invitation.id} className="p-2">
+                            <div className="m-2 rounded-xl bg-gray-950 hover:bg-black hover:shadow-lg">
+                              <div className="w-full border-zinc-200 rounded-lg p-4">
+                                <div className="flex flex-col gap-3">
                                   <div>
                                     <h3 className="font-medium">
                                       Invitation: {invitation.room.name}
@@ -193,7 +185,7 @@ const Navbar = () => {
                                       {invitation.sender.username})
                                     </p>
                                   </div>
-                                  <div className="flex gap-2">
+                                  <div className="flex gap-2 justify-end">
                                     <Button
                                       variant="outline"
                                       size="sm"
@@ -226,28 +218,28 @@ const Navbar = () => {
                                   </div>
                                 </div>
                               </div>
-                            </DropdownMenuItem>
-                          );
-                        })
+                            </div>
+                          </div>
+                        ))
                       ) : (
-                        <div>
+                        <div className="p-4">
                           {isError && (
-                            <div className="text-red-500 p-4">
-                              {"Error loading invitations"}
+                            <div className="text-red-500">
+                              Error loading invitations
                             </div>
                           )}
                           {isLoading ? (
-                            <div className="flex justify-center items-center p-4">
+                            <div className="flex justify-center items-center">
                               <Loader2 className="h-6 w-6 animate-spin" />
                             </div>
                           ) : (
-                            <div className="p-4 text-lg flex gap-2">
-                              <IconMoodEmpty /> No New Notifactions
+                            <div className="text-lg flex gap-2 items-center justify-center">
+                              <IconMoodEmpty /> No New Notifications
                             </div>
                           )}
                         </div>
-                      )}{" "}
-                    </ScrollArea>
+                      )}
+                    </div>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
@@ -261,21 +253,25 @@ const Navbar = () => {
                     </AvatarFallback>
                   </Avatar>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className="w-56 bg-zinc-800 text-white">
+                <DropdownMenuContent
+                  className="w-56 bg-black text-white"
+                  align="end"
+                >
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuGroup>
-                    <DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => {
+                        alert(
+                          "The development of this feature is not yet finished"
+                        );
+                      }}
+                    >
                       Profile
-                      <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-                    </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      Settings
-                      <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
+                      <DropdownMenuShortcut>P</DropdownMenuShortcut>
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
-
                   <DropdownMenuItem onClick={handleSignOut}>
                     Log out
                   </DropdownMenuItem>

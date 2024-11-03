@@ -169,7 +169,7 @@ const CanvasTab = () => {
           </div>
         ) : rooms && rooms.length > 0 ? (
           rooms.toReversed().map((room: any) => (
-            <div key={room.id} className="flex">
+            <div key={room.id} className="flex gap-4 flex-wrap">
               <RoomCard title={room.name} id={room.id} ownerId={room.ownerId} />
             </div>
           ))

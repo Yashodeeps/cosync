@@ -7,9 +7,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="h-screen">
+    <div className="h-screen    ">
       <Navbar />
-      <div className="mt-20">{children}</div>
+      <div className="">{children}</div>
     </div>
   );
 }

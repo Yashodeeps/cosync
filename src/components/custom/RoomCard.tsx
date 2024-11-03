@@ -11,6 +11,7 @@ import {
 import { Button } from "../ui/button";
 import { useSession } from "next-auth/react";
 import { Separator } from "@radix-ui/react-dropdown-menu";
+import HomeCanvas from "./HomeCanvas";
 
 interface RoomCardProps {
   title: string;
@@ -24,45 +25,48 @@ const RoomCard = ({ title, id, ownerId }: RoomCardProps) => {
 
   return (
     <Card
-      className="bg-black hover:shadow-lg  text-gray-200 p-2 m-2 relative my-4  "
+      className="group relative w-72 my-6 mr-3 bg-gradient-to-br from-gray-900 to-gray-800 border border-gray-700 hover:border-teal-600 transition-all duration-300 ease-in-out transform hover:-translate-y-1"
       key={id}
     >
-      {ownerId &&
-        (ownerId.toString() === session.data?.user.id ? (
-          <div>
-            <p className="text-xs  p-1 rounded-sm bg-teal-800 absolute right-1 top-1 ">
+      {ownerId && (
+        <div className="absolute right-2 top-2 z-10">
+          {ownerId.toString() === session.data?.user.id ? (
+            <div className="px-2 py-1 text-xs font-medium bg-gradient-to-r from-teal-600 to-teal-700 text-white rounded-full shadow-lg">
               Owner
-            </p>
-          </div>
-        ) : (
-          <div>
-            <p className="text-xs  p-1 rounded-sm bg-gray-900 absolute right-1 top-1 ">
+            </div>
+          ) : (
+            <div className="px-2 py-1 text-xs font-medium bg-gradient-to-r from-gray-700 to-gray-800 text-gray-200 rounded-full shadow-lg">
               Member
-            </p>
-          </div>
-        ))}
-      <CardHeader className="w-full">
-        <CardTitle>{title}</CardTitle>
-      </CardHeader>
-      <CardContent className="grid gap-4 relative border-t ">
-        <div className=" flex items-center space-x-4 rounded-md  px-4">
-          {/* <p className="text-sm font-medium leading-none">Progress</p>
-            <p className="text-sm text-muted-foreground">
-              Construction in process...
-            </p> */}
-          <img className="w-44" src={"/cosynct.png"} />
+            </div>
+          )}
         </div>
-      </CardContent>
-      <CardFooter>
+      )}
+
+      <CardHeader className="pb-2">
+        <CardTitle className="text-xl font-bold text-gray-100 tracking-wide">
+          {title}
+        </CardTitle>
+      </CardHeader>
+
+      <div className="relative overflow-hidden rounded-md mx-4 mb-4">
+        <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
+        <img
+          className="w-full h-40 object-cover rounded-md transform group-hover:scale-105 transition-transform duration-300"
+          src="/cs.png"
+          alt={title}
+        />
+      </div>
+
+      <div className="px-4 pb-4">
         <Button
-          className="w-full bg-amber-800 hover:bg-amber-700"
+          className="w-full bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-gray-100 font-medium py-2 rounded-md shadow-lg transform transition-all duration-300 hover:shadow-xl"
           onClick={() => {
             router.push(`/room/${id}`);
           }}
         >
-          Enter
+          Enter Canvas
         </Button>
-      </CardFooter>
+      </div>
     </Card>
   );
 };
