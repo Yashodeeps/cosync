@@ -87,7 +87,7 @@ const SelectionTools = memo(
 
     return (
       <div
-        className="absolute p-3 rounded-xl bg-gray-800 shadow-sm border flex select-none "
+        className="absolute p-3 h-fit rounded-xl bg-gray-800 shadow-sm border flex select-none "
         style={{
           transform: `translate(
                 calc(${x}px - 50%),
@@ -96,23 +96,26 @@ const SelectionTools = memo(
         }}
       >
         <ColorPicker onChange={setFill} />
+        <Separator orientation="vertical" className="h-24 bg-black mx-2 " />
         <div className="flex flex-col gap-1">
           <Button
-            className="bg-transparent hover:bg-gray-300 text-white hover:text-black"
+            className="bg-transparent hover:bg-gray-900 hover:text-gray-200 text-white "
             size={"icon"}
             onClick={moveToFront}
           >
             <BringToFront />
           </Button>
           <Button
-            className="bg-transparent hover:bg-gray-300 text-white hover:text-black"
+            className="bg-transparent hover:bg-gray-900 hover:text-gray-200 text-white "
             size={"icon"}
             onClick={moveToBack}
           >
             <SendToBack />
           </Button>
         </div>
-        <div className="flex items-center pl-2 ml-2 border-l border-gray-200">
+        <Separator orientation="vertical" className="h-24 bg-black mx-2" />
+
+        <div className="flex items-center  ">
           <Button
             variant={"destructive"}
             className="bg-transparent"
