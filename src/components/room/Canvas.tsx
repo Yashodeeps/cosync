@@ -41,7 +41,6 @@ import SelectionBox from "./SelectionBox";
 import SelectionTools from "./SelectionTools";
 import VideoComBar from "./VideoComBar";
 import { useSession } from "next-auth/react";
-// import { useSocket } from "@/lib/SocketProvider";
 import { useParams } from "next/navigation";
 import MembersMenu from "./MembersMenu";
 import axios from "axios";
@@ -102,6 +101,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
     fetchRoomInfo();
   }, []);
 
+  //todo:create different inserts functions for text box
   const insertLayer = useMutation(
     (
       { storage, setMyPresence },
@@ -109,7 +109,9 @@ const Canvas = ({ roomId }: CanvasProps) => {
         | LayerType.Ellipse
         | LayerType.Rectangle
         | LayerType.Text
-        | LayerType.Note,
+        | LayerType.Note
+        | LayerType.Arrow
+        | LayerType.Line,
 
       position: Point
     ) => {
@@ -364,7 +366,9 @@ const Canvas = ({ roomId }: CanvasProps) => {
           canvasState.layerType === LayerType.Text ||
           canvasState.layerType === LayerType.Note ||
           canvasState.layerType === LayerType.Rectangle ||
-          canvasState.layerType === LayerType.Ellipse
+          canvasState.layerType === LayerType.Ellipse ||
+          canvasState.layerType === LayerType.Arrow ||
+          canvasState.layerType === LayerType.Line
         ) {
           insertLayer(canvasState.layerType, point);
         }

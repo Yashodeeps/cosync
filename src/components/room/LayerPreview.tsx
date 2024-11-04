@@ -8,6 +8,8 @@ import StickyNote from "./objects/StickyNote";
 import { on } from "events";
 import Path from "./objects/Path";
 import { colorToCss } from "@/lib/utils";
+import Arrow from "./objects/Arrow";
+import Line from "./objects/Line";
 
 interface LayerPreviewProps {
   id: string;
@@ -35,6 +37,26 @@ const LayerPreview = memo(
             y={layer.y}
             fill={layer.color ? colorToCss(layer.color) : "#FFFFFF"}
             stroke={selectionColor}
+          />
+        );
+
+      case LayerType.Arrow:
+        return (
+          <Arrow
+            id={id}
+            layer={layer}
+            onPointerDown={onLayerPointerDown}
+            selectionColor={selectionColor}
+          />
+        );
+
+      case LayerType.Line:
+        return (
+          <Line
+            id={id}
+            layer={layer}
+            onPointerDown={onLayerPointerDown}
+            selectionColor={selectionColor}
           />
         );
 
@@ -79,6 +101,7 @@ const LayerPreview = memo(
             selectionColor={selectionColor}
           />
         );
+
       default:
         console.error("Unknown layer type", layer);
         return null;

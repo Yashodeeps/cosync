@@ -16,6 +16,8 @@ export enum LayerType {
   Rectangle,
   Ellipse,
   Path,
+  Arrow,
+  Line,
 }
 
 export type RectangleLayer = {
@@ -69,6 +71,32 @@ export type NoteLayer = {
   value?: string;
 };
 
+export type ArrowLayer = {
+  type: LayerType.Arrow;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  color: Color;
+  // points: [Point, Point];
+  startPoint: Point;
+  endPoint: Point;
+  value?: string;
+};
+
+export type LineLayer = {
+  type: LayerType.Line;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  color: Color;
+  // points: [Point, Point];
+  startPoint: Point;
+  endPoint: Point;
+  value?: string;
+};
+
 export type Point = {
   x: number;
   y: number;
@@ -111,7 +139,9 @@ export type CanvasState =
         | LayerType.Rectangle
         | LayerType.Path
         | LayerType.Text
-        | LayerType.Note;
+        | LayerType.Note
+        | LayerType.Arrow
+        | LayerType.Line;
     }
   | {
       mode: CanvasMode.Resizing;
@@ -138,4 +168,6 @@ export type Layer =
   | EllipseLayer
   | PathLayer
   | TextLayer
-  | NoteLayer;
+  | NoteLayer
+  | ArrowLayer
+  | LineLayer;
