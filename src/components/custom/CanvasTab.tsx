@@ -102,7 +102,7 @@ const CanvasTab = () => {
 
   return (
     <div>
-      <div className="flex gap-4">
+      <div className="flex gap-4 ">
         <Dialog>
           <DialogTrigger asChild>
             <Button className="bg-teal-800 hover:bg-teal-700 text-white">
