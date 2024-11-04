@@ -38,7 +38,7 @@ export type EllipseLayer = {
   value?: string;
 };
 
-export type PatheLayer = {
+export type PathLayer = {
   type: LayerType.Path;
   x: number;
   y: number;
@@ -136,6 +136,6 @@ export enum CanvasMode {
 export type Layer =
   | RectangleLayer
   | EllipseLayer
-  | PatheLayer
+  | PathLayer
   | TextLayer
   | NoteLayer;

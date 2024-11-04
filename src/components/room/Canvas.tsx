@@ -27,8 +27,10 @@ import Invite from "./Invite";
 import CursorsPresense from "./CursorsPresense";
 import { set } from "zod";
 import {
+  colorToCss,
   connectionIdToColor,
   findIntersectingLayersWithRectangle,
+  penPointToPathLayer,
   pointerEventToCanvasPoint,
   resizeBounds,
 } from "@/lib/utils";
@@ -44,6 +46,9 @@ import { useParams } from "next/navigation";
 import MembersMenu from "./MembersMenu";
 import axios from "axios";
 import { useToast } from "../ui/use-toast";
+import Path from "./objects/Path";
+import { useDisableScrollBounce } from "@/hooks/useDisableScrollBounce";
+import useDeleteLayers from "@/hooks/useDeleteLayers";
 
 const MAX_LAYERS = 111;
 interface CanvasProps {
@@ -64,7 +69,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
   const [canvasState, setCanvasState] = useState<CanvasState>({
     mode: CanvasMode.None,
   });
-
+  const pencilDraft = useSelf((me) => me.presence.pencilDraft);
   const layerIds = useStorage((root) => root.layerIds);
 
   const [camera, setCamera] = useState<Camera>({ x: 0, y: 0 });
@@ -74,6 +79,8 @@ const Canvas = ({ roomId }: CanvasProps) => {
     b: 255,
   });
 
+  useDisableScrollBounce();
+  const deleteLayers = useDeleteLayers();
   const history = useHistory();
   const canUndo = useCanUndo();
   const canRedo = useCanRedo();
@@ -183,6 +190,74 @@ const Canvas = ({ roomId }: CanvasProps) => {
     }
   }, []);
 
+  const insertPath = useMutation(
+    ({ self, setMyPresence, storage }) => {
+      const liveLayers = storage.get("layers");
+      const { pencilDraft } = self.presence;
+      if (
+        pencilDraft == null ||
+        pencilDraft.length < 2 ||
+        liveLayers.size >= MAX_LAYERS
+      ) {
+        setMyPresence({ pencilDraft: null });
+        return;
+      }
+
+      const id = nanoid();
+      liveLayers.set(
+        id,
+        new LiveObject(penPointToPathLayer(pencilDraft, lastUsedColor))
+      );
+      const liveLayerIds = storage.get("layerIds");
+      liveLayerIds.push(id);
+
+      setMyPresence({ pencilDraft: null });
+      setCanvasState({ mode: CanvasMode.Pensil });
+    },
+    [lastUsedColor]
+  );
+
+  const startDrawing = useMutation(
+    ({ setMyPresence }, point: Point, pressure: number) => {
+      setCanvasState({ mode: CanvasMode.Pensil });
+      setMyPresence({
+        pencilDraft: [[point.x, point.y, pressure]],
+        penColor: lastUsedColor,
+      });
+    },
+    [lastUsedColor, setCanvasState]
+  );
+
+  const continueDrawing = useMutation(
+    ({ self, setMyPresence }, point: Point, e: React.PointerEvent) => {
+      const { pencilDraft } = self.presence;
+      console.log({
+        mode: canvasState.mode,
+        buttons: e.buttons,
+        hasPencilDraft: !!pencilDraft,
+        pencilDraftLength: pencilDraft?.length,
+      });
+      if (
+        canvasState.mode !== CanvasMode.Pensil ||
+        e.buttons !== 1 ||
+        pencilDraft == null
+      ) {
+        return;
+      }
+
+      setMyPresence({
+        cursor: point,
+        pencilDraft:
+          pencilDraft.length === 1 &&
+          pencilDraft[0][0] === point.x &&
+          pencilDraft[0][1] === point.y
+            ? pencilDraft
+            : [...pencilDraft, [point.x, point.y, e.pressure]],
+      });
+    },
+    [canvasState.mode]
+  );
+
   const resizeSelectedLayer = useMutation(
     ({ storage, self }, point: Point) => {
       if (canvasState.mode !== CanvasMode.Resizing) return;
@@ -234,11 +309,21 @@ const Canvas = ({ roomId }: CanvasProps) => {
         translateSelectedLayers(current);
       } else if (canvasState.mode === CanvasMode.Resizing) {
         resizeSelectedLayer(current);
+      } else if (canvasState.mode === CanvasMode.Pensil) {
+        continueDrawing(current, e);
       }
 
       setMyPresence({ cursor: current });
     },
-    [canvasState, resizeSelectedLayer, camera, translateSelectedLayers]
+    [
+      canvasState,
+      resizeSelectedLayer,
+      camera,
+      translateSelectedLayers,
+      continueDrawing,
+      startMuliSelection,
+      updateSelectionNet,
+    ]
   );
 
   const onPointerLeave = useMutation(({ setMyPresence }) => {
@@ -248,11 +333,14 @@ const Canvas = ({ roomId }: CanvasProps) => {
   const onPointerDown = useCallback(
     (e: React.PointerEvent) => {
       const point = pointerEventToCanvasPoint(e, camera);
+      if (canvasState.mode === CanvasMode.Pensil) {
+        startDrawing(point, e.pressure);
+        return;
+      }
       if (canvasState.mode === CanvasMode.Inserting) {
         return;
       }
 
-      //todo: add case for drawing
       setCanvasState({ origin: point, mode: CanvasMode.Pressing });
     },
     [camera, canvasState.mode, setCanvasState]
@@ -268,6 +356,9 @@ const Canvas = ({ roomId }: CanvasProps) => {
       ) {
         unSelectLayers();
         setCanvasState({ mode: CanvasMode.None });
+      } else if (canvasState.mode === CanvasMode.Pensil) {
+        console.log("inserting path");
+        insertPath();
       } else if (canvasState.mode === CanvasMode.Inserting) {
         if (
           canvasState.layerType === LayerType.Text ||
@@ -283,7 +374,15 @@ const Canvas = ({ roomId }: CanvasProps) => {
 
       history.resume();
     },
-    [camera, canvasState, history, insertLayer, unSelectLayers]
+    [
+      setCanvasState,
+      camera,
+      canvasState,
+      history,
+      insertLayer,
+      unSelectLayers,
+      insertPath,
+    ]
   );
 
   const onLayerPointerDown = useMutation(
@@ -326,6 +425,41 @@ const Canvas = ({ roomId }: CanvasProps) => {
 
     return layerIdsToColorSelection;
   }, [selections]);
+
+  useEffect(() => {
+    function onKeyDown(e: KeyboardEvent) {
+      switch (e.key) {
+        //this case breaks the text box backspace
+        // case "Backspace":
+        //   deleteLayers();
+        //   break;
+
+        case "z":
+          if (e.ctrlKey || e.metaKey) {
+            if (e.shiftKey) {
+              history.redo();
+            } else {
+              history.undo();
+            }
+            break;
+          }
+        case "y":
+          if (e.ctrlKey || e.metaKey) {
+            history.redo();
+          }
+          break;
+
+        case "Delete":
+          deleteLayers();
+          break;
+      }
+    }
+    document.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [deleteLayers, history]);
 
   return (
     <div className="h-screen w-full touch-none flex justify-center items-center relative">
@@ -396,6 +530,14 @@ const Canvas = ({ roomId }: CanvasProps) => {
               )}
 
             <CursorsPresense />
+            {pencilDraft != null && pencilDraft.length > 0 && (
+              <Path
+                points={pencilDraft}
+                fill={colorToCss(lastUsedColor)}
+                x={0}
+                y={0}
+              />
+            )}
           </g>
         </svg>
       </div>

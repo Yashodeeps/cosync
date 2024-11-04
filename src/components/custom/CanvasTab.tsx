@@ -149,7 +149,7 @@ const CanvasTab = () => {
         </Button>
       </div>
 
-      <div className="flex gap-4">
+      <div className="flex gap-4 flex-wrap">
         {isFetching === true ? (
           <div className="flex">
             <div className="flex flex-col space-y-3 m-4 p-4 border border-gray-600 rounded-md shadow-lg">
