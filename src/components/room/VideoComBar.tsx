@@ -15,6 +15,7 @@ import {
 import "@livekit/components-styles";
 import { Track, Room } from "livekit-client";
 import { set } from "zod";
+import { Video } from "lucide-react";
 
 const VideoComBar = ({ name }: any) => {
   const { roomId } = useParams();
@@ -45,9 +46,9 @@ const VideoComBar = ({ name }: any) => {
           {!isConnected ? (
             <Button
               onClick={handleRoomjoin}
-              className="bg-teal-600 hover:bg-teal-700 text-white font-medium px-6 py-2 rounded-full transition-colors"
+              className="bg-gray-800 flex gap-5 hover:bg-gray-900 text-white font-medium px-6 py-2 rounded-lg transition-colors"
             >
-              Join Conference
+            <Video />  Join 
             </Button>
           ) : (
             <div className="w-full">

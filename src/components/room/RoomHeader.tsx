@@ -8,6 +8,10 @@
 import React from "react";
 import { useRouter } from "next/navigation";
 import { Separator } from "../ui/separator";
+import { Syne_Mono, Syne } from "next/font/google";
+
+//use Syne for normal texts.
+const font = Syne_Mono({ weight: "400", subsets: ["latin"] });
 interface RoomHeaderProps {
   roomId: string;
   roomInfo: any;
@@ -17,20 +21,20 @@ const RoomHeader = ({ roomId, roomInfo }: RoomHeaderProps) => {
   const router = useRouter();
 
   return (
-    <div className="absolute z-50 top-2 left-2 bg-gray-800  gap-3 rounded-md px-2 py-2 text-zinc-100 flex items-center shadow-md ">
-      <div className="w-full hover:bg-gray-700 p-1.5 rounded-sm ">
+    <div className="absolute z-50 top-2 left-2 bg-gray-800  gap-3 rounded-md px-2 py-1  text-zinc-100 flex items-center shadow-md ">
+      <div className={`w-full  p-1 rounded-sm text-xl ${font.className}`}>
         <div
-          className="font-semibold cursor-pointer text-lg"
+          className=" cursor-pointer "
           onClick={() => {
             router.push("/projects");
           }}
         >
-          <img src="/logo.png" className=" h-8 inline" />
+          <img src="/fav.png" className=" w-8 rounded-lg inline" /> cosync
         </div>
       </div>
-      <Separator orientation="vertical" />
+      <Separator orientation="vertical" className="bg-black h-10 " />
 
-      <div className=" hover:bg-gray-700 p-2 rounded-sm ">
+      <div className=" hover:bg-gray-700 px-2 py-1.5 rounded-sm ">
         {roomInfo && roomInfo.name}
       </div>
     </div>

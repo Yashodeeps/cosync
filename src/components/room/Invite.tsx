@@ -55,6 +55,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import { Hint } from "../custom/Hint";
 
 const MAX_SHOWN_USERS = 2; //max users other than yourself
 
@@ -92,7 +93,7 @@ const Invite = ({ roomId, ownerId }: InviteProps) => {
     try {
       await navigator.clipboard.writeText(linkToCopy);
       setIsCopied(true);
-      setTimeout(() => setIsCopied(false), 2000); // Reset the message after 2 seconds
+      setTimeout(() => setIsCopied(false), 2000);
     } catch (err) {
       toast({
         title: "Error",
@@ -103,9 +104,6 @@ const Invite = ({ roomId, ownerId }: InviteProps) => {
   };
 
   const users = useOthers();
-  // const currentUser = useSelf();
-
-  // const hasMoreUsers = users.length > MAX_SHOWN_USERS;
 
   const fetchUsers = useCallback(async () => {
     if (querySearch === "") {
@@ -243,7 +241,7 @@ const Invite = ({ roomId, ownerId }: InviteProps) => {
     );
 
   return (
-    <div className="absolute top-4 right-4 items-center z-50 flex  gap-4">
+    <div className=" z-50 flex  gap-4 ">
       {isOwner && (
         <Dialog
           onOpenChange={(open) => {
@@ -258,7 +256,10 @@ const Invite = ({ roomId, ownerId }: InviteProps) => {
               size={"icon"}
               className=" gap-3 rounded-md px-2 py-2 bg-gray-800 hover:bg-gray-700 text-zinc-100  flex items-center shadow-md "
             >
-              <UserPlus />
+              {" "}
+              <Hint tooltip="invite" position="bottom" sideOffset={20}>
+                <UserPlus />
+              </Hint>
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-md bg-zinc-900">
@@ -370,7 +371,7 @@ const Invite = ({ roomId, ownerId }: InviteProps) => {
           <DropdownMenuTrigger>
             <Button
               size={"icon"}
-              className=" gap-3 rounded-md px-2 py-2 bg-gray-800 hover:bg-gray-700 text-zinc-100  flex items-center shadow-md "
+              className="  bg-gray-800 hover:bg-gray-700 text-zinc-100  "
             >
               <Menu />
             </Button>{" "}

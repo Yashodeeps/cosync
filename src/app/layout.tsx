@@ -7,8 +7,8 @@ import { Analytics } from "@vercel/analytics/react";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "CoSyncLabs",
-  description: "Collab, build and network",
+  title: "cosync",
+  description: "Realtime canvas with built in video communication",
 };
 
 export default function RootLayout({
