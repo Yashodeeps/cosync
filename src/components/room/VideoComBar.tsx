@@ -22,9 +22,7 @@ const VideoComBar = ({ name }: any) => {
   const [isConnected, setIsConnected] = useState(false);
 
   const handleRoomjoin = async () => {
-    
     try {
-      
       const resp = await axios.get(
         `/api/get-participant-token?room=${roomId}&username=${name}`
       );
@@ -42,7 +40,7 @@ const VideoComBar = ({ name }: any) => {
 
   return (
     <div className="fixed bottom-0 left-1/2 -translate-x-1/2 mb-4 z-40">
-      <div className="bg-gray-800/90 backdrop-blur-sm rounded-lg p-4 shadow-lg border border-gray-700">
+      <div className=" rounded-lg p-4 shadow-lg  ">
         <div className="flex flex-col items-center gap-4">
           {!isConnected ? (
             <Button
@@ -56,7 +54,7 @@ const VideoComBar = ({ name }: any) => {
               <LiveKitRoom
                 video={false}
                 audio={true}
-                token={token|| undefined}
+                token={token || undefined}
                 serverUrl={process.env.NEXT_PUBLIC_LIVEKIT_URL}
                 data-lk-theme="default"
                 className="min-h-[150px] w-[200px]"

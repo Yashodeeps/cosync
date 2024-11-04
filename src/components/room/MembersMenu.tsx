@@ -44,7 +44,7 @@ const MembersMenu = ({
 
   return (
     <div
-      className={`absolute top-[45%] -translate-y-[50%] right-2 flex flex-col gap-y-4 z-40`}
+      className={`absolute top-[45%] -translate-y-[50%] right-2 flex flex-col gap-y-4  z-40`}
     >
       <div className="bg-gray-800 rounded-md p-2 flex gap-1 flex-col shadow-md">
         {/* <HoverCard>
@@ -55,7 +55,7 @@ const MembersMenu = ({
           <Users size={24} /> Members
         </div>
 
-        <div className="text-gray-300 flex items-center gap-3 px-4 font-bold">
+        <div className="text-gray-300 text-sm flex items-center gap-3 px-4 font-bold">
           <div className="h-2 w-2 bg-green-500 rounded-full flex justify-center items-center" />
           <div>
             {" "}
@@ -67,11 +67,11 @@ const MembersMenu = ({
         {/* </HoverCardTrigger>
           <HoverCardContent className=" m-4 bg-gray-800" side={"left"}> */}
         <div className={`px-4  `}>
-          <div className="mt-2">
+          <div className="mt-2 text-sm">
             {liveMembers.map((member: any) => (
               <div
                 key={member.id}
-                className="flex items-center gap-3 text-gray-200"
+                className="flex items-center gap-3 text-gray-200 "
               >
                 <div className="h-2 w-2 bg-green-500 rounded-full flex justify-center items-center" />
                 {member.name} {member.id === ownerId && <Crown size={16} />}
@@ -84,7 +84,7 @@ const MembersMenu = ({
           {offlineMembers.map((member: any) => (
             <div
               key={member.id}
-              className="text-gray-400 flex items-center gap-3"
+              className="text-gray-400 flex items-center gap-3 text-sm"
             >
               <div className="h-2 w-2  bg-red-800 rounded-full flex justify-center items-center" />
               {member.name} {member.id === ownerId && <Crown size={16} />}
@@ -94,7 +94,6 @@ const MembersMenu = ({
         {/* </HoverCardContent>
         </HoverCard> */}
       </div>
-       
     </div>
   );
 };
