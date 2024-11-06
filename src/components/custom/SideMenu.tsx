@@ -29,7 +29,7 @@ const SideMenu = () => {
         >
           Projects
         </li>
-        <li
+        {/* <li
           onClick={() => {
             // router.push("/board");
             alert("Board feature is taken down for now");
@@ -41,7 +41,7 @@ const SideMenu = () => {
           }
         >
           board
-        </li>
+        </li> */}
       </ul>
     </div>
   );
