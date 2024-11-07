@@ -126,7 +126,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
         x: position.x,
         y: position.y,
         height: 100,
-        width: 100,
+        width: 150,
         color: lastUsedColor,
       });
       liveLayerIds.push(layerId);
