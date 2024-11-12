@@ -100,7 +100,7 @@ const Page = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen  flex-col relative ">
-      <div className="shadow-xl p-6  rounded-xl border border-gray-500 w-full md:w-1/3 z-30">
+      <div className="shadow-xl p-6  rounded-xl bg-gradient-to-tl from-gray-800  to-gray-950 w-full md:w-1/3 z-30">
         <div className="flex flex-col items-center  justify-center">
           <h1 className="text-4xl font-bold text-gray-300 shadow-lg">
             ONBOARD COSYNC
@@ -237,8 +237,6 @@ const Page = () => {
           </div>
         </Form>
       </div>
-      <ShootingStars />
-      <StarsBackground />
     </div>
   );
 };

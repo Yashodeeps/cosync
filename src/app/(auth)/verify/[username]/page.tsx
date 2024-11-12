@@ -57,7 +57,7 @@ const VerifyAccount = () => {
 
   return (
     <div className="flex justify-center items-center min-h-screen  relative">
-      <div className="w-full max-w-md p-8 space-y-8 rounded-lg shadow-md border border-gray-500 z-30 bg-gray-950">
+      <div className="w-full max-w-md p-8 space-y-8 rounded-lg shadow-md  z-30 bg-gradient-to-tl from-gray-800  to-gray-950">
         <div className="text-center">
           <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
             Verify your account
@@ -86,8 +86,6 @@ const VerifyAccount = () => {
           </form>
         </Form>
       </div>
-      <ShootingStars />
-      <StarsBackground />
     </div>
   );
 };

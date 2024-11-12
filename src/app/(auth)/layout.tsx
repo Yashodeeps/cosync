@@ -3,7 +3,7 @@ import React, { ReactNode } from "react";
 
 const Layout = ({ children }: { children: ReactNode }) => {
   return (
-    <div>
+    <div className="bg-gradient-to-br from-gray-800  to-black">
       <Navbar />
       {children}
     </div>
