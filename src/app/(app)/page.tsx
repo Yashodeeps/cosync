@@ -15,9 +15,9 @@ const orbitron = Orbitron({
 const Home = () => {
   const router = useRouter();
   return (
-    <div className="relative flex justify-center items-center h-screen w-screen animated-gradient-bg">
-      <div className="flex flex-col justify-center items-center h-full text-white py-12 px-4 pt-16 md:px-16 lg:px-32 gap-12">
-        <div className="flex flex-col md:flex-row items-center md:space-x-12">
+    <div className="relative flex justify-center items-center h-screen w-screen animated-gradient-bg ">
+      <div className="flex flex-col justify-center items-center h-full text-white py-12 px-4 pt-16 md:px-16 lg:px-32 gap-12 ">
+        <div className="flex flex-col md:flex-row items-center md:space-x-12 max-md:pt-80">
           <div className="w-full md:w-1/2 flex flex-col justify-center items-start text-center md:text-left">
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight">
               Not Just Another <br />
@@ -29,14 +29,17 @@ const Home = () => {
               <span className="text-pink-600">Video Communication</span> and
               Real-Time Sync.
             </p>
-            <Button
-              onClick={() => router.push("/sign-up")}
-              className="mt-8 px-8 py-3 bg-blue-500 text-white font-semibold text-lg rounded-lg shadow-lg hover:bg-blue-600 transition duration-300 ease-in-out"
-            >
-              Onboard Now
-            </Button>
+            <div className="max-md:w-full max-md:flex max-md:justify-center">
+              {" "}
+              <Button
+                onClick={() => router.push("/sign-up")}
+                className="mt-8 px-8 py-3  bg-blue-500 text-white font-semibold text-lg rounded-lg shadow-lg hover:bg-blue-600 transition duration-300 ease-in-out"
+              >
+                Onboard Now
+              </Button>
+            </div>
           </div>
-          <div className="w-full md:w-1/2">
+          <div className="w-full max-md:hidden md:w-1/2  ">
             <HomeCanvas />
           </div>
         </div>
