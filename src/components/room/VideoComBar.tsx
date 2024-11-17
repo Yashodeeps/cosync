@@ -16,6 +16,7 @@ import "@livekit/components-styles";
 import { Track, Room } from "livekit-client";
 import { set } from "zod";
 import { Video } from "lucide-react";
+import ExtraToolbar from "./ExtraToolbar";
 
 const VideoComBar = ({ name }: any) => {
   const { roomId } = useParams();
@@ -40,7 +41,7 @@ const VideoComBar = ({ name }: any) => {
   }
 
   return (
-    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 mb-4 z-40">
+    <div className="fixed bottom-0 left-1/2 -translate-x-1/2 mb-4 z-40 flex justify-center items-center">
       <div className=" rounded-lg p-4 shadow-lg  ">
         <div className="flex flex-col items-center gap-4">
           {!isConnected ? (
@@ -48,7 +49,7 @@ const VideoComBar = ({ name }: any) => {
               onClick={handleRoomjoin}
               className="bg-gray-800 flex gap-5 hover:bg-gray-900 text-white font-medium px-6 py-2 rounded-lg transition-colors"
             >
-            <Video />  Join 
+              <Video /> Join
             </Button>
           ) : (
             <div className="w-full">
@@ -73,6 +74,7 @@ const VideoComBar = ({ name }: any) => {
           )}
         </div>
       </div>
+      <ExtraToolbar />
     </div>
   );
 };

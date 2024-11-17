@@ -48,23 +48,14 @@ const RoomCard = ({ title, id, ownerId }: RoomCardProps) => {
         </CardTitle>
       </CardHeader>
 
-      <div className="relative overflow-hidden rounded-md mx-4 mb-4">
-        <div className="absolute inset-0 bg-gradient-to-t from-gray-900 to-transparent opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
-        <img
-          className="w-full h-40 object-cover rounded-md transform group-hover:scale-105 transition-transform duration-300"
-          src="/cs.png"
-          alt={title}
-        />
-      </div>
-
       <div className="px-4 pb-4">
         <Button
-          className="w-full bg-gradient-to-r from-amber-700 to-amber-600 hover:from-amber-600 hover:to-amber-500 text-gray-100 font-medium py-2 rounded-md shadow-lg transform transition-all duration-300 hover:shadow-xl"
+          className="w-full bg-gradient-to-r from-purple-900 via-purple-800 to-purple-900 hover:from-purple-800 hover:to-purple-900 text-gray-100 font-medium py-2 rounded-md shadow-lg transform transition-all duration-300 hover:shadow-xl"
           onClick={() => {
             router.push(`/room/${id}`);
           }}
         >
-          Enter Canvas
+          Enter Workspace
         </Button>
       </div>
     </Card>
