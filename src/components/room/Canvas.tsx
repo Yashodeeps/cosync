@@ -71,6 +71,8 @@ const Canvas = ({ roomId }: CanvasProps) => {
   const pencilDraft = useSelf((me) => me.presence.pencilDraft);
   const layerIds = useStorage((root) => root.layerIds);
 
+  const [clipboard, setClipboard] = useState<Array<any>>([]);
+
   const [camera, setCamera] = useState<Camera>({ x: 0, y: 0 });
   const [lastUsedColor, setLastUsedColor] = useState<Color>({
     r: 255,
@@ -430,6 +432,97 @@ const Canvas = ({ roomId }: CanvasProps) => {
     return layerIdsToColorSelection;
   }, [selections]);
 
+  const duplicateSelectedLayers = useMutation(
+    ({ storage, self, setMyPresence }) => {
+      const liveLayers = storage.get("layers");
+      const liveLayerIds = storage.get("layerIds");
+      const selection = self.presence.selection;
+
+      if (selection.length === 0) return;
+
+      const newIds: string[] = [];
+
+      const OFFSET = 10;
+
+      selection.forEach((layerId) => {
+        const layer = liveLayers.get(layerId);
+        if (layer) {
+          const layerObject = layer.toObject();
+          const newId = nanoid();
+
+          const newLayer = new LiveObject({
+            ...layerObject,
+            x: layerObject.x + OFFSET,
+            y: layerObject.y + OFFSET,
+          });
+
+          liveLayers.set(newId, newLayer);
+          liveLayerIds.push(newId);
+          newIds.push(newId);
+        }
+      });
+
+      setMyPresence({ selection: newIds }, { addToHistory: true });
+    },
+    []
+  );
+
+  const copySelectedLayers = useMutation(({ storage, self }) => {
+    const liveLayers = storage.get("layers");
+    const selection = self.presence.selection;
+
+    if (selection.length === 0) return;
+
+    const layersToCopy = selection
+      .map((layerId) => {
+        const layer = liveLayers.get(layerId);
+        if (layer) {
+          return layer.toObject();
+        }
+      })
+      .filter(Boolean);
+
+    setClipboard(layersToCopy);
+  }, []);
+  const self = useSelf();
+  const pasteSelectedLayers = useMutation(
+    ({ storage, setMyPresence }) => {
+      console.log("self", self);
+      const cursorPosition: Point = self?.presence?.cursor ?? { x: 0, y: 0 };
+      if (clipboard.length === 0) return;
+
+      const liveLayers = storage.get("layers");
+      const liveLayerIds = storage.get("layerIds");
+
+      const newIds: string[] = [];
+
+      const avgX =
+        clipboard.reduce((sum, layer) => sum + layer.x, 0) / clipboard.length;
+      const avgY =
+        clipboard.reduce((sum, layer) => sum + layer.y, 0) / clipboard.length;
+
+      const offsetX = cursorPosition ? cursorPosition.x - avgX : 20;
+      const offsetY = cursorPosition ? cursorPosition.y - avgY : 20;
+
+      clipboard.forEach((layerData) => {
+        const newId = nanoid();
+
+        const newLayer = new LiveObject({
+          ...layerData,
+          x: layerData.x + offsetX,
+          y: layerData.y + offsetY,
+        });
+
+        liveLayers.set(newId, newLayer);
+        liveLayerIds.push(newId);
+        newIds.push(newId);
+      });
+
+      setMyPresence({ selection: newIds }, { addToHistory: true });
+    },
+    [clipboard]
+  );
+
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       switch (e.key) {
@@ -456,6 +549,108 @@ const Canvas = ({ roomId }: CanvasProps) => {
         case "Delete":
           deleteLayers();
           break;
+
+        case "r":
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            setCanvasState({
+              mode: CanvasMode.Inserting,
+              layerType: LayerType.Rectangle,
+            });
+          }
+          break;
+
+        case "t":
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            setCanvasState({
+              mode: CanvasMode.Inserting,
+              layerType: LayerType.Text,
+            });
+          }
+          break;
+
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            setCanvasState({
+              mode: CanvasMode.Inserting,
+              layerType: LayerType.Text,
+            });
+          }
+          break;
+        case "o":
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            setCanvasState({
+              mode: CanvasMode.Inserting,
+              layerType: LayerType.Ellipse,
+            });
+          }
+          break;
+
+        case "a":
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            setCanvasState({
+              mode: CanvasMode.Inserting,
+              layerType: LayerType.Arrow,
+            });
+          }
+          break;
+
+        case "l":
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            setCanvasState({
+              mode: CanvasMode.Inserting,
+              layerType: LayerType.Line,
+            });
+          }
+          break;
+
+        case "u":
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            setCanvasState({
+              mode: CanvasMode.Inserting,
+              layerType: LayerType.Note,
+            });
+          }
+          break;
+
+        case "p":
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            setCanvasState({
+              mode: CanvasMode.Inserting,
+              layerType: LayerType.Path,
+            });
+          }
+          break;
+
+        case "d":
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault(); // Prevent browser's default bookmark behavior
+            duplicateSelectedLayers();
+            break;
+          }
+        case "c":
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            copySelectedLayers();
+            break;
+          }
+          break;
+
+        case "v":
+          if (e.ctrlKey || e.metaKey) {
+            e.preventDefault();
+            // Get the current cursor position from presence
+
+            pasteSelectedLayers();
+            break;
+          }
+          break;
       }
     }
     document.addEventListener("keydown", onKeyDown);
@@ -463,7 +658,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
     return () => {
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [deleteLayers, history]);
+  }, [deleteLayers, history, setCanvasState]);
 
   return (
     <div className="h-screen w-full touch-none flex justify-center items-center relative">
