@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 import { KanbanIcon } from "lucide-react";
 import { Button } from "../ui/button";
@@ -10,7 +12,8 @@ import {
   TouchSensor,
   useSensor,
   useSensors,
-  useDroppable,
+  DragOverlay,
+  DragEndEvent,
   DragOverEvent,
 } from "@dnd-kit/core";
 import {
@@ -20,180 +23,36 @@ import {
 } from "@dnd-kit/sortable";
 import TaskCard from "../custom/TaskCard";
 import Draggable from "react-draggable";
+import KanbanBoard from "./KanbanBoard";
+import axios from "axios";
+import { useParams } from "next/navigation";
 
-interface task {
-  id: number;
-  task: string;
+export interface Task {
+  id?: number;
+  title: string;
+  description?: string;
+  notes?: string;
+  dueDate?: string;
+  priority?: "low" | "medium" | "high" | "none";
+  taskColumn: string;
 }
 
-const KanbanBoard = ({
-  showKanban,
-  onClose,
-  tasks,
-  sensors,
-  columns,
-  setTasks,
-}: {
-  showKanban: boolean;
-  onClose: () => void;
-  tasks: task[];
-  sensors: any;
-  columns: { title: string; color: string; bgColor: string }[];
-  setTasks: any;
-}) => {
-  if (!showKanban) return null;
-  const { setNodeRef } = useDroppable({
-    id: "kanban",
-  });
-
-  function ondragover(event: DragOverEvent) {
-    const { active, over } = event;
-    if (!over) return;
-
-    const activeId = active?.id;
-    const overId = over?.id;
-
-    if (activeId === overId) return;
-
-    const isActiveTask = active.data.current?.type === "task";
-    const isOverTask = over.data.current?.type === "task";
-
-    if (isActiveTask && isOverTask) {
-      const activeIndex = tasks.findIndex((task) => task.id === activeId);
-      const overIndex = tasks.findIndex((task) => task.id === overId);
-      setTasks(arrayMove(tasks, activeIndex, overIndex));
-    }
-  }
-  return ReactDOM.createPortal(
-    <Draggable handle=".kanban-header">
-      <div
-        className="fixed top-28 left-52 z-50 bg-gradient-to-b from-gray-800 to-gray-900 p-4 rounded-lg 
-            border border-gray-700 shadow-lg w-[85%] max-w-[800px] cursor-move"
-      >
-        <div className="kanban-header flex justify-between items-center mb-3 cursor-grab active:cursor-grabbing">
-          <h2 className="text-white text-lg font-bold">Kanban Board</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-white transition"
-          >
-            ✕
-          </button>
-        </div>
-        <DndContext
-          onDragOver={ondragover}
-          sensors={sensors}
-          collisionDetection={closestCorners}
-        >
-          <div className="flex gap-3 min-h-[300px]">
-            {/* stack column/ todo column */}
-            <div className="flex-1 min-w-[200px]">
-              <div className="h-full rounded-md bg-gray-800/50 backdrop-blur-sm p-2 border border-gray-700">
-                <div className="flex items-center justify-between mb-2">
-                  <h2
-                    className={`text-gray-500 text-sm font-medium tracking-tight`}
-                  >
-                    Stack
-                  </h2>
-                  <span
-                    className="px-2 py-0.5 text-xs font-medium rounded-full 
-                          bg-gray-700 text-gray-200"
-                  >
-                    {tasks.length}
-                  </span>
-                </div>
-
-                <SortableContext
-                  items={tasks}
-                  strategy={verticalListSortingStrategy}
-                >
-                  <div
-                    className={`space-y-2 bg-gray-500/5 p-2 rounded-md min-h-[200px]`}
-                  >
-                    {tasks.map((task) => (
-                      <TaskCard key={task.id} id={task.id} task={task.task} />
-                    ))}
-                  </div>
-                </SortableContext>
-              </div>
-            </div>
-
-            {/* working column/ in process column */}
-            <div ref={setNodeRef} className="flex-1 min-w-[200px]">
-              <div className="h-full rounded-md bg-gray-800/50 backdrop-blur-sm p-2 border border-gray-700">
-                <div className="flex items-center justify-between mb-2">
-                  <h2
-                    className={`text-gray-500 text-sm font-medium tracking-tight`}
-                  >
-                    Stack
-                  </h2>
-                  <span
-                    className="px-2 py-0.5 text-xs font-medium rounded-full 
-                          bg-gray-700 text-gray-200"
-                  >
-                    {tasks.length}
-                  </span>
-                </div>
-
-                <SortableContext
-                  items={tasks}
-                  strategy={verticalListSortingStrategy}
-                >
-                  <div
-                    className={`space-y-2 bg-gray-500/5 p-2 rounded-md min-h-[200px]`}
-                  >
-                    {/* {tasks.map((task) => (
-                      <TaskCard key={task.id} id={task.id} task={task.task} />
-                    ))} */}
-                  </div>
-                </SortableContext>
-              </div>
-            </div>
-
-            {/* finished column */}
-
-            <div className="flex-1 min-w-[200px]">
-              <div className="h-full rounded-md bg-gray-800/50 backdrop-blur-sm p-2 border border-gray-700">
-                <div className="flex items-center justify-between mb-2">
-                  <h2
-                    className={`text-gray-500 text-sm font-medium tracking-tight`}
-                  >
-                    Stack
-                  </h2>
-                  <span
-                    className="px-2 py-0.5 text-xs font-medium rounded-full 
-                          bg-gray-700 text-gray-200"
-                  >
-                    {tasks.length}
-                  </span>
-                </div>
-
-                <SortableContext
-                  items={tasks}
-                  strategy={verticalListSortingStrategy}
-                >
-                  <div
-                    className={`space-y-2 bg-gray-500/5 p-2 rounded-md min-h-[200px]`}
-                  >
-                    {/* {tasks.map((task) => (
-                      <TaskCard key={task.id} id={task.id} task={task.task} />
-                    ))} */}
-                  </div>
-                </SortableContext>
-              </div>
-            </div>
-          </div>
-        </DndContext>
-      </div>
-    </Draggable>,
-    document.body
-  );
-};
-
 const ExtraToolbar = () => {
-  const [tasks, setTasks] = useState<task[]>([
-    { id: 1, task: "task 1" },
-    { id: 2, task: "task 2" },
-  ]);
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const { roomId } = useParams();
+
+  const fetchTasks = async () => {
+    try {
+      const response = await axios.get(`/api/room/kanban?roomId=${roomId}`);
+      setTasks(response.data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    fetchTasks();
+  }, []);
   const [showKanban, setShowKanban] = useState(false);
 
   const sensors = useSensors(
@@ -213,12 +72,12 @@ const ExtraToolbar = () => {
   ];
 
   return (
-    <div className="w-full flex items-center ">
+    <div className="w-full flex items-center">
       <Button
         onClick={() => setShowKanban(true)}
-        className=" bg-gray-800/90 backdrop-blur-sm hover:bg-gray-700 text-white 
+        className="bg-gray-800/90 backdrop-blur-sm hover:bg-gray-700 text-white 
           font-medium rounded-lg transition-all duration-200 hover:shadow-lg 
-           flex items-center gap-2"
+          flex items-center gap-2"
       >
         <KanbanIcon className="h-5 w-5" />
         <span>Show Kanban</span>
@@ -230,7 +89,7 @@ const ExtraToolbar = () => {
         tasks={tasks}
         sensors={sensors}
         columns={columns}
-        setTasks
+        setTasks={setTasks}
       />
     </div>
   );

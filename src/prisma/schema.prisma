@@ -39,10 +39,26 @@ model Rooms {
   owner   User      @relation(fields: [ownerId], references: [id])
   invitations RoomInvitation[]
   ownerId Int
+  kanbanTasks KanbanTask[]  
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt  
     @@index([ownerId]) 
   
+}
+
+model KanbanTask {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  roomId      String
+  priority    String?
+  dueDate     DateTime? 
+  taskColumn  String
+  taskBy      String?
+  room        Rooms    @relation(fields: [roomId], references: [id])
+  status      TaskStatus @default(OPEN_BOARD)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model RoomInvitation {
