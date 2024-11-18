@@ -77,11 +77,8 @@ const KanbanBoard = ({
   columns: { title: string; color: string; bgColor: string }[];
   setTasks: (tasks: Task[]) => void;
 }) => {
-  if (!showKanban) return null;
-
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
-  const [isAddingTask, setIsAddingTask] = useState<number | null>(null);
   const [newTaskForm, setNewTaskForm] = useState<NewTaskForm>({
     title: "",
     description: "",
@@ -95,6 +92,8 @@ const KanbanBoard = ({
   const { toast } = useToast();
 
   const { roomId } = useParams();
+
+  if (!showKanban) return null;
 
   const resetForm = () => {
     setNewTaskForm({
