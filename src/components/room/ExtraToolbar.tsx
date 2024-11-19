@@ -59,7 +59,7 @@ const ExtraToolbar = () => {
   return (
     <div className="w-full flex items-center">
       <Button
-        onClick={() => setShowKanban(true)}
+        onClick={() => setShowKanban(!showKanban)}
         className="bg-gray-800/90 backdrop-blur-sm hover:bg-gray-700 text-white 
           font-medium rounded-lg transition-all duration-200 hover:shadow-lg 
           flex items-center gap-2"

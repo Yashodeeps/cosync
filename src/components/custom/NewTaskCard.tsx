@@ -133,12 +133,6 @@ const NewTaskCard = ({
                    transition-all duration-200 flex gap-3"
         >
           Add{" "}
-          {isLoading && (
-            <Loader2
-              size={16}
-              className={`ml-1 ${isLoading ? "block animate-spin" : "hidden"}`}
-            />
-          )}
         </button>
       </div>
     </div>

@@ -18,15 +18,12 @@ import TaskCard from "../custom/TaskCard";
 import Draggable from "react-draggable";
 import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
-import { KanbanIcon } from "lucide-react";
 import { Button } from "../ui/button";
 import { Task } from "./ExtraToolbar";
 import NewTaskCard from "../custom/NewTaskCard";
 import axios from "axios";
-import { useRouter } from "next/router";
 import { useParams } from "next/navigation";
 import { useToast } from "../ui/use-toast";
-import { set } from "zod";
 
 interface NewTaskForm {
   title: string;
@@ -138,6 +135,7 @@ const KanbanBoard = ({
           });
         }
         console.log("response", response.data);
+        await fetchTasks();
       } catch (error) {
         toast({
           title: "Failed to create task",
@@ -179,6 +177,33 @@ const KanbanBoard = ({
     } catch (error) {
       toast({
         title: "Failed to update task",
+        variant: "destructive",
+      });
+    }
+  };
+
+  const deleteTask = async (taskId: number) => {
+    setTasks(tasks.filter((task) => task.id !== taskId));
+
+    try {
+      const response = await axios.delete(
+        `/api/room/kanban?roomId=${roomId}&taskId=${taskId}`
+      );
+
+      if (!response.data.success) {
+        toast({
+          title: "Failed to delete task",
+          description: response.data.message,
+        });
+      }
+
+      toast({
+        title: "Task deleted successfully",
+        variant: "default",
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to delete task",
         variant: "destructive",
       });
     }
@@ -317,6 +342,7 @@ const KanbanBoard = ({
                             notes={task.notes}
                             dueDate={task.dueDate}
                             priority={task.priority as any}
+                            deleteTask={deleteTask}
                             // attachments={task.attachments}
                             // comments={task.comments}
                           />
@@ -335,7 +361,7 @@ const KanbanBoard = ({
                           onClick={() =>
                             setNewTaskForm((prev) => ({
                               ...prev,
-                              columnId: columnIndex,
+                              taskColumn: columnIndex,
                             }))
                           }
                           className="w-full group relative bg-gray-900/90 backdrop-blur-lg border border-gray-700/50 

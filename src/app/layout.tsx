@@ -9,7 +9,21 @@ const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "cosync",
-  description: "Realtime canvas with built in video communication",
+  description: "A realtime digital workspace, simplified",
+  openGraph: {
+    title: "cosync",
+    description: "A realtime digital workspace, simplified",
+    type: "website",
+    url: "https://cosynclabs.com",
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: "cosync",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({

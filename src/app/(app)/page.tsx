@@ -1,12 +1,9 @@
 "use client";
-import HomeCanvas from "@/components/custom/HomeCanvas";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Orbitron } from "next/font/google";
-import { Img } from "@react-email/components";
 import { StarsBackground } from "@/components/ui/stars-background";
 import { ShootingStars } from "@/components/ui/shooting-stars";
-import Head from "next/head";
 
 const orbitron = Orbitron({
   subsets: ["latin"],
@@ -19,19 +16,6 @@ const Home = () => {
 
   return (
     <>
-      <Head>
-        <meta property="og:title" content="cosync" />
-        <meta property="og:description" content="a real-time workspace" />
-        <meta property="og:image" content="/og.png" />
-        <meta property="og:image:alt" content="workspace" />
-        <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://cosynclabs.com" />
-
-        <meta name="twitter:card" content="real-time workspace" />
-        <meta name="twitter:title" content="cosync" />
-        <meta name="twitter:description" content="A real-time workspace tool" />
-        <meta name="twitter:image" content="/og.png" />
-      </Head>
       <div className="relative flex justify-center items-center h-full p-5 bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 animated-gradient-bg overflow-hidden">
         <div className="flex flex-col justify-center items-center h-full text-white py-12 px-4 pt-20 md:px-16 lg:px-32 gap-12">
           <div className="flex flex-col items-center justify-center md:space-x-12 max-md:pt-40">

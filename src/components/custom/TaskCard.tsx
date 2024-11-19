@@ -11,6 +11,7 @@ interface TaskCardProps {
   priority?: "low" | "medium" | "high";
   attachments?: number;
   comments?: number;
+  deleteTask: (id: number) => void;
 }
 
 const TaskCard = ({
@@ -21,6 +22,7 @@ const TaskCard = ({
   priority = "medium",
   attachments = 0,
   comments = 0,
+  deleteTask,
 }: TaskCardProps) => {
   const {
     attributes,
@@ -88,8 +90,8 @@ const TaskCard = ({
               {new Date(dueDate).toLocaleDateString()}
             </span>
           </div>
-
-          <div className="flex items-center space-x-2 text-gray-400">
+          {/* //TODO: Add attachments and comments */}
+          {/* <div className="flex items-center space-x-2 text-gray-400">
             {attachments > 0 && (
               <div className="flex items-center space-x-1">
                 <Paperclip className="w-3 h-3" />
@@ -102,7 +104,7 @@ const TaskCard = ({
                 <span className="text-xs">{comments}</span>
               </div>
             )}
-          </div>
+          </div> */}
         </div>
       </div>
 
@@ -122,7 +124,10 @@ const TaskCard = ({
             />
           </svg>
         </button>
-        <button className="p-1 rounded-md hover:bg-gray-700/50 text-gray-400 hover:text-red-400">
+        <button
+          className="p-1 rounded-md hover:bg-gray-700/50 text-gray-400 hover:text-red-400"
+          onClick={() => deleteTask(id)}
+        >
           <svg
             className="w-3 h-3"
             fill="none"
