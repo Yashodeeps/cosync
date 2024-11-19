@@ -3,12 +3,6 @@
 import {
   DndContext,
   closestCorners,
-  KeyboardSensor,
-  PointerSensor,
-  TouchSensor,
-  useSensor,
-  useSensors,
-  DragOverlay,
   DragEndEvent,
   DragOverEvent,
   DragStartEvent,
@@ -39,20 +33,20 @@ interface NewTaskForm {
   description: string;
   dueDate: string;
   priority: "low" | "medium" | "high" | "none";
-  columnId: number | null;
+  taskColumn: number | null;
 }
 
 const DroppableColumn = ({
   children,
-  columnId,
+  taskColumn,
   className,
 }: {
   children: React.ReactNode;
-  columnId: number;
+  taskColumn: number;
   className: string;
 }) => {
   const { setNodeRef } = useDroppable({
-    id: `column-${columnId}`,
+    id: `column-${taskColumn}`,
   });
 
   return (
@@ -62,21 +56,19 @@ const DroppableColumn = ({
   );
 };
 
+interface KanbanBoardProps {
+  showKanban: boolean;
+  onClose: () => void;
+  sensors: any;
+  columns: { title: string; color: string; bgColor: string }[];
+}
+
 const KanbanBoard = ({
   showKanban,
   onClose,
-  tasks,
   sensors,
   columns,
-  setTasks,
-}: {
-  showKanban: boolean;
-  onClose: () => void;
-  tasks: Task[];
-  sensors: any;
-  columns: { title: string; color: string; bgColor: string }[];
-  setTasks: (tasks: Task[]) => void;
-}) => {
+}: KanbanBoardProps) => {
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [newTaskForm, setNewTaskForm] = useState<NewTaskForm>({
@@ -84,16 +76,21 @@ const KanbanBoard = ({
     description: "",
     dueDate: "",
     priority: "none",
-    columnId: null,
+    taskColumn: null,
   });
-
   const [isLoading, setIsLoading] = useState(false);
-
   const { toast } = useToast();
-
   const { roomId } = useParams();
+  const [tasks, setTasks] = useState<Task[]>([]);
 
-  if (!showKanban) return null;
+  const fetchTasks = async () => {
+    try {
+      const response = await axios.get(`/api/room/kanban?roomId=${roomId}`);
+      setTasks(response.data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const resetForm = () => {
     setNewTaskForm({
@@ -101,7 +98,7 @@ const KanbanBoard = ({
       description: "",
       dueDate: "",
       priority: "none",
-      columnId: null,
+      taskColumn: null,
     });
   };
 
@@ -152,6 +149,41 @@ const KanbanBoard = ({
     }
   };
 
+  const updateTask = async (task: Task) => {
+    try {
+      console.log("task-from update task", task);
+      const response = await axios.put(
+        `/api/room/kanban?roomId=${roomId}&taskId=${task.id}`,
+        {
+          title: task.title,
+          description: task.description,
+          dueDate: task.dueDate,
+          priority: task.priority,
+          taskColumn: task.taskColumn,
+        }
+      );
+
+      if (!response.data.success) {
+        toast({
+          title: "Failed to update task",
+          description: response.data.message,
+        });
+      }
+
+      console.log("response", response.data);
+
+      toast({
+        title: "Task updated successfully",
+        variant: "default",
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to update task",
+        variant: "destructive",
+      });
+    }
+  };
+
   function handleDragStart(event: DragStartEvent) {
     const { active } = event;
     setActiveId(active.id);
@@ -167,43 +199,58 @@ const KanbanBoard = ({
 
     const overId = String(over.id);
     if (overId.startsWith("column-")) {
-      const columnId = parseInt(overId.split("-")[1]);
-      if (Number(activeTask.taskColumn) !== columnId) {
+      const newColumnId = parseInt(overId.split("-")[1]);
+      if (Number(activeTask.taskColumn) !== newColumnId) {
         setTasks(
           tasks.map((task) => {
             if (task.id === active.id) {
-              return { ...task, columnId };
+              return { ...task, taskColumn: newColumnId.toString() };
             }
             return task;
           })
         );
       }
-      return;
-    }
-
-    const overTask = tasks.find((task) => task.id === over.id);
-    if (!overTask) return;
-
-    if (Number(activeTask.taskColumn) !== Number(overTask.taskColumn)) {
-      setTasks(
-        tasks.map((task) => {
-          if (task.id === active.id) {
-            return { ...task, columnId: Number(overTask.taskColumn) };
-          }
-          return task;
-        })
-      );
     } else {
-      const oldIndex = tasks.findIndex((task) => task.id === active.id);
-      const newIndex = tasks.findIndex((task) => task.id === over.id);
-      setTasks(arrayMove(tasks, oldIndex, newIndex));
+      const overTask = tasks.find((task) => task.id === over.id);
+      if (!overTask) return;
+      if (Number(activeTask.taskColumn) !== Number(overTask.taskColumn)) {
+        setTasks(
+          tasks.map((task) => {
+            if (task.id === active.id) {
+              return { ...task, taskColumn: overTask.taskColumn.toString() };
+            }
+            return task;
+          })
+        );
+      } else {
+        const oldIndex = tasks.findIndex((task) => task.id === active.id);
+        const newIndex = tasks.findIndex((task) => task.id === over.id);
+        setTasks(arrayMove(tasks, oldIndex, newIndex));
+      }
     }
   }
 
-  function handleDragEnd(event: DragEndEvent) {
+  async function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (!over) return;
+    const activeTask = tasks.find((task) => task.id === active.id);
+    if (!activeTask) return;
+
+    try {
+      await updateTask(activeTask);
+    } catch (error) {
+      console.error("Failed to update task position:", error);
+    }
+
     setActiveId(null);
     setActiveTask(null);
   }
+
+  useEffect(() => {
+    fetchTasks();
+  }, []);
+
+  if (!showKanban) return null;
 
   return ReactDOM.createPortal(
     <Draggable handle=".kanban-header">
@@ -255,7 +302,7 @@ const KanbanBoard = ({
                     strategy={verticalListSortingStrategy}
                   >
                     <DroppableColumn
-                      columnId={columnIndex}
+                      taskColumn={columnIndex}
                       className={`space-y-2 ${column.bgColor} p-2 rounded-md min-h-[200px]`}
                     >
                       {tasks
@@ -274,7 +321,7 @@ const KanbanBoard = ({
                             // comments={task.comments}
                           />
                         ))}
-                      {newTaskForm.columnId === columnIndex ? (
+                      {newTaskForm.taskColumn === columnIndex ? (
                         <NewTaskCard
                           newTaskForm={newTaskForm}
                           handleInputChange={handleInputChange}

@@ -630,7 +630,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
 
         case "d":
           if (e.ctrlKey || e.metaKey) {
-            e.preventDefault(); // Prevent browser's default bookmark behavior
+            e.preventDefault();
             duplicateSelectedLayers();
             break;
           }
@@ -645,7 +645,6 @@ const Canvas = ({ roomId }: CanvasProps) => {
         case "v":
           if (e.ctrlKey || e.metaKey) {
             e.preventDefault();
-            // Get the current cursor position from presence
 
             pasteSelectedLayers();
             break;

@@ -38,21 +38,6 @@ export interface Task {
 }
 
 const ExtraToolbar = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const { roomId } = useParams();
-
-  const fetchTasks = async () => {
-    try {
-      const response = await axios.get(`/api/room/kanban?roomId=${roomId}`);
-      setTasks(response.data.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  useEffect(() => {
-    fetchTasks();
-  }, []);
   const [showKanban, setShowKanban] = useState(false);
 
   const sensors = useSensors(
@@ -86,10 +71,8 @@ const ExtraToolbar = () => {
       <KanbanBoard
         showKanban={showKanban}
         onClose={() => setShowKanban(false)}
-        tasks={tasks}
         sensors={sensors}
         columns={columns}
-        setTasks={setTasks}
       />
     </div>
   );
