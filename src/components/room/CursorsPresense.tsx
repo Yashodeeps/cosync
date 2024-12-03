@@ -25,7 +25,7 @@ const Drafts = () => {
       pencilDraft: other.presence.pencilDraft,
       penColor: other.presence.penColor,
     }),
-    shallow
+    shallow,
   );
 
   return (

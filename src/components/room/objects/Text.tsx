@@ -36,7 +36,7 @@ const Text = ({
 
     return Math.max(
       minFontSize,
-      Math.min(fontSizeBasedOnWidth, fontSizeBasedOnHeight, maxFontSize)
+      Math.min(fontSizeBasedOnWidth, fontSizeBasedOnHeight, maxFontSize),
     );
   };
 
@@ -63,13 +63,13 @@ const Text = ({
     >
       <div className="w-full h-full">
         <ContentEditable
-          html={isFocused || value ? value ?? "" : "text"}
+          html={isFocused || value ? (value ?? "") : "text"}
           onChange={handleContentChange}
           onFocus={handleFocusWrapper}
           onBlur={handleBlurWrapper}
           className={cn(
             "h-full w-full flex items-center px-4 py-2 drop-shadow-md outline-none",
-            !isFocused && !value && "text-gray-400"
+            !isFocused && !value && "text-gray-400",
           )}
           style={{
             fontSize: calculateFontSize(width, height),

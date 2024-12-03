@@ -20,7 +20,7 @@ export async function POST(request: Request) {
         success: false,
         message: "UnAuthorized user",
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -41,7 +41,7 @@ export async function POST(request: Request) {
     return new Response(
       "Unauthorized",
 
-      { status: 404 }
+      { status: 404 },
     );
   }
 
@@ -55,7 +55,7 @@ export async function POST(request: Request) {
         success: false,
         message: "User ID is missing",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 

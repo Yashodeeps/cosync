@@ -43,7 +43,7 @@ const ExtraToolbar = () => {
   const sensors = useSensors(
     useSensor(PointerSensor),
     useSensor(KeyboardSensor),
-    useSensor(TouchSensor)
+    useSensor(TouchSensor),
   );
 
   const columns = [

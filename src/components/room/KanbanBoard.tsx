@@ -102,7 +102,7 @@ const KanbanBoard = ({
   const handleInputChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => {
     const { name, value } = e.target;
     setNewTaskForm((prev) => ({
@@ -126,7 +126,7 @@ const KanbanBoard = ({
         console.log("newTask", newTask);
         const response = await axios.post(
           `/api/room/kanban?roomId=${roomId}`,
-          newTask
+          newTask,
         );
         if (!response.data.success) {
           toast({
@@ -158,7 +158,7 @@ const KanbanBoard = ({
           dueDate: task.dueDate,
           priority: task.priority,
           taskColumn: task.taskColumn,
-        }
+        },
       );
 
       if (!response.data.success) {
@@ -187,7 +187,7 @@ const KanbanBoard = ({
 
     try {
       const response = await axios.delete(
-        `/api/room/kanban?roomId=${roomId}&taskId=${taskId}`
+        `/api/room/kanban?roomId=${roomId}&taskId=${taskId}`,
       );
 
       if (!response.data.success) {
@@ -232,7 +232,7 @@ const KanbanBoard = ({
               return { ...task, taskColumn: newColumnId.toString() };
             }
             return task;
-          })
+          }),
         );
       }
     } else {
@@ -245,7 +245,7 @@ const KanbanBoard = ({
               return { ...task, taskColumn: overTask.taskColumn.toString() };
             }
             return task;
-          })
+          }),
         );
       } else {
         const oldIndex = tasks.findIndex((task) => task.id === active.id);
@@ -315,7 +315,7 @@ const KanbanBoard = ({
                     >
                       {
                         tasks.filter(
-                          (task) => Number(task.taskColumn) === columnIndex
+                          (task) => Number(task.taskColumn) === columnIndex,
                         ).length
                       }
                     </span>
@@ -332,7 +332,7 @@ const KanbanBoard = ({
                     >
                       {tasks
                         .filter(
-                          (task) => Number(task.taskColumn) === columnIndex
+                          (task) => Number(task.taskColumn) === columnIndex,
                         )
                         .map((task) => (
                           <TaskCard
@@ -380,7 +380,7 @@ const KanbanBoard = ({
         </DndContext>
       </div>
     </Draggable>,
-    document.body
+    document.body,
   );
 };
 

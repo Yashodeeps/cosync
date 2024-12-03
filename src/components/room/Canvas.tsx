@@ -115,7 +115,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
         | LayerType.Arrow
         | LayerType.Line,
 
-      position: Point
+      position: Point,
     ) => {
       const liveLayers = storage.get("layers");
       if (liveLayers.size >= MAX_LAYERS) {
@@ -137,7 +137,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
       setMyPresence({ selection: [layerId] }, { addToHistory: true });
       setCanvasState({ mode: CanvasMode.None });
     },
-    [lastUsedColor]
+    [lastUsedColor],
   );
 
   const translateSelectedLayers = useMutation(
@@ -162,7 +162,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
 
       setCanvasState({ mode: CanvasMode.Translating, current: point });
     },
-    [canvasState]
+    [canvasState],
   );
 
   const unSelectLayers = useMutation(({ self, setMyPresence }) => {
@@ -180,12 +180,12 @@ const Canvas = ({ roomId }: CanvasProps) => {
           layerIds.slice(),
           layers,
           origin,
-          current
+          current,
         );
         setMyPresence({ selection: ids });
       }
     },
-    [layerIds]
+    [layerIds],
   );
 
   const startMuliSelection = useCallback((current: Point, origin: Point) => {
@@ -210,7 +210,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
       const id = nanoid();
       liveLayers.set(
         id,
-        new LiveObject(penPointToPathLayer(pencilDraft, lastUsedColor))
+        new LiveObject(penPointToPathLayer(pencilDraft, lastUsedColor)),
       );
       const liveLayerIds = storage.get("layerIds");
       liveLayerIds.push(id);
@@ -218,7 +218,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
       setMyPresence({ pencilDraft: null });
       setCanvasState({ mode: CanvasMode.Pensil });
     },
-    [lastUsedColor]
+    [lastUsedColor],
   );
 
   const startDrawing = useMutation(
@@ -229,7 +229,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
         penColor: lastUsedColor,
       });
     },
-    [lastUsedColor, setCanvasState]
+    [lastUsedColor, setCanvasState],
   );
 
   const continueDrawing = useMutation(
@@ -259,7 +259,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
             : [...pencilDraft, [point.x, point.y, e.pressure]],
       });
     },
-    [canvasState.mode]
+    [canvasState.mode],
   );
 
   const resizeSelectedLayer = useMutation(
@@ -268,7 +268,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
       const bounds = resizeBounds(
         canvasState.initialBounds,
         canvasState.corner,
-        point
+        point,
       );
 
       const liveLayers = storage.get("layers");
@@ -278,7 +278,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
         layer.update(bounds);
       }
     },
-    [canvasState]
+    [canvasState],
   );
 
   const onResizeHandlePointerDown = useCallback(
@@ -290,7 +290,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
         initialBounds,
       });
     },
-    [history]
+    [history],
   );
 
   const onWheel = useCallback((e: React.WheelEvent) => {
@@ -327,7 +327,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
       continueDrawing,
       startMuliSelection,
       updateSelectionNet,
-    ]
+    ],
   );
 
   const onPointerLeave = useMutation(({ setMyPresence }) => {
@@ -347,7 +347,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
 
       setCanvasState({ origin: point, mode: CanvasMode.Pressing });
     },
-    [camera, canvasState.mode, setCanvasState]
+    [camera, canvasState.mode, setCanvasState],
   );
 
   const onPointerUp = useMutation(
@@ -388,7 +388,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
       insertLayer,
       unSelectLayers,
       insertPath,
-    ]
+    ],
   );
 
   const onLayerPointerDown = useMutation(
@@ -412,7 +412,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
       setCanvasState({ mode: CanvasMode.Translating, current: point });
     },
 
-    [setCanvasState, camera, canvasState.mode, history]
+    [setCanvasState, camera, canvasState.mode, history],
   );
 
   const selections = useOthersMapped((other) => other.presence.selection);
@@ -464,7 +464,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
 
       setMyPresence({ selection: newIds }, { addToHistory: true });
     },
-    []
+    [],
   );
 
   const copySelectedLayers = useMutation(({ storage, self }) => {
@@ -520,7 +520,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
 
       setMyPresence({ selection: newIds }, { addToHistory: true });
     },
-    [clipboard]
+    [clipboard],
   );
 
   useEffect(() => {
@@ -723,7 +723,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
                   y={Math.min(canvasState.origin.y, canvasState.current.y)}
                   width={Math.abs(canvasState.origin.x - canvasState.current.x)}
                   height={Math.abs(
-                    canvasState.origin.y - canvasState.current.y
+                    canvasState.origin.y - canvasState.current.y,
                   )}
                 />
               )}

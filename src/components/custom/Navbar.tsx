@@ -117,7 +117,7 @@ const Navbar = () => {
 
   const handleInvitationResponse = (
     invitationId: number,
-    status: "ACCEPTED" | "DECLINED"
+    status: "ACCEPTED" | "DECLINED",
   ) => {
     mutation.mutate({ invitationId, status });
 
@@ -192,7 +192,7 @@ const Navbar = () => {
                                       onClick={() =>
                                         handleInvitationResponse(
                                           invitation.id,
-                                          "DECLINED"
+                                          "DECLINED",
                                         )
                                       }
                                       disabled={mutation.isPending}
@@ -204,7 +204,7 @@ const Navbar = () => {
                                       onClick={() =>
                                         handleInvitationResponse(
                                           invitation.id,
-                                          "ACCEPTED"
+                                          "ACCEPTED",
                                         )
                                       }
                                       disabled={mutation.isPending}

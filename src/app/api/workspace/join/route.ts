@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
         success: false,
         message: "User not found",
       },
-      { status: 404 }
+      { status: 404 },
     );
   }
 
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
           success: false,
           message: "no workspace found",
         },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
         success: false,
         message: "Failed to Join workspace",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

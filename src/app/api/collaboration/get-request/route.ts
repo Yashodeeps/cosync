@@ -38,7 +38,7 @@ export async function GET(request: NextRequest, response: NextResponse) {
         },
         {
           status: 200,
-        }
+        },
       );
     }
 
@@ -49,7 +49,7 @@ export async function GET(request: NextRequest, response: NextResponse) {
       },
       {
         status: 200,
-      }
+      },
     );
   } catch (error) {
     console.error("Error fetching collaboration requests", error);
@@ -60,7 +60,7 @@ export async function GET(request: NextRequest, response: NextResponse) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }

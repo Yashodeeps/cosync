@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       },
       {
         status: 401,
-      }
+      },
     );
   }
 
@@ -31,7 +31,7 @@ export async function POST(request: NextRequest) {
       },
       {
         status: 404,
-      }
+      },
     );
   }
   //todo: any user with project id should not be able to see the openboard, only the collaborators should be able to see the openboard
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
         },
         {
           status: 500,
-        }
+        },
       );
     }
 
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }
@@ -89,7 +89,7 @@ export async function GET(request: NextRequest) {
       },
       {
         status: 401,
-      }
+      },
     );
   }
 
@@ -119,7 +119,7 @@ export async function GET(request: NextRequest) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }

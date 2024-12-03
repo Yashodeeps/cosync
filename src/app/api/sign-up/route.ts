@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
           success: false,
           message: "username is already taken",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
             success: false,
             message: "email is already taken",
           },
-          { status: 400 }
+          { status: 400 },
         );
       } else {
         const hashedPassword = await bcrypt.hash(password, 10);
@@ -77,7 +77,7 @@ export async function POST(req: NextRequest) {
     const emailResponse = await sendVerificationEmail(
       email,
       username,
-      verifyCode
+      verifyCode,
     );
 
     if (!emailResponse.success) {
@@ -85,7 +85,7 @@ export async function POST(req: NextRequest) {
         { success: false, message: emailResponse.message },
         {
           status: 500,
-        }
+        },
       );
     }
 
@@ -96,7 +96,7 @@ export async function POST(req: NextRequest) {
       },
       {
         status: 201,
-      }
+      },
     );
   } catch (error) {
     console.error("Error in creating user", error);
@@ -104,7 +104,7 @@ export async function POST(req: NextRequest) {
       { success: false, message: "Error in creating user" },
       {
         status: 500,
-      }
+      },
     );
   }
 }

@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
           success: false,
           message: "User not found",
         },
-        { status: 404 }
+        { status: 404 },
       );
     }
     const isCodeValid = user.verifyCode === code;
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
           success: true,
           message: "User verified successfully!!",
         },
-        { status: 200 }
+        { status: 200 },
       );
     } else if (!isCodeNotExpired) {
       return NextResponse.json(
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
           success: false,
           message: "Verification Code expired :(",
         },
-        { status: 400 }
+        { status: 400 },
       );
     } else {
       return NextResponse.json(
@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
           success: false,
           message: "Invalid Verification Code",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
   } catch (error) {
@@ -66,7 +66,7 @@ export async function POST(request: NextRequest) {
         success: false,
         message: "error verifying user",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

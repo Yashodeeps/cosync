@@ -88,7 +88,7 @@ const StickyNote = ({
       }}
       className={cn(
         "overflow-hidden rounded-lg ",
-        isEditing ? "shadow-sm" : "shadow-md"
+        isEditing ? "shadow-sm" : "shadow-md",
       )}
     >
       <div
@@ -104,7 +104,7 @@ const StickyNote = ({
         }}
       >
         <ContentEditable
-          html={isFocused || value ? value ?? "" : "Your note here..."}
+          html={isFocused || value ? (value ?? "") : "Your note here..."}
           onChange={handleContentChange}
           onFocus={handleFocusWrapper}
           onBlur={handleBlurWrapper}
@@ -113,7 +113,7 @@ const StickyNote = ({
             font.className,
             "transition-all duration-200",
             isEditing ? "opacity-90" : "opacity-100",
-            !isFocused && !value && "text-gray-500"
+            !isFocused && !value && "text-gray-500",
           )}
           style={{
             fontSize: calculateFontSize(width, height),
@@ -128,7 +128,7 @@ const StickyNote = ({
           className={cn(
             "absolute inset-0 pointer-events-none",
             "opacity-0 group-hover:opacity-100 transition-opacity duration-200",
-            isEditing ? "hidden" : "block"
+            isEditing ? "hidden" : "block",
           )}
           style={{
             background: `

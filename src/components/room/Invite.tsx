@@ -86,7 +86,7 @@ const Invite = ({ roomId, ownerId }: InviteProps) => {
   const router = useRouter();
   const isOwner = Number(session.data?.user?.id) === ownerId;
   const [loadingRoomActions, setLoadingRoomActions] = useState<Boolean | null>(
-    null
+    null,
   );
 
   const handleCopy = async () => {
@@ -114,7 +114,7 @@ const Invite = ({ roomId, ownerId }: InviteProps) => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `/api/collaboration/searchusers?search=${querySearch}`
+        `/api/collaboration/searchusers?search=${querySearch}`,
       );
       if (!response.data.success) {
         toast({

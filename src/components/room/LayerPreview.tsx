@@ -108,7 +108,7 @@ const LayerPreview = memo(
     }
 
     return null;
-  }
+  },
 );
 
 LayerPreview.displayName = "LayerPreview";

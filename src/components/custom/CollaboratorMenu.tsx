@@ -43,7 +43,7 @@ const CollaboratorMenu = ({ collaborators }: { collaborators: any[] }) => {
     try {
       setLoading(true);
       const response = await axios.get(
-        `/api/collaboration/searchusers?search=${querySearch}`
+        `/api/collaboration/searchusers?search=${querySearch}`,
       );
       if (!response.data.success) {
         toast({
@@ -72,7 +72,7 @@ const CollaboratorMenu = ({ collaborators }: { collaborators: any[] }) => {
     try {
       const response = await axios.post(
         `/api/collaboration/send-request?projectid=${projectId}`,
-        [userId]
+        [userId],
       );
 
       if (!response.data.success) {

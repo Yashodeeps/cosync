@@ -183,7 +183,7 @@ const ProfileManager = () => {
             <Input
               id="name"
               name="name"
-              value={isEditing ? tempProfile?.name ?? "" : user?.name ?? ""}
+              value={isEditing ? (tempProfile?.name ?? "") : (user?.name ?? "")}
               onChange={(e) => {
                 setTempProfile((prev) => ({
                   ...prev,

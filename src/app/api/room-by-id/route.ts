@@ -11,7 +11,7 @@ export async function GET(req: NextRequest) {
   if (!roomId) {
     return NextResponse.json(
       { success: false, message: "Room ID is required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
     if (!room) {
       return NextResponse.json(
         { success: false, message: "Room not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -36,7 +36,7 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     return NextResponse.json(
       { success: false, message: "Error getting room" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

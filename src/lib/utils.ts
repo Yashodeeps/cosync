@@ -24,7 +24,7 @@ export function connectionIdToColor(connectionId: number): string {
 
 export function pointerEventToCanvasPoint(
   e: React.PointerEvent,
-  camera: Camera
+  camera: Camera,
 ) {
   return {
     x: Math.round(e.clientX) - camera.x,
@@ -73,7 +73,7 @@ export function findIntersectingLayersWithRectangle(
   layerIds: string[],
   layers: ReadonlyMap<string, Layer>,
   a: Point,
-  b: Point
+  b: Point,
 ) {
   const rect = {
     x: Math.min(a.x, b.x),
@@ -114,7 +114,7 @@ export function getContrastingTextColor(color: Color) {
 
 export function penPointToPathLayer(
   points: number[][],
-  color: Color
+  color: Color,
 ): PathLayer {
   if (points.length < 2) {
     throw new Error("Not enough points to create a path");
@@ -162,7 +162,7 @@ export function getSvgPathFromStroke(stroke: number[][]) {
       acc.push(x0, y0, (x0 + x1) / 2, (y0 + y1) / 2);
       return acc;
     },
-    ["M", ...stroke[0], "Q"]
+    ["M", ...stroke[0], "Q"],
   );
 
   d.push("Z");

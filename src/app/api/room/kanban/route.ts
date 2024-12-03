@@ -21,7 +21,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       },
       {
         status: 400,
-      }
+      },
     );
   }
 
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       },
       {
         status: 401,
-      }
+      },
     );
   }
 
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       },
       {
         status: 400,
-      }
+      },
     );
   }
 
@@ -67,7 +67,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         },
         {
           status: 404,
-        }
+        },
       );
     }
 
@@ -105,7 +105,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         },
         {
           status: 500,
-        }
+        },
       );
     }
 
@@ -117,7 +117,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       },
       {
         status: 201,
-      }
+      },
     );
   } catch (error) {
     return NextResponse.json(
@@ -127,7 +127,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }
@@ -148,7 +148,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
       },
       {
         status: 400,
-      }
+      },
     );
   }
 
@@ -160,7 +160,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
       },
       {
         status: 401,
-      }
+      },
     );
   }
 
@@ -182,7 +182,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
         },
         {
           status: 404,
-        }
+        },
       );
     }
 
@@ -202,7 +202,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
         },
         {
           status: 500,
-        }
+        },
       );
     }
 
@@ -214,7 +214,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
       },
       {
         status: 201,
-      }
+      },
     );
   } catch (error) {
     return NextResponse.json(
@@ -224,7 +224,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }
@@ -248,7 +248,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
       },
       {
         status: 400,
-      }
+      },
     );
   }
 
@@ -260,7 +260,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
       },
       {
         status: 401,
-      }
+      },
     );
   }
 
@@ -272,7 +272,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
       },
       {
         status: 400,
-      }
+      },
     );
   }
 
@@ -297,12 +297,12 @@ export async function PUT(req: NextRequest, res: NextResponse) {
         },
         {
           status: 404,
-        }
+        },
       );
     }
 
     const taskToUpdate = room.kanbanTasks.find(
-      (task) => task.id === Number(taskId)
+      (task) => task.id === Number(taskId),
     );
     if (!taskToUpdate) {
       return NextResponse.json(
@@ -312,7 +312,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
         },
         {
           status: 404,
-        }
+        },
       );
     }
 
@@ -336,7 +336,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
         },
         {
           status: 500,
-        }
+        },
       );
     }
 
@@ -348,7 +348,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
       },
       {
         status: 201,
-      }
+      },
     );
   } catch (error) {
     return NextResponse.json(
@@ -359,7 +359,7 @@ export async function PUT(req: NextRequest, res: NextResponse) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }
@@ -381,7 +381,7 @@ export async function DELETE(req: NextRequest, res: NextResponse) {
       },
       {
         status: 400,
-      }
+      },
     );
   }
 
@@ -393,7 +393,7 @@ export async function DELETE(req: NextRequest, res: NextResponse) {
       },
       {
         status: 401,
-      }
+      },
     );
   }
 
@@ -418,12 +418,12 @@ export async function DELETE(req: NextRequest, res: NextResponse) {
         },
         {
           status: 404,
-        }
+        },
       );
     }
 
     const taskToDelete = room.kanbanTasks.find(
-      (task) => task.id === Number(taskId)
+      (task) => task.id === Number(taskId),
     );
     if (!taskToDelete) {
       return NextResponse.json(
@@ -433,7 +433,7 @@ export async function DELETE(req: NextRequest, res: NextResponse) {
         },
         {
           status: 404,
-        }
+        },
       );
     }
 
@@ -451,7 +451,7 @@ export async function DELETE(req: NextRequest, res: NextResponse) {
         },
         {
           status: 500,
-        }
+        },
       );
     }
 
@@ -463,7 +463,7 @@ export async function DELETE(req: NextRequest, res: NextResponse) {
       },
       {
         status: 201,
-      }
+      },
     );
   } catch (error) {
     return NextResponse.json(
@@ -474,7 +474,7 @@ export async function DELETE(req: NextRequest, res: NextResponse) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }

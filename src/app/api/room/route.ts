@@ -13,7 +13,7 @@ export async function POST(req: NextRequest) {
   if (!title) {
     return NextResponse.json(
       { success: false, message: "Title is required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
     if (!newRoom) {
       return NextResponse.json(
         { success: false, message: "Failed to create room" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -39,7 +39,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     return NextResponse.json(
       { success: false, message: "Error creating room" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -53,7 +53,7 @@ export async function GET(req: NextRequest) {
   if (!ownerId) {
     return NextResponse.json(
       { success: false, message: "Unauthorized" },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -78,7 +78,7 @@ export async function GET(req: NextRequest) {
     if (!rooms) {
       return NextResponse.json(
         { success: false, message: "Failed to fetch rooms" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -86,7 +86,7 @@ export async function GET(req: NextRequest) {
   } catch (error) {
     return NextResponse.json(
       { success: false, message: "Error fetching rooms" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

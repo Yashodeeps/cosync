@@ -38,7 +38,7 @@ const BoardTab = () => {
   const { data: session } = useSession();
   const { toast } = useToast();
   const storeProjects: Project[] = useAppSelector(
-    (state: RootState) => state.projects
+    (state: RootState) => state.projects,
   );
 
   interface Project {

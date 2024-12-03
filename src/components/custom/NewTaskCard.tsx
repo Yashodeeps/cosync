@@ -11,7 +11,7 @@ interface newTaskForm {
   handleInputChange: (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    >,
   ) => void;
   handleAddTask: (columnIndex: number) => void;
   resetForm: () => void;

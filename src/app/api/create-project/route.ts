@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       },
       {
         status: 401,
-      }
+      },
     );
   }
 
@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
       },
       {
         status: 400,
-      }
+      },
     );
   }
 
@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
         },
         {
           status: 500,
-        }
+        },
       );
     }
 
@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
       },
       {
         status: 201,
-      }
+      },
     );
   } catch (error) {
     return NextResponse.json(
@@ -106,7 +106,7 @@ export async function POST(request: NextRequest) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }
@@ -124,7 +124,7 @@ export async function GET(request: NextRequest) {
       },
       {
         status: 401,
-      }
+      },
     );
   }
 
@@ -163,7 +163,7 @@ export async function GET(request: NextRequest) {
       },
       {
         status: 200,
-      }
+      },
     );
   } catch (error) {
     return NextResponse.json(
@@ -173,7 +173,7 @@ export async function GET(request: NextRequest) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }
@@ -191,7 +191,7 @@ export async function PUT(request: NextRequest) {
       },
       {
         status: 401,
-      }
+      },
     );
   }
 
@@ -208,7 +208,7 @@ export async function PUT(request: NextRequest) {
       },
       {
         status: 400,
-      }
+      },
     );
   }
 
@@ -228,7 +228,7 @@ export async function PUT(request: NextRequest) {
         },
         {
           status: 404,
-        }
+        },
       );
     }
 
@@ -263,7 +263,7 @@ export async function PUT(request: NextRequest) {
       },
       {
         status: 200,
-      }
+      },
     );
   } catch (error) {
     return NextResponse.json(
@@ -273,7 +273,7 @@ export async function PUT(request: NextRequest) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }

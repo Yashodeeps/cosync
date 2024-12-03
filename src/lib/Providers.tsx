@@ -22,7 +22,7 @@ const Providers = ({ children }: { children: ReactNode }) => {
           },
         },
       }),
-    []
+    [],
   );
   return (
     <ThemeProvider

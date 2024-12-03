@@ -62,7 +62,7 @@ export const StarsBackground: React.FC<StarBackgroundProps> = ({
       twinkleProbability,
       minTwinkleSpeed,
       maxTwinkleSpeed,
-    ]
+    ],
   );
 
   useEffect(() => {

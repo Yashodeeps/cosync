@@ -58,13 +58,13 @@ const Page = () => {
         setUsernameMessage("");
         try {
           const response = await axios.get(
-            `/api/check-username-unique?username=${username}`
+            `/api/check-username-unique?username=${username}`,
           );
           setUsernameMessage(response.data.message);
         } catch (error) {
           const axiosError = error as AxiosError<ApiResponse>;
           setUsernameMessage(
-            axiosError.response?.data.message ?? "Error checking username"
+            axiosError.response?.data.message ?? "Error checking username",
           );
         } finally {
           setIsCheckingUsername(false);

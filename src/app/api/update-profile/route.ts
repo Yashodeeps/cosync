@@ -13,7 +13,7 @@ const ProfileUpdateSchema = z.object({
     .max(30)
     .regex(
       /^[a-zA-Z0-9_-]+$/,
-      "Username can only contain letters, numbers, underscores, and hyphens"
+      "Username can only contain letters, numbers, underscores, and hyphens",
     )
     .optional(),
   image: z.string().url().optional(),
@@ -33,7 +33,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       },
       {
         status: 401,
-      }
+      },
     );
   }
 
@@ -50,7 +50,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         },
         {
           status: 400,
-        }
+        },
       );
     }
 
@@ -72,7 +72,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
           },
           {
             status: 409,
-          }
+          },
         );
       }
     }
@@ -106,7 +106,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       },
       {
         status: 200,
-      }
+      },
     );
   } catch (error) {
     console.error("Profile update error:", error);
@@ -118,7 +118,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
       },
       {
         status: 500,
-      }
+      },
     );
   } finally {
     await prisma.$disconnect();
@@ -138,7 +138,7 @@ export async function DELETE(req: NextRequest, res: NextResponse) {
       },
       {
         status: 401,
-      }
+      },
     );
   }
 
@@ -156,7 +156,7 @@ export async function DELETE(req: NextRequest, res: NextResponse) {
       },
       {
         status: 200,
-      }
+      },
     );
   } catch (error) {
     console.error("Profile delete error:", error);
@@ -168,7 +168,7 @@ export async function DELETE(req: NextRequest, res: NextResponse) {
       },
       {
         status: 500,
-      }
+      },
     );
   } finally {
     await prisma.$disconnect();

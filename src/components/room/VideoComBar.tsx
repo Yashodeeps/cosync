@@ -26,7 +26,7 @@ const VideoComBar = ({ name }: any) => {
   const handleRoomjoin = async () => {
     try {
       const resp = await axios.get(
-        `/api/get-participant-token?room=${roomId}&username=${name}`
+        `/api/get-participant-token?room=${roomId}&username=${name}`,
       );
       setToken(resp.data.token);
       setIsConnected(true);
@@ -85,7 +85,7 @@ function MyVideoConference() {
       { source: Track.Source.Camera, withPlaceholder: true },
       { source: Track.Source.ScreenShare, withPlaceholder: false },
     ],
-    { onlySubscribed: false }
+    { onlySubscribed: false },
   );
 
   return (

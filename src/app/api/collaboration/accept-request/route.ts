@@ -18,7 +18,7 @@ export async function PATCH(request: NextRequest) {
       },
       {
         status: 401,
-      }
+      },
     );
   }
 
@@ -32,7 +32,7 @@ export async function PATCH(request: NextRequest) {
       },
       {
         status: 400,
-      }
+      },
     );
   }
 
@@ -54,7 +54,7 @@ export async function PATCH(request: NextRequest) {
         },
         {
           status: 404,
-        }
+        },
       );
     }
     const collaborationUserId = collaboration.userId.toString();
@@ -67,7 +67,7 @@ export async function PATCH(request: NextRequest) {
         },
         {
           status: 403,
-        }
+        },
       );
     }
 
@@ -88,7 +88,7 @@ export async function PATCH(request: NextRequest) {
       },
       {
         status: 200,
-      }
+      },
     );
   } catch (error) {
     console.error(error);
@@ -99,7 +99,7 @@ export async function PATCH(request: NextRequest) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }

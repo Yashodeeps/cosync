@@ -16,7 +16,7 @@ export async function GET(request: NextRequest) {
         success: false,
         message: "UnAuthorized user",
       },
-      { status: 401 }
+      { status: 401 },
     );
   }
 
@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
         success: false,
         message: "Search Query is required",
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -62,7 +62,7 @@ export async function GET(request: NextRequest) {
           success: false,
           message: "No users found",
         },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -72,7 +72,7 @@ export async function GET(request: NextRequest) {
         message: "Users found",
         users,
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch {
     return NextResponse.json(
@@ -80,7 +80,7 @@ export async function GET(request: NextRequest) {
         success: false,
         message: "Failed to search users",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

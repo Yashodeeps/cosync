@@ -37,12 +37,12 @@ const MembersMenu = ({
   const isOwner = session.data?.user?.id === ownerId;
 
   const liveMembers = members.filter((member: any) =>
-    others.some((other: any) => other.info.name === member.username)
+    others.some((other: any) => other.info.name === member.username),
   );
   const offlineMembers = members
     .filter(
       (member: any) =>
-        !liveMembers.some((liveMember: any) => liveMember.id === member.id)
+        !liveMembers.some((liveMember: any) => liveMember.id === member.id),
     )
     .filter((member: any) => member.username !== session.data?.user.username);
 

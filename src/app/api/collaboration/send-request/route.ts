@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       },
       {
         status: 401,
-      }
+      },
     );
   }
   const userId = Number(user.id);
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
         },
         {
           status: 404,
-        }
+        },
       );
     }
 
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
         },
         {
           status: 403,
-        }
+        },
       );
     }
 
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
         projectId: projectId,
         userId: collaboratorUserId,
         status: "PENDING",
-      })
+      }),
     );
 
     const createCollaborations = await prisma.collaboration.createMany({
@@ -79,7 +79,7 @@ export async function POST(request: NextRequest) {
         },
         {
           status: 500,
-        }
+        },
       );
     }
 
@@ -91,7 +91,7 @@ export async function POST(request: NextRequest) {
       },
       {
         status: 200,
-      }
+      },
     );
   } catch (error) {
     console.error("error sending colloboration req: ", error);
@@ -102,7 +102,7 @@ export async function POST(request: NextRequest) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }

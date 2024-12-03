@@ -36,7 +36,7 @@ const SelectionTools = memo(
           liveLayerIds.move(indices[i], i);
         }
       },
-      [selection]
+      [selection],
     );
 
     const moveToFront = useMutation(
@@ -55,11 +55,11 @@ const SelectionTools = memo(
         for (let i = indices.length - 1; i >= 0; i--) {
           liveLayerIds.move(
             indices[i],
-            arr.length - 1 - (indices.length - 1 - i)
+            arr.length - 1 - (indices.length - 1 - i),
           );
         }
       },
-      [selection]
+      [selection],
     );
 
     const setFill = useMutation(
@@ -71,7 +71,7 @@ const SelectionTools = memo(
           liveLayers.get(layerId)?.set("color", fill);
         });
       },
-      [selection, setLastUsedColor]
+      [selection, setLastUsedColor],
     );
 
     const deleteLayers = useDeleteLayers();
@@ -127,7 +127,7 @@ const SelectionTools = memo(
         </div>
       </div>
     );
-  }
+  },
 );
 
 SelectionTools.displayName = "SelectionTools";

@@ -28,7 +28,7 @@ const JoinPage = ({ params }: RoomProps) => {
   const fetchRoomInfo = async () => {
     try {
       const response = await axios.get(
-        `/api/room-by-id?roomId=${params.roomId}`
+        `/api/room-by-id?roomId=${params.roomId}`,
       );
       if (response.data.success === false) {
         toast({

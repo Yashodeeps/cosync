@@ -5,7 +5,7 @@ import { ApiResponse } from "../types/ApiResponse";
 export async function sendVerificationEmail(
   email: string,
   username: string,
-  verifyCode: string
+  verifyCode: string,
 ): Promise<ApiResponse> {
   try {
     await resend.emails.send({
@@ -19,7 +19,7 @@ export async function sendVerificationEmail(
   } catch (emailError) {
     console.error(
       "error sending verification email, try again after some time",
-      emailError
+      emailError,
     );
     return {
       success: false,

@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
       },
       {
         status: 400,
-      }
+      },
     );
   }
 
@@ -30,7 +30,7 @@ export async function POST(request: NextRequest) {
       },
       {
         status: 401,
-      }
+      },
     );
   }
 
@@ -122,7 +122,7 @@ export async function POST(request: NextRequest) {
         },
         {
           status: transactionResult.status,
-        }
+        },
       );
     }
 
@@ -133,7 +133,7 @@ export async function POST(request: NextRequest) {
       },
       {
         status: 500,
-      }
+      },
     );
   } catch (error) {
     console.error("error leaving room: ", error);
@@ -144,7 +144,7 @@ export async function POST(request: NextRequest) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }

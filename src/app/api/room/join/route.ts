@@ -12,7 +12,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   if (!roomId) {
     return NextResponse.json(
       { success: false, message: "Room ID is required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -29,21 +29,21 @@ export async function POST(req: NextRequest, res: NextResponse) {
     if (!room) {
       return NextResponse.json(
         { success: false, message: "Room not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
     if (room.ownerId === Number(user.id)) {
       return NextResponse.json(
         { success: false, message: "You are the owner of this room" },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
     if (room.members.find((member) => member.id === Number(user.id))) {
       return NextResponse.json(
         { success: false, message: "You are already a member of this room" },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -63,7 +63,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
     if (!updatedRoom) {
       return NextResponse.json(
         { success: false, message: "Failed to join room" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -71,7 +71,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
   } catch (error) {
     return NextResponse.json(
       { success: false, message: "Failed to join room" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

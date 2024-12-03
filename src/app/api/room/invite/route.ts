@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       },
       {
         status: 400,
-      }
+      },
     );
   }
 
@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
       },
       {
         status: 401,
-      }
+      },
     );
   }
   const userId = Number(user.id);
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
         },
         {
           status: 404,
-        }
+        },
       );
     }
 
@@ -67,7 +67,7 @@ export async function POST(request: NextRequest) {
         },
         {
           status: 403,
-        }
+        },
       );
     }
 
@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
         },
         {
           status: 500,
-        }
+        },
       );
     }
 
@@ -99,7 +99,7 @@ export async function POST(request: NextRequest) {
       },
       {
         status: 200,
-      }
+      },
     );
   } catch (error) {
     console.error("error sending Invite: ", error);
@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }
@@ -151,7 +151,7 @@ export async function GET(request: NextRequest, response: NextResponse) {
         },
         {
           status: 200,
-        }
+        },
       );
     }
 
@@ -162,7 +162,7 @@ export async function GET(request: NextRequest, response: NextResponse) {
       },
       {
         status: 200,
-      }
+      },
     );
   } catch (error) {
     console.error("Error fetching Invitations", error);
@@ -173,7 +173,7 @@ export async function GET(request: NextRequest, response: NextResponse) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }
@@ -192,7 +192,7 @@ export async function PATCH(request: NextRequest) {
       },
       {
         status: 401,
-      }
+      },
     );
   }
 
@@ -204,7 +204,7 @@ export async function PATCH(request: NextRequest) {
       },
       {
         status: 400,
-      }
+      },
     );
   }
 
@@ -226,7 +226,7 @@ export async function PATCH(request: NextRequest) {
         },
         {
           status: 404,
-        }
+        },
       );
     }
 
@@ -240,7 +240,7 @@ export async function PATCH(request: NextRequest) {
         },
         {
           status: 403,
-        }
+        },
       );
     }
 
@@ -282,7 +282,7 @@ export async function PATCH(request: NextRequest) {
       },
       {
         status: 200,
-      }
+      },
     );
   } catch (error) {
     console.error(error);
@@ -293,7 +293,7 @@ export async function PATCH(request: NextRequest) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }

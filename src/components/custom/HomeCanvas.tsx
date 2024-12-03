@@ -115,7 +115,7 @@ const HomeCanvas = () => {
 
   const handleMouseDown = (
     e: React.MouseEvent<SVGElement, MouseEvent>,
-    element: Element
+    element: Element,
   ) => {
     if (selectedTool !== "select" || !whiteboardRef.current) return;
 
@@ -135,8 +135,8 @@ const HomeCanvas = () => {
         prevElements.map((el) =>
           el.id === element.id
             ? { ...el, x: startElementX + dx, y: startElementY + dy }
-            : el
-        )
+            : el,
+        ),
       );
     };
 
@@ -154,8 +154,8 @@ const HomeCanvas = () => {
     if (newText !== null) {
       setElements((prevElements) =>
         prevElements.map((el) =>
-          el.id === element.id ? { ...el, text: newText } : el
-        )
+          el.id === element.id ? { ...el, text: newText } : el,
+        ),
       );
     }
   };

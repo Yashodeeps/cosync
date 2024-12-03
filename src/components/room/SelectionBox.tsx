@@ -13,12 +13,12 @@ const PADDING = 6;
 const SelectionBox = memo(
   ({ onResizeHandlePointerDown }: SelectionBoxProps) => {
     const soleLayerId = useSelf((self) =>
-      self.presence.selection.length === 1 ? self.presence.selection[0] : null
+      self.presence.selection.length === 1 ? self.presence.selection[0] : null,
     );
 
     const isShowingHandles = useStorage(
       (root) =>
-        soleLayerId && root.layers.get(soleLayerId)?.type !== LayerType.Path
+        soleLayerId && root.layers.get(soleLayerId)?.type !== LayerType.Path,
     );
 
     const bounds = useSelectionBounds();
@@ -191,7 +191,7 @@ const SelectionBox = memo(
         )}
       </>
     );
-  }
+  },
 );
 
 SelectionBox.displayName = "SelectionBox";

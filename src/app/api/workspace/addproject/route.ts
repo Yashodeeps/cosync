@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
       },
       {
         status: 404,
-      }
+      },
     );
   }
 
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
         },
         {
           status: 404,
-        }
+        },
       );
     }
 
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
         },
         {
           status: 404,
-        }
+        },
       );
     }
 
@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
         },
         {
           status: 500,
-        }
+        },
       );
     }
 
@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
         message: "Project added to workspace successfully",
         workspace: updateWorkspace,
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     return NextResponse.json(
@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
       },
       {
         status: 500,
-      }
+      },
     );
   }
 }
