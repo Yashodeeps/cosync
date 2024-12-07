@@ -49,7 +49,7 @@ const Home = () => {
 
             <div className="w-full m-4">
               <img
-                src="/og.png"
+                src="/board.png"
                 alt="Collaboration Tool Image"
                 className="w-full rounded-xl shadow-xl transform hover:scale-105 transition duration-300"
               />

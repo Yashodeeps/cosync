@@ -11,7 +11,7 @@ import { Separator } from "../ui/separator";
 import { Syne_Mono, Syne } from "next/font/google";
 
 //use Syne for normal texts.
-const font = Syne_Mono({ weight: "400", subsets: ["latin"] });
+export const font = Syne_Mono({ weight: "400", subsets: ["latin"] });
 interface RoomHeaderProps {
   roomId: string;
   roomInfo: any;

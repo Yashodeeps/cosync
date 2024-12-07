@@ -35,6 +35,7 @@ import { ScrollArea } from "@radix-ui/react-scroll-area";
 import { toast, useToast } from "../ui/use-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { set } from "zod";
+import { font } from "../room/RoomHeader";
 
 interface RoomInvitation {
   id: number;
@@ -138,8 +139,15 @@ const Navbar = () => {
   return (
     <nav className="p-3 md:p-4 shadow-md border-b-2 border-gray-700 absolute top-0 left-0 right-0 z-30">
       <div className="mx-auto flex flex-row justify-between items-center">
-        <div>
-          <img src="/logo.png" alt="logo" className="h-9" />
+        <div className={`w-full  p-1 rounded-sm text-xl ${font.className}`}>
+          <div
+            className=" cursor-pointer "
+            onClick={() => {
+              router.push("/projects");
+            }}
+          >
+            <img src="/fav.png" className=" w-8 rounded-lg inline" /> cosync
+          </div>
         </div>
         <div className="px-4">
           {session ? (
