@@ -17,15 +17,12 @@ import {
   CanvasMode,
   CanvasState,
   Color,
-  Layer,
   LayerType,
   Point,
   Side,
   XYWH,
 } from "@/types/canvas";
-import Invite from "./Invite";
 import CursorsPresense from "./CursorsPresense";
-import { set } from "zod";
 import {
   colorToCss,
   connectionIdToColor,
@@ -34,7 +31,6 @@ import {
   pointerEventToCanvasPoint,
   resizeBounds,
 } from "@/lib/utils";
-import { root } from "postcss";
 import { LiveObject } from "@liveblocks/client";
 import LayerPreview from "./LayerPreview";
 import SelectionBox from "./SelectionBox";

@@ -141,7 +141,7 @@ const Navbar = () => {
       <div className="mx-auto flex flex-row justify-between items-center">
         <div className={`w-full  p-1 rounded-sm text-xl ${font.className}`}>
           <div
-            className=" cursor-pointer "
+            className=" cursor-pointer text-white "
             onClick={() => {
               router.push("/projects");
             }}
