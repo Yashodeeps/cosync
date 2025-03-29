@@ -10,7 +10,11 @@ const liveblocks = new Liveblocks({
 });
 
 export async function POST(request: Request) {
+
+  
+  
   const prisma = await dbconnect();
+
   const session = await getServerSession(authOptions);
   const user = session?.user as User;
 

@@ -21,6 +21,7 @@ declare global {
       // animals: LiveList<string>;
       layers: LiveMap<string, LiveObject<Layer>>;
       layerIds: LiveList<string>;
+      expirationTime?: number;
     };
 
     // Custom user info set when authenticating with a secret key

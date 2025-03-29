@@ -12,7 +12,7 @@ const RoomPage = ({ params }: RoomProps) => {
   return (
     <div>
       <Room roomId={params.roomId}>
-        <Canvas roomId={params.roomId} />
+        <Canvas roomId={params.roomId} duration={10} />
       </Room>
     </div>
   );

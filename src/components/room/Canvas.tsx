@@ -44,10 +44,12 @@ import { useToast } from "../ui/use-toast";
 import Path from "./objects/Path";
 import { useDisableScrollBounce } from "@/hooks/useDisableScrollBounce";
 import useDeleteLayers from "@/hooks/useDeleteLayers";
+import RoomTimer from "./RoomTimer";
 
 const MAX_LAYERS = 111;
 interface CanvasProps {
   roomId: string;
+  duration: number;
 }
 
 export interface SocketProps {
@@ -55,7 +57,7 @@ export interface SocketProps {
   username: string;
 }
 
-const Canvas = ({ roomId }: CanvasProps) => {
+const Canvas = ({ roomId, duration = 10 }: CanvasProps) => {
   const session = useSession();
   const params = useParams();
   const others = useOthers();
@@ -656,7 +658,7 @@ const Canvas = ({ roomId }: CanvasProps) => {
   }, [deleteLayers, history, setCanvasState]);
 
   return (
-    <div className="h-screen w-full touch-none flex justify-center items-center relative">
+    <div className="h-screen w-full touch-none flex justify-center items-center relative bg-black">
       <RoomHeader roomId={roomId} roomInfo={roomInfo} />
       {/* <Invite roomId={roomId} ownerId={roomInfo?.ownerId} /> */}
       <ToolBar
